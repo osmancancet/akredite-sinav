@@ -4,7 +4,11 @@ import * as React from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import {
   ArchiveRestore,
+  BookOpen,
   ChevronDown,
+  ClipboardList,
+  FileText,
+  UserRound,
   Database,
   Download,
   Lock,
@@ -14,6 +18,7 @@ import {
   ShieldCheck,
   Sparkles,
   Trash2,
+  Upload,
   Wifi,
   WifiOff,
   X,
@@ -33,6 +38,11 @@ import { CommandPalette, type CommandItem } from "./CommandPalette";
 import { BrandMark } from "./BrandMark";
 import { useShellUi } from "./shellStore";
 import { VaultModule } from "@/modules/vault/VaultModule";
+import { OverviewModule } from "@/modules/overview/OverviewModule";
+import { CourseImportDialog } from "@/modules/vault/CourseImportDialog";
+import { BackupReminder } from "./BackupReminder";
+import { OnboardingWizard } from "./OnboardingWizard";
+import { requestPersistentStorage } from "@/hooks/useStoragePersist";
 import { ExamStudio } from "@/modules/exam/ExamStudio";
 import { SchedulerModule } from "@/modules/scheduler/SchedulerModule";
 import { SeatingModule } from "@/modules/seating/SeatingModule";
@@ -41,6 +51,7 @@ import { MedekModule } from "@/modules/medek/MedekModule";
 import { AiModule } from "@/modules/ai/AiModule";
 
 const VIEWS: Record<ModuleId, React.ComponentType> = {
+  genel: OverviewModule,
   kasa: VaultModule,
   sinav: ExamStudio,
   program: SchedulerModule,
@@ -56,6 +67,8 @@ export function AppShell() {
   const setAuditOpen = useShellUi((s) => s.setAudit);
   const backupOpen = useShellUi((s) => s.backupMode);
   const setBackupOpen = useShellUi((s) => s.setBackup);
+  const courseImportOpen = useShellUi((s) => s.courseImportOpen);
+  const setCourseImport = useShellUi((s) => s.setCourseImport);
   const [mobileNav, setMobileNav] = React.useState(false);
   const [paletteOpen, setPaletteOpen] = React.useState(false);
   const mode = useVault((s) => s.mode);
@@ -63,6 +76,79 @@ export function AppShell() {
   const loadDemo = useVault((s) => s.loadDemo);
   const View = VIEWS[route];
   const current = MODULES.find((m) => m.id === route)!;
+  const data = useData();
+  const update = useVault((s) => s.update);
+
+  const recordCommands: CommandItem[] = React.useMemo(() => {
+    const out: CommandItem[] = [];
+    data.courses.forEach((c) =>
+      out.push({
+        id: `course-${c.id}`,
+        label: `${c.code} ${c.name}`,
+        hint: `${c.classYear}. sınıf · ${c.instructor}`,
+        group: "Dersler",
+        icon: <BookOpen />,
+        searchOnly: true,
+        run: () => {
+          const exam = data.exams.find((e) => e.courseId === c.id);
+          if (exam) update("ui", (u) => ({ ...u, activeExamId: exam.id, activeCourseId: c.id }));
+          navigate(exam ? "sinav" : "kasa");
+        },
+      }),
+    );
+    data.exams.forEach((e) => {
+      const c = data.courses.find((x) => x.id === e.courseId);
+      out.push({
+        id: `exam-${e.id}`,
+        label: e.title,
+        hint: `${c?.code ?? ""} · ${e.questions.length} soru`,
+        group: "Sınavlar",
+        icon: <FileText />,
+        searchOnly: true,
+        run: () => {
+          update("ui", (u) => ({ ...u, activeExamId: e.id }));
+          navigate("sinav");
+        },
+      });
+    });
+    data.rubrics.forEach((r) =>
+      out.push({
+        id: `rubric-${r.id}`,
+        label: r.title,
+        group: "Rubrikler",
+        icon: <ClipboardList />,
+        searchOnly: true,
+        run: () => {
+          update("ui", (u) => ({ ...u, activeRubricId: r.id }));
+          navigate("rubrik");
+        },
+      }),
+    );
+    Object.entries(data.students).forEach(([courseId, list]) => {
+      const c = data.courses.find((x) => x.id === courseId);
+      list.forEach((st) =>
+        out.push({
+          id: `student-${courseId}-${st.id}`,
+          label: `${st.firstName} ${st.lastName}`,
+          hint: `${st.no} · ${c?.code ?? ""}`,
+          keywords: st.no,
+          group: "Öğrenciler",
+          icon: <UserRound />,
+          searchOnly: true,
+          run: () => {
+            const exam = data.exams.find((e) => e.courseId === courseId);
+            if (exam) update("ui", (u) => ({ ...u, activeExamId: exam.id }));
+            navigate("oturma");
+          },
+        }),
+      );
+    });
+    return out;
+  }, [data.courses, data.exams, data.rubrics, data.students, navigate, update]);
+
+  React.useEffect(() => {
+    void requestPersistentStorage();
+  }, []);
 
   React.useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -82,6 +168,7 @@ export function AppShell() {
         return { id: `nav-${m.id}`, label: m.label, hint: m.group, group: "Modüller", icon: <Icon />, keywords: m.description, run: () => navigate(m.id) };
       }),
       { id: "audit", label: "Güvenliği kanıtla", hint: "Zero-Knowledge denetçisi", group: "Eylemler", icon: <ShieldCheck />, keywords: "şifre aes ağ çevrimdışı", run: () => setAuditOpen(true) },
+      { id: "import-courses", label: "Dersleri içe aktar", hint: "Bologna / Excel", group: "Eylemler", icon: <Upload />, keywords: "ders katalog bologna excel csv", run: () => setCourseImport(true) },
       { id: "backup", label: ".akredite yedeği indir", group: "Eylemler", icon: <Download />, keywords: "yedek export", run: () => setBackupOpen("export") },
       { id: "restore", label: ".akredite yedeğini yükle", group: "Eylemler", icon: <ArchiveRestore />, keywords: "geri yükle import", run: () => setBackupOpen("import") },
       {
@@ -99,7 +186,7 @@ export function AppShell() {
       },
       ...(mode === "password" ? [{ id: "lock", label: "Kasayı kilitle", group: "Eylemler", icon: <Lock />, run: () => lock() }] : []),
     ],
-    [navigate, loadDemo, lock, mode, setAuditOpen, setBackupOpen],
+    [navigate, loadDemo, lock, mode, setAuditOpen, setBackupOpen, setCourseImport],
   );
 
   return (
@@ -155,7 +242,7 @@ export function AppShell() {
                       {active && <span className="absolute -left-3 top-1.5 bottom-1.5 w-[3px] rounded-r bg-brand-600" />}
                       <Icon className={cn("h-4 w-4", active ? "text-brand-700" : "text-zinc-400 group-hover:text-zinc-600")} />
                       <span className="flex-1 truncate" title={m.label}>{m.short}</span>
-                      <span className="font-mono text-[10px] text-zinc-300">0{m.no}</span>
+                      {m.no > 0 && <span className="font-mono text-[10px] text-zinc-300">0{m.no}</span>}
                     </button>
                   );
                 })}
@@ -176,10 +263,11 @@ export function AppShell() {
           onBackup={(m) => setBackupOpen(m)}
           onAi={() => navigate("ai")}
         />
+        <BackupReminder />
         <main className="mx-auto w-full max-w-[1600px] flex-1 px-4 pb-16 pt-8 sm:px-6 lg:px-10">
           <AnimatePresence mode="wait">
             <motion.div key={route} initial={{ opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.16 }}>
-              <PageIntro eyebrow={`Modül 0${current.no} · ${current.group}`} title={current.label} description={current.description} />
+              <PageIntro eyebrow={current.no ? `Modül 0${current.no} · ${current.group}` : `${current.group} · ${new Date().toLocaleDateString("tr-TR", { day: "numeric", month: "long", year: "numeric", weekday: "long" })}`} title={current.label} description={current.description} />
               <View />
             </motion.div>
           </AnimatePresence>
@@ -188,7 +276,9 @@ export function AppShell() {
 
       <SecurityAuditModal open={auditOpen} onClose={() => setAuditOpen(false)} />
       <BackupModal mode={backupOpen} onClose={() => setBackupOpen(false)} />
-      <CommandPalette open={paletteOpen} onClose={() => setPaletteOpen(false)} items={commands} />
+      <CommandPalette open={paletteOpen} onClose={() => setPaletteOpen(false)} items={[...commands, ...recordCommands]} />
+      <CourseImportDialog open={courseImportOpen} onClose={() => setCourseImport(false)} />
+      <OnboardingWizard />
     </div>
   );
 }

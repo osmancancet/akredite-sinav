@@ -10,11 +10,11 @@ function subscribe(cb: () => void) {
 
 function read(): ModuleId {
   const id = window.location.hash.replace(/^#\/?/, "") as ModuleId;
-  return MODULES.some((m) => m.id === id) ? id : "kasa";
+  return MODULES.some((m) => m.id === id) ? id : "genel";
 }
 
 export function useHashRoute(): [ModuleId, (id: ModuleId) => void] {
-  const route = useSyncExternalStore(subscribe, read, () => "kasa" as ModuleId);
+  const route = useSyncExternalStore(subscribe, read, () => "genel" as ModuleId);
   const navigate = useCallback((id: ModuleId) => {
     window.location.hash = `/${id}`;
     window.scrollTo({ top: 0 });

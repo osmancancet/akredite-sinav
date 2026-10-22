@@ -42,7 +42,7 @@ export function SchedulerModule() {
   const update = useVault((s) => s.update);
   const [tab, setTab] = React.useState<TabId>("grid");
   const { schedule, courses, rooms, invigilators } = data;
-  const conflicts = detectConflicts(schedule, courses, rooms, invigilators);
+  const conflicts = detectConflicts(schedule, courses, rooms, invigilators, data.students);
   const hard = conflicts.filter((c) => c.severity === "hard");
   const soft = conflicts.filter((c) => c.severity === "soft");
   const loads = invigilatorLoads(schedule, invigilators);
@@ -55,9 +55,9 @@ export function SchedulerModule() {
   const solve = (keepLocked: boolean) => {
     if (!rooms.length) return toast.error("Önce derslik ekleyin.");
     if (!invigilators.length) return toast.error("Önce gözetmen ekleyin.");
-    const result = solveSchedule({ courses, rooms, invigilators, settings: schedule.settings, keepLocked: keepLocked ? schedule.entries : [], seed: Date.now() % 100000 });
+    const result = solveSchedule({ courses, rooms, invigilators, settings: schedule.settings, keepLocked: keepLocked ? schedule.entries : [], students: data.students, seed: Date.now() % 100000 });
     setSchedule(result);
-    const c = detectConflicts(result, courses, rooms, invigilators).filter((x) => x.severity === "hard").length;
+    const c = detectConflicts(result, courses, rooms, invigilators, data.students).filter((x) => x.severity === "hard").length;
     toast[c ? "warning" : "success"](
       `${result.entries.length} sınav yerleştirildi`,
       `${result.unplaced.length} yerleştirilemedi · ${c} kesin çakışma · Adalet %${fairnessScore(invigilatorLoads(result, invigilators).map((l) => l.count)).toFixed(1)}`,

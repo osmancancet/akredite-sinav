@@ -4,7 +4,7 @@ import * as React from "react";
 import { createPortal } from "react-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import { CornerDownLeft, Search } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn, foldTr } from "@/lib/utils";
 import { useMounted } from "@/hooks/useMounted";
 
 export interface CommandItem {
@@ -14,10 +14,12 @@ export interface CommandItem {
   group: string;
   icon?: React.ReactNode;
   keywords?: string;
+  /** Yalnızca arama metni girildiğinde gösterilir (ders, sınav, öğrenci kayıtları) */
+  searchOnly?: boolean;
   run: () => void;
 }
 
-const fold = (s: string) => s.toLocaleLowerCase("tr-TR").normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/ı/g, "i");
+const fold = foldTr;
 
 export function CommandPalette({ open, onClose, items }: { open: boolean; onClose: () => void; items: CommandItem[] }) {
   const mounted = useMounted();
@@ -36,7 +38,8 @@ export function CommandPalette({ open, onClose, items }: { open: boolean; onClos
 
   const filtered = React.useMemo(() => {
     const f = fold(q.trim());
-    return f ? items.filter((it) => fold(`${it.label} ${it.hint ?? ""} ${it.keywords ?? ""} ${it.group}`).includes(f)) : items;
+    if (!f) return items.filter((it) => !it.searchOnly);
+    return items.filter((it) => fold(`${it.label} ${it.hint ?? ""} ${it.keywords ?? ""} ${it.group}`).includes(f)).slice(0, 40);
   }, [items, q]);
 
   const choose = (it?: CommandItem) => {
@@ -94,7 +97,7 @@ export function CommandPalette({ open, onClose, items }: { open: boolean; onClos
                   setIndex(0);
                 }}
                 onKeyDown={onKey}
-                placeholder="Modül veya eylem ara…"
+                placeholder="Modül, eylem, ders, sınav veya öğrenci ara…"
                 className="h-12 flex-1 bg-transparent text-sm text-zinc-900 outline-none placeholder:text-zinc-400 focus-visible:outline-none"
               />
               <kbd className="rounded border border-zinc-200 bg-zinc-50 px-1.5 py-0.5 font-mono text-[10px] text-zinc-500">ESC</kbd>

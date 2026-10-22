@@ -2,6 +2,7 @@
 // docs/MEDEK_AND_OPERATIONS_SPEC.md Bölüm 3 — kesin ve yumuşak kısıtlar.
 
 import type {
+  Student,
   Course,
   Invigilator,
   Room,
@@ -41,6 +42,7 @@ class Occupancy {
   invCount = new Map<string, number>();
   invDaily = new Map<string, number>();
   dayLoad = new Map<number, number>();
+  coursesAt = new Map<string, Set<string>>();
 
   constructor(private courseById: Map<string, Course>) {}
 
@@ -48,6 +50,8 @@ class Occupancy {
     const course = this.courseById.get(e.courseId);
     const key = slotKey(e.dayIndex, e.slotId);
     e.rooms.forEach((r) => this.rooms.add(`${key}#${r.roomId}`));
+    if (!this.coursesAt.has(key)) this.coursesAt.set(key, new Set());
+    this.coursesAt.get(key)!.add(e.courseId);
     if (course) {
       if (!this.classes.has(key)) this.classes.set(key, new Set());
       this.classes.get(key)!.add(course.classYear);
@@ -136,6 +140,28 @@ export interface SolverInput {
   settings: ScheduleSettings;
   keepLocked?: ScheduleEntry[];
   seed?: number;
+  /** courseId -> öğrenci listesi; ortak öğrencisi olan dersler aynı saate konmaz */
+  students?: Record<string, Student[]>;
+}
+
+/** Ortak öğrencisi olan ders çiftleri: courseId -> (diğer courseId -> ortak öğrenci numaraları) */
+export function sharedStudentMap(students: Record<string, Student[]> | undefined): Map<string, Map<string, string[]>> {
+  const out = new Map<string, Map<string, string[]>>();
+  if (!students) return out;
+  const ids = Object.keys(students).filter((k) => students[k]?.length);
+  const sets = new Map(ids.map((id) => [id, new Set(students[id].map((s) => s.no))]));
+  for (let i = 0; i < ids.length; i++) {
+    for (let j = i + 1; j < ids.length; j++) {
+      const a = sets.get(ids[i])!;
+      const shared = students[ids[j]].map((s) => s.no).filter((no) => a.has(no));
+      if (!shared.length) continue;
+      if (!out.has(ids[i])) out.set(ids[i], new Map());
+      if (!out.has(ids[j])) out.set(ids[j], new Map());
+      out.get(ids[i])!.set(ids[j], shared);
+      out.get(ids[j])!.set(ids[i], shared);
+    }
+  }
+  return out;
 }
 
 export function solveSchedule(input: SolverInput): Schedule {
@@ -148,6 +174,7 @@ export function solveSchedule(input: SolverInput): Schedule {
   const entries: ScheduleEntry[] = [];
   const unplaced: string[] = [];
   const rng = createRng(input.seed ?? 20251117);
+  const shared = sharedStudentMap(input.students);
 
   // 1) Kilitli (elle taşınmış) girdileri koru
   const locked = (input.keepLocked ?? []).filter((e) => e.locked && courses.some((c) => c.id === e.courseId));
@@ -172,6 +199,9 @@ export function solveSchedule(input: SolverInput): Schedule {
         const key = slotKey(day, slot.id);
         // Kesin kısıt 1: Sınıf çakışması
         if (occ.classes.get(key)?.has(course.classYear)) return;
+        // Kesin kısıt 1b: Ortak öğrencisi olan (alttan/üstten ders alan) dersler aynı saatte olamaz
+        const clash = shared.get(course.id);
+        if (clash && Array.from(occ.coursesAt.get(key) ?? []).some((cid) => clash.has(cid))) return;
         // Kesin kısıt 2: Derslik çakışması ve kapasite
         const free = rooms.filter((r) => !occ.rooms.has(`${key}#${r.id}`));
         const picked = allocateRooms(free, course.studentCount);
@@ -411,7 +441,9 @@ export function detectConflicts(
   courses: Course[],
   rooms: Room[],
   invigilators: Invigilator[],
+  students?: Record<string, Student[]>,
 ): Conflict[] {
+  const shared = sharedStudentMap(students);
   const out: Conflict[] = [];
   const courseById = new Map(courses.map((c) => [c.id, c]));
   const roomById = new Map(rooms.map((r) => [r.id, r]));
@@ -447,6 +479,20 @@ export function detectConflicts(
         });
       }
     });
+    // Öğrenci düzeyi çakışma (aynı öğrenci aynı saatte iki sınavda)
+    for (let i = 0; i < list.length; i++) {
+      for (let j = i + 1; j < list.length; j++) {
+        const common = shared.get(list[i].courseId)?.get(list[j].courseId);
+        if (!common?.length) continue;
+        const a = courseById.get(list[i].courseId)?.code;
+        const b = courseById.get(list[j].courseId)?.code;
+        out.push({
+          severity: "hard",
+          message: `${slotLabel(list[i])}: ${common.length} öğrenci hem ${a} hem ${b} sınavına kayıtlı (${common.slice(0, 3).join(", ")}${common.length > 3 ? "…" : ""}).`,
+          entryIds: [list[i].id, list[j].id],
+        });
+      }
+    }
     // Derslik çakışması
     const byRoom = new Map<string, ScheduleEntry[]>();
     list.forEach((e) =>

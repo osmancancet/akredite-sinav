@@ -2,6 +2,8 @@
 // A4 PDF/Yazdır çıktısı ExamDocuments.tsx bileşenleriyle PrintHost üzerinden üretilir.
 
 import { AlignmentType, BorderStyle, Paragraph, Table, TableRow, TextRun, WidthType } from "docx";
+import * as XLSX from "xlsx";
+import { saveAs } from "file-saver";
 import type { Course, Exam, Institution } from "@/lib/types";
 import { buildBooklet, correctAnswerText, type BookletType } from "@/lib/booklet";
 import { buildBlueprint } from "@/lib/medekMath";
@@ -18,6 +20,7 @@ import {
   PORTRAIT_WIDTH,
   runs,
   saveDocx,
+  saveWorkbook,
   sectionTitle,
   signatureTable,
   simpleTable,
@@ -234,4 +237,53 @@ export async function exportAnswerKeyDocx(inst: Institution, course: Course, exa
     { children: page2, footer: `${course.code} — Belirtke Tablosu` },
   ]);
   await saveDocx(doc, `${safeFileName(`${course.code}_${exam.title}_Cevap_Anahtari_Rubrik`)}.docx`);
+}
+
+// ---------------------------------------------------------------------------
+// Optik form cevap anahtarı (yalnız nesnel sorular: çoktan seçmeli + doğru/yanlış)
+// ---------------------------------------------------------------------------
+
+export function opticKeys(exam: Exam) {
+  const make = (b: BookletType) =>
+    buildBooklet(exam, b).map((bq) => ({
+      no: bq.number,
+      type: bq.question.type,
+      answer: bq.question.type === "mcq" ? bq.correctLetter ?? "?" : bq.question.type === "truefalse" ? (bq.question.correctBool === undefined ? "?" : bq.question.correctBool ? "D" : "Y") : null,
+      points: bq.question.points,
+    }));
+  return { A: make("A"), B: make("B") };
+}
+
+export function exportOpticKeyXlsx(course: Course, exam: Exam) {
+  const keys = opticKeys(exam);
+  const wb = XLSX.utils.book_new();
+  const rows = keys.A.map((a, i) => {
+    const b = keys.B[i];
+    return [a.no, a.answer ?? "(klasik)", b.answer ?? "(klasik)", a.points];
+  });
+  const sheet = XLSX.utils.aoa_to_sheet([
+    [`${course.code} ${course.name} — ${exam.title}`],
+    ["Optik form cevap anahtarı. Klasik/açık uçlu sorular optik okumaya dahil değildir."],
+    [],
+    ["Sıra No", "A Kitapçığı", "B Kitapçığı", "Puan (A sırası)"],
+    ...rows,
+    [],
+    ["A anahtar dizisi", keys.A.map((x) => x.answer).filter(Boolean).join("")],
+    ["B anahtar dizisi", keys.B.map((x) => x.answer).filter(Boolean).join("")],
+  ]);
+  sheet["!cols"] = [{ wch: 18 }, { wch: 16 }, { wch: 16 }, { wch: 16 }];
+  XLSX.utils.book_append_sheet(wb, sheet, "Optik Anahtar");
+  saveWorkbook(wb, `${safeFileName(`${course.code}_${exam.title}_Optik_Cevap_Anahtari`)}.xlsx`);
+}
+
+export function exportOpticKeyTxt(course: Course, exam: Exam) {
+  const keys = opticKeys(exam);
+  const line = (k: typeof keys.A) => k.filter((x) => x.answer).map((x) => x.answer).join("");
+  const content = [
+    `# ${course.code} ${exam.title} — optik cevap anahtarı (yalnız nesnel sorular)`,
+    `A,${line(keys.A)}`,
+    `B,${line(keys.B)}`,
+    "",
+  ].join("\r\n");
+  saveAs(new Blob([content], { type: "text/plain;charset=utf-8" }), `${safeFileName(`${course.code}_${exam.title}_Optik_Anahtar`)}.txt`);
 }

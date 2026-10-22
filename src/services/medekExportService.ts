@@ -5,7 +5,7 @@ import * as XLSX from "xlsx";
 import type { Course, Exam, GradeRow, GradeSheet, Institution, ProgramOutcome, PukoEntry } from "@/lib/types";
 import { scaleLabel, suggestPuko, type Analysis } from "@/lib/medekMath";
 import { bloomLabel, clamp, formatTrDate, round, safeFileName, uid } from "@/lib/utils";
-import { buildDocument, infoTable, letterhead, para, PORTRAIT_WIDTH, saveDocx, sectionTitle, signatureTable, simpleTable, type Block } from "./docxCommon";
+import { buildDocument, infoTable, letterhead, para, PORTRAIT_WIDTH, saveDocx, saveWorkbook, sectionTitle, signatureTable, simpleTable, type Block } from "./docxCommon";
 
 export interface PukoCtx {
   inst: Institution;
@@ -144,7 +144,7 @@ export async function exportPukoDocx(ctx: PukoCtx) {
 // Not Excel şablonu
 // ---------------------------------------------------------------------------
 
-export function downloadGradeTemplate(exam: Exam, course: Course, rows: { no: string; name: string; scores?: Record<string, number | null> }[]) {
+export function downloadGradeTemplate(exam: Exam, course: Course, rows: { no: string; name: string; scores?: Record<string, number | null> }[], fileTitle = "Not_Sablonu") {
   const header = ["Öğrenci No", "Adı Soyadı", ...exam.questions.map((q, i) => `S${i + 1} (${q.points})`), "Toplam"];
   const maxRow = ["MAKS. PUAN", "", ...exam.questions.map((q) => q.points), exam.questions.reduce((s, q) => s + q.points, 0)];
   const body = rows.map((r, ri) => {
@@ -167,7 +167,7 @@ export function downloadGradeTemplate(exam: Exam, course: Course, rows: { no: st
     ...exam.questions.map((q, i) => [`S${i + 1}`, `${q.points} puan · ${q.outcomeIds.map((id) => course.outcomes.find((o) => o.id === id)?.code).join(", ")} · ${bloomLabel(q.bloom)}`]),
   ]);
   XLSX.utils.book_append_sheet(wb, info, "Soru Bilgisi");
-  XLSX.writeFile(wb, `${safeFileName(`${course.code}_${exam.title}_Not_Sablonu`)}.xlsx`);
+  saveWorkbook(wb, `${safeFileName(`${course.code}_${exam.title}_${fileTitle}`)}.xlsx`);
 }
 
 export async function readGradeFile(file: File, exam: Exam): Promise<GradeRow[]> {

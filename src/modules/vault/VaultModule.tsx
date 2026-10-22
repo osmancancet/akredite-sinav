@@ -32,9 +32,9 @@ import { navigateTo } from "@/hooks/useHashRoute";
 import { KDF_ITERATIONS, listEncryptedRecords } from "@/lib/cryptoVault";
 import { CryptoLattice } from "@/components/three/CryptoLattice";
 import { useShellUi } from "@/components/shell/shellStore";
+import { useStoragePersist } from "@/hooks/useStoragePersist";
 import { uid } from "@/lib/utils";
 import { UniversityPicker } from "./UniversityPicker";
-import { CourseImportDialog } from "./CourseImportDialog";
 import { exportCatalogXlsx } from "@/lib/courseImport";
 
 export function VaultModule() {
@@ -265,6 +265,7 @@ function SecurityCard() {
   const [pw2, setPw2] = React.useState("");
   const [busy, setBusy] = React.useState(false);
 
+  const storage = useStoragePersist();
   const strength = Math.min(4, [/.{10,}/, /[A-ZÇĞİÖŞÜ]/, /[0-9]/, /[^A-Za-z0-9ÇĞİÖŞÜçğıöşü]/].filter((r) => r.test(pw)).length);
 
   const save = async () => {
@@ -298,6 +299,15 @@ function SecurityCard() {
             ? "Kasanız master parolanızdan türetilen anahtarla şifreli. Anahtar yalnızca bu oturumun belleğinde yaşar; kilitlediğinizde silinir."
             : "Kasanız, tarayıcıda üretilen ve dışa aktarılamayan (non-extractable) bir AES-256 cihaz anahtarıyla şifreli. Ek koruma için master parola belirleyebilirsiniz."}
         </p>
+        <div className="flex flex-wrap items-center gap-2 rounded-lg bg-zinc-50 px-3 py-2 text-xs text-zinc-600">
+          <span className={storage.persisted ? "h-1.5 w-1.5 rounded-full bg-emerald-500" : "h-1.5 w-1.5 rounded-full bg-amber-500"} />
+          {storage.persisted === null
+            ? "Kalıcı depolama durumu sorgulanıyor…"
+            : storage.persisted
+              ? "Kalıcı depolama izni verildi: tarayıcı kasayı kendiliğinden silmez."
+              : "Tarayıcı kalıcı depolama iznini vermedi: düzenli .akredite yedeği alın."}
+          {storage.usage !== null && <span className="ml-auto font-mono text-[11px] text-zinc-400">{(storage.usage / 1024 / 1024).toFixed(1)} MB kullanılıyor</span>}
+        </div>
         <div className="flex flex-wrap gap-2">
           <Button size="sm" onClick={() => setOpen(true)}>
             <KeyRound className="h-3.5 w-3.5" /> {mode === "password" ? "Master Parolayı Değiştir" : "Master Parola Belirle"}
@@ -388,7 +398,7 @@ function ProgramOutcomesCard() {
 function CoursesCard() {
   const data = useData();
   const update = useVault((s) => s.update);
-  const [importOpen, setImportOpen] = React.useState(false);
+  const setImportOpen = useShellUi((s) => s.setCourseImport);
   const setCourse = (id: string, patch: Partial<Course>) => update("courses", (prev) => prev.map((c) => (c.id === id ? { ...c, ...patch } : c)));
 
   const addCourse = () => {
@@ -431,7 +441,7 @@ function CoursesCard() {
           </>
         }
       />
-      <CourseImportDialog open={importOpen} onClose={() => setImportOpen(false)} />
+
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
           <thead className="bg-zinc-50 text-left text-xs text-zinc-500">

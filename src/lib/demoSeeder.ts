@@ -397,8 +397,17 @@ export function createDemoVault(): VaultData {
         updatedAt: now,
       },
     },
+    questionBank: exam.questions.map((q) => ({
+      id: `bank_${q.id}`,
+      courseId: VTYS_ID,
+      question: structuredClone(q),
+      savedAt: now,
+      usedCount: 1,
+      lastUsedAt: now,
+      sourceExamTitle: exam.title,
+    })),
     ai: { ...DEFAULT_AI_SETTINGS, keys: { ...DEFAULT_AI_SETTINGS.keys }, models: { ...DEFAULT_AI_SETTINGS.models } },
-    ui: { activeExamId: exam.id, activeRubricId: projectRubric.id, activeCourseId: VTYS_ID },
+    ui: { activeExamId: exam.id, activeRubricId: projectRubric.id, activeCourseId: VTYS_ID, onboarded: false, firstUseAt: now },
   };
 }
 
@@ -417,7 +426,8 @@ export function createEmptyVault(): VaultData {
     seating: {},
     rubrics: [],
     grades: {},
+    questionBank: [],
     ai: { ...DEFAULT_AI_SETTINGS, keys: { ...DEFAULT_AI_SETTINGS.keys }, models: { ...DEFAULT_AI_SETTINGS.models } },
-    ui: { activeExamId: null, activeRubricId: null, activeCourseId: null },
+    ui: { activeExamId: null, activeRubricId: null, activeCourseId: null, onboarded: true, firstUseAt: new Date().toISOString() },
   };
 }

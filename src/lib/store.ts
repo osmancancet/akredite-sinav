@@ -48,6 +48,8 @@ function normalize(loaded: Partial<VaultData>): VaultData {
   const merged = { ...base, ...loaded } as VaultData;
   merged.ai = { ...base.ai, ...(loaded.ai ?? {}), keys: { ...base.ai.keys, ...(loaded.ai?.keys ?? {}) }, models: { ...base.ai.models, ...(loaded.ai?.models ?? {}) } };
   merged.ui = { ...base.ui, ...(loaded.ui ?? {}) };
+  if (loaded.ui && loaded.ui.onboarded === undefined) merged.ui.onboarded = true;
+  merged.questionBank = loaded.questionBank ?? [];
   merged.institution = { ...base.institution, ...(loaded.institution ?? {}) };
   return merged;
 }
@@ -164,16 +166,22 @@ export const useVault = create<VaultState>((set, get) => {
     },
 
     loadDemo: async () => {
-      const prevAi = get().data?.ai;
+      const prev = get().data;
       const demo = createDemoVault();
-      if (prevAi) demo.ai = prevAi; // kullanıcının AI anahtarlarını koru
+      if (prev) {
+        demo.ai = prev.ai; // kullanıcının AI anahtarlarını koru
+        demo.ui = { ...demo.ui, onboarded: true, firstUseAt: prev.ui.firstUseAt ?? demo.ui.firstUseAt, lastBackupAt: prev.ui.lastBackupAt };
+      }
       await get().replaceAll(demo);
     },
 
     clearAll: async () => {
-      const prevAi = get().data?.ai;
+      const prev = get().data;
       const empty = createEmptyVault();
-      if (prevAi) empty.ai = prevAi;
+      if (prev) {
+        empty.ai = prev.ai;
+        empty.ui = { ...empty.ui, firstUseAt: prev.ui.firstUseAt ?? empty.ui.firstUseAt, lastBackupAt: prev.ui.lastBackupAt };
+      }
       await get().replaceAll(empty);
     },
 

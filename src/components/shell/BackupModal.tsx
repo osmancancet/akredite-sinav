@@ -42,6 +42,7 @@ export function BackupModal({ mode, onClose }: { mode: false | "export" | "impor
       if (!data) return;
       const blob = await exportAkredite(data, pw);
       downloadBlob(blob, `AkrediteSinav_Yedek_${todayIso()}.akredite`);
+      useVault.getState().update("ui", (u) => ({ ...u, lastBackupAt: new Date().toISOString() }));
       toast.success(".akredite yedeği indirildi", "Paket PBKDF2 + AES-256-GCM ile şifrelendi.");
       onClose();
     } catch (e) {
@@ -62,7 +63,7 @@ export function BackupModal({ mode, onClose }: { mode: false | "export" | "impor
         confirmLabel: "Geri Yükle",
       });
       if (!ok) return;
-      await replaceAll(data);
+      await replaceAll({ ...data, ui: { ...data.ui, onboarded: true, lastBackupAt: new Date().toISOString() } });
       toast.success("Yedek başarıyla geri yüklendi");
       onClose();
     } catch (e) {

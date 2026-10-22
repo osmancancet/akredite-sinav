@@ -4,7 +4,7 @@ import * as React from "react";
 import { Building2, Check, ImageOff, Search } from "lucide-react";
 import { UNIVERSITIES, type UniversityEntry } from "@/lib/universities";
 import { useData, useVault } from "@/lib/store";
-import { cn } from "@/lib/utils";
+import { cn, foldTr } from "@/lib/utils";
 import { Dialog } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/form";
@@ -12,10 +12,10 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs } from "@/components/ui/tabs";
 import { toast } from "@/components/ui/toast";
 
-const fold = (s: string) => s.toLocaleLowerCase("tr-TR").normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/ı/g, "i");
+const fold = foldTr;
 
 /** /logos altındaki yerel logo dosyasını kasaya yazılacak data URL'e çevirir (aynı köken, harici istek yok). */
-async function logoToDataUrl(file: string): Promise<string> {
+export async function logoToDataUrl(file: string): Promise<string> {
   const res = await fetch(`/logos/${file}`);
   if (!res.ok) throw new Error(`Logo okunamadı (${res.status})`);
   const blob = await res.blob();

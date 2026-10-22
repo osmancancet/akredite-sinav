@@ -16,6 +16,7 @@ import {
   para,
   PORTRAIT_WIDTH,
   saveDocx,
+  saveWorkbook,
   signatureTable,
   simpleTable,
   spacer,
@@ -262,7 +263,7 @@ export function downloadStudentTemplate() {
   ws["!cols"] = [{ wch: 14 }, { wch: 18 }, { wch: 18 }];
   const wb = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb, ws, "OBS Listesi");
-  XLSX.writeFile(wb, "OBS_Ogrenci_Listesi_Sablonu.xlsx");
+  saveWorkbook(wb, "OBS_Ogrenci_Listesi_Sablonu.xlsx");
 }
 
 export async function readStudentFile(file: File): Promise<unknown[][]> {

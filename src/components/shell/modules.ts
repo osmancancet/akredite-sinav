@@ -1,5 +1,6 @@
 import {
   CalendarClock,
+  Compass,
   ClipboardList,
   FileText,
   LayoutGrid,
@@ -9,11 +10,11 @@ import {
   type LucideIcon,
 } from "lucide-react";
 
-export type ModuleId = "kasa" | "sinav" | "program" | "oturma" | "rubrik" | "medek" | "ai";
+export type ModuleId = "genel" | "kasa" | "sinav" | "program" | "oturma" | "rubrik" | "medek" | "ai";
 
-export type ModuleGroup = "Hazırlık" | "Operasyon" | "Kalite" | "Sistem";
+export type ModuleGroup = "Genel" | "Hazırlık" | "Operasyon" | "Kalite" | "Sistem";
 
-export const MODULE_GROUPS: ModuleGroup[] = ["Hazırlık", "Operasyon", "Kalite", "Sistem"];
+export const MODULE_GROUPS: ModuleGroup[] = ["Genel", "Hazırlık", "Operasyon", "Kalite", "Sistem"];
 
 export const MODULES: {
   id: ModuleId;
@@ -24,6 +25,15 @@ export const MODULES: {
   group: ModuleGroup;
   icon: LucideIcon;
 }[] = [
+  {
+    id: "genel",
+    no: 0,
+    label: "Genel Bakış",
+    short: "Genel bakış",
+    description: "Dönem iş akışınız, yaklaşan sınavlar, akreditasyon durumu ve tek tık eylemler.",
+    group: "Genel",
+    icon: Compass,
+  },
   {
     id: "sinav",
     no: 2,

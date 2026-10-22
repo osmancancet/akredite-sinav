@@ -22,6 +22,7 @@ import {
   type ISectionOptions,
 } from "docx";
 import { saveAs } from "file-saver";
+import * as XLSX from "xlsx";
 import type { Institution } from "@/lib/types";
 import { trUpper } from "@/lib/utils";
 
@@ -317,9 +318,44 @@ export function buildDocument(title: string, sections: SectionSpec[]): Document 
   });
 }
 
+// ---------------------------------------------------------------------------
+// Çıktı toplayıcı: aktifken belgeler indirilmek yerine bellekte toplanır
+// (tek tık Kanıt Klasörü ZIP'i için). Toplayıcı yokken normal indirme yapılır.
+// ---------------------------------------------------------------------------
+
+export interface CollectedFile {
+  fileName: string;
+  blob: Blob;
+}
+
+let collector: CollectedFile[] | null = null;
+
+export async function collectOutputs(fn: () => Promise<void> | void): Promise<CollectedFile[]> {
+  const prev = collector;
+  const bucket: CollectedFile[] = [];
+  collector = bucket;
+  try {
+    await fn();
+    return bucket;
+  } finally {
+    collector = prev;
+  }
+}
+
 export async function saveDocx(doc: Document, fileName: string): Promise<void> {
   const blob = await Packer.toBlob(doc);
-  saveAs(blob, fileName.endsWith(".docx") ? fileName : `${fileName}.docx`);
+  const name = fileName.endsWith(".docx") ? fileName : `${fileName}.docx`;
+  if (collector) collector.push({ fileName: name, blob });
+  else saveAs(blob, name);
+}
+
+export function saveWorkbook(wb: XLSX.WorkBook, fileName: string): void {
+  if (collector) {
+    const data = XLSX.write(wb, { bookType: "xlsx", type: "array" }) as ArrayBuffer;
+    collector.push({ fileName, blob: new Blob([data], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" }) });
+  } else {
+    XLSX.writeFile(wb, fileName);
+  }
 }
 
 export function institutionLine(inst: Institution): string {

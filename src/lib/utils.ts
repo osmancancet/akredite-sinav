@@ -192,3 +192,8 @@ export function docNumberPrefix(department: string): string {
     .join("");
   return letters || "BLM";
 }
+
+/** Türkçe duyarlı arama anahtarı: küçük harf, aksan yok, ı → i */
+export function foldTr(s: string): string {
+  return s.toLocaleLowerCase("tr-TR").normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/ı/g, "i");
+}

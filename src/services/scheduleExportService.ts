@@ -14,6 +14,7 @@ import {
   para,
   PORTRAIT_WIDTH,
   saveDocx,
+  saveWorkbook,
   sectionTitle,
   signatureTable,
   simpleTable,
@@ -306,7 +307,7 @@ export function exportScheduleXlsx(ctx: ScheduleCtx) {
     ),
     "Gözetmenler",
   );
-  XLSX.writeFile(wb, `${safeFileName(`${schedule.settings.periodName}_Sinav_Programi`)}.xlsx`);
+  saveWorkbook(wb, `${safeFileName(`${schedule.settings.periodName}_Sinav_Programi`)}.xlsx`);
 }
 
 export interface ImportedTables {

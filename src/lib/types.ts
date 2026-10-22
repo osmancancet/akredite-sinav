@@ -260,12 +260,30 @@ export interface AiSettings {
   consentAccepted: boolean;
 }
 
+// ---------- Soru Bankası ----------
+
+export interface BankQuestion {
+  id: string;
+  courseId: string;
+  question: Question;
+  savedAt: string;
+  usedCount: number;
+  lastUsedAt?: string;
+  sourceExamTitle?: string;
+}
+
 // ---------- Kasa ----------
 
 export interface UiState {
   activeExamId: string | null;
   activeRubricId: string | null;
   activeCourseId: string | null;
+  /** İlk kurulum sihirbazı tamamlandı mı */
+  onboarded: boolean;
+  /** Kasanın ilk kullanım zamanı (yedek hatırlatıcısı için) */
+  firstUseAt?: string;
+  lastBackupAt?: string;
+  backupReminderSnoozedUntil?: string;
 }
 
 export interface VaultData {
@@ -280,6 +298,7 @@ export interface VaultData {
   seating: Record<string, SeatingPlan>; // examId -> plan
   rubrics: Rubric[];
   grades: Record<string, GradeSheet>; // examId -> not çizelgesi
+  questionBank: BankQuestion[];
   ai: AiSettings;
   ui: UiState;
 }
@@ -298,6 +317,7 @@ export const COLLECTION_KEYS: CollectionKey[] = [
   "seating",
   "rubrics",
   "grades",
+  "questionBank",
   "ai",
   "ui",
 ];
