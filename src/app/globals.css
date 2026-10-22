@@ -1,0 +1,231 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+  --font-doc: "Times New Roman", Times, "Liberation Serif", serif;
+}
+
+:root {
+  color-scheme: light;
+}
+
+html,
+body {
+  background: #f1f5f9;
+  color: #0f172a;
+}
+
+body {
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: #c7d2fe;
+}
+
+.scrollbar-thin::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 8px;
+}
+
+/* ------------------------------------------------------------------ */
+/* Resmi belge (A4) tipografisi — ekran önizlemesi ve baskı ortak       */
+/* ------------------------------------------------------------------ */
+
+.a4-page {
+  width: 210mm;
+  min-height: 297mm;
+  padding: 14mm 15mm;
+  margin: 0 auto 10mm;
+  background: #fff;
+  color: #000;
+  font-family: var(--font-doc);
+  font-size: 11pt;
+  line-height: 1.38;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 0.12), 0 8px 24px rgb(0 0 0 / 0.08);
+  box-sizing: border-box;
+  position: relative;
+}
+.a4-page.a4-landscape {
+  width: 297mm;
+  min-height: 210mm;
+}
+
+.doc-header {
+  border-bottom: 1.5px solid #000;
+  padding-bottom: 6px;
+  margin-bottom: 10px;
+}
+.doc-header-grid {
+  display: grid;
+  grid-template-columns: 24mm 1fr 34mm;
+  align-items: center;
+  gap: 6px;
+}
+.doc-logo img {
+  max-width: 22mm;
+  max-height: 22mm;
+  object-fit: contain;
+}
+.doc-logo-placeholder {
+  width: 20mm;
+  height: 20mm;
+  border-radius: 9999px;
+  border: 1.5px solid #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 18pt;
+}
+.doc-header-text {
+  text-align: center;
+  font-size: 10.5pt;
+  line-height: 1.3;
+}
+.doc-header-right {
+  font-size: 9pt;
+  text-align: right;
+}
+.doc-title {
+  text-align: center;
+  font-weight: 700;
+  font-size: 12.5pt;
+  margin-top: 8px;
+  text-transform: uppercase;
+}
+.doc-subtitle {
+  text-align: center;
+  font-size: 10.5pt;
+  margin-top: 2px;
+}
+
+.doc-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 10pt;
+}
+.doc-table th,
+.doc-table td {
+  border: 0.75pt solid #000;
+  padding: 3px 5px;
+  vertical-align: top;
+}
+.doc-table th {
+  background: #e5e7eb;
+  font-weight: 700;
+  text-align: center;
+}
+.doc-table.compact th,
+.doc-table.compact td {
+  padding: 1.5px 4px;
+  font-size: 9.5pt;
+}
+.doc-table.tall td {
+  height: 7.4mm;
+  vertical-align: middle;
+}
+
+.doc-section-title {
+  font-weight: 700;
+  font-size: 11pt;
+  margin: 10px 0 4px;
+  text-transform: uppercase;
+}
+
+.doc-signatures {
+  display: grid;
+  gap: 12px;
+  margin-top: 18px;
+  text-align: center;
+  font-size: 10pt;
+}
+.doc-signature-line {
+  margin-top: 26px;
+  border-top: 0.75pt dotted #000;
+  padding-top: 2px;
+  font-size: 9pt;
+  color: #333;
+}
+
+.doc-code {
+  font-family: var(--font-mono);
+  font-size: 9pt;
+  background: #f6f6f6;
+  border: 0.75pt solid #999;
+  padding: 5px 7px;
+  white-space: pre-wrap;
+  line-height: 1.35;
+}
+
+.doc-answer-line {
+  height: 7.2mm;
+  border-bottom: 0.75pt dotted #6b7280;
+}
+
+.avoid-break {
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+
+.page-break {
+  break-after: page;
+  page-break-after: always;
+}
+
+/* ------------------------------------------------------------------ */
+/* Yazdırma motoru                                                     */
+/* ------------------------------------------------------------------ */
+
+@media screen {
+  #print-root {
+    display: none;
+  }
+}
+
+@media print {
+  html,
+  body {
+    background: #fff !important;
+  }
+  body.is-printing > *:not(#print-root) {
+    display: none !important;
+  }
+  #print-root {
+    display: block;
+  }
+  .a4-page {
+    width: auto;
+    min-height: 0;
+    height: auto;
+    margin: 0;
+    padding: 0;
+    box-shadow: none;
+    break-after: page;
+    page-break-after: always;
+  }
+  .a4-page.a4-landscape {
+    width: auto;
+  }
+  .a4-page:last-child {
+    break-after: auto;
+    page-break-after: auto;
+  }
+  .doc-table th {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  .doc-code {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  .no-print {
+    display: none !important;
+  }
+}

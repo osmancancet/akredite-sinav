@@ -1,0 +1,198 @@
+// Modül 6 Çıktıları: MEDEK / YÖKAK Dönem Sonu Ders Değerlendirme ve PUKÖ Raporu (.docx),
+// soru bazlı not Excel şablonu indirme/yükleme.
+
+import * as XLSX from "xlsx";
+import type { Course, Exam, GradeRow, GradeSheet, Institution, ProgramOutcome, PukoEntry } from "@/lib/types";
+import { scaleLabel, suggestPuko, type Analysis } from "@/lib/medekMath";
+import { bloomLabel, clamp, formatTrDate, round, safeFileName, uid } from "@/lib/utils";
+import { buildDocument, infoTable, letterhead, para, PORTRAIT_WIDTH, saveDocx, sectionTitle, signatureTable, simpleTable, type Block } from "./docxCommon";
+
+export interface PukoCtx {
+  inst: Institution;
+  course: Course;
+  exam: Exam;
+  programOutcomes: ProgramOutcome[];
+  sheet: GradeSheet;
+  analysis: Analysis;
+  threshold: number;
+}
+
+export function resolvePuko(ctx: PukoCtx): PukoEntry[] {
+  return ctx.analysis.outcomeStats
+    .filter((o) => o.flagged)
+    .map((o) => ctx.sheet.puko[o.outcomeId] ?? suggestPuko(o, ctx.exam, ctx.analysis, ctx.threshold));
+}
+
+const pct = (v: number | null) => (v === null ? "—" : `%${round(v, 1)}`);
+const s5 = (v: number | null) => (v === null ? "—" : round(v, 2).toFixed(2));
+
+export function pukoBlocks(ctx: PukoCtx): Block[] {
+  const { inst, course, exam, analysis, threshold, programOutcomes } = ctx;
+  const st = analysis.stats;
+  const blocks: Block[] = [
+    ...letterhead(inst, "Dönem Sonu Ders Değerlendirme ve PUKÖ Raporu", `${inst.accreditationBody} / YÖKAK Sürekli İyileştirme Kanıtı — ${inst.academicYear} ${inst.semester} Yarıyılı`),
+    sectionTitle("1. Ders ve Ölçme Aracı Bilgileri"),
+    infoTable([
+      ["Ders Kodu / Adı", `${course.code} — ${course.name}`],
+      ["Öğretim Elemanı", course.instructor],
+      ["Sınıf / Kredi / AKTS", `${course.classYear}. sınıf · ${course.credit} / ${course.ects}`],
+      ["Ölçme Aracı", `${exam.title} (${exam.examType}) — ${formatTrDate(exam.date)}`],
+      ["Değerlendirilen Öğrenci", String(st.n)],
+      ["Hedef Eşik Değer", `%${threshold}`],
+    ]),
+    sectionTitle("2. Sınav İstatistikleri"),
+    simpleTable(
+      ["Ortalama", "Medyan", "Std. Sapma", "En Yüksek", "En Düşük", "Başarı Oranı (≥%50)"],
+      [[round(st.mean, 2), round(st.median, 2), round(st.sd, 2), round(st.max, 1), round(st.min, 1), `%${round(st.passRate, 1)}`]],
+      [16, 16, 16, 16, 16, 20],
+      PORTRAIT_WIDTH,
+      { alignCols: ["center", "center", "center", "center", "center", "center"] },
+    ),
+    sectionTitle("3. Soru Bazlı Başarı Analizi"),
+    simpleTable(
+      ["Soru", "Bloom", "ÖÇ", "Maks. Puan", "Ortalama", "Başarı %"],
+      analysis.questionStats.map((q) => [
+        q.label,
+        bloomLabel(q.bloom),
+        q.outcomeIds.map((id) => course.outcomes.find((o) => o.id === id)?.code).filter(Boolean).join(", "),
+        q.maxPoints,
+        round(q.avg, 2),
+        `%${round(q.pct, 1)}`,
+      ]),
+      [10, 18, 22, 16, 16, 18],
+      PORTRAIT_WIDTH,
+      { alignCols: ["center", "left", "left", "center", "center", "center"] },
+    ),
+    sectionTitle("4. Öğrenme Çıktısı (ÖÇ) Gerçekleşme Düzeyleri"),
+    para("Başarı(ÖÇ_k)% = Σ(i∈Q_k) X_i / Σ(i∈Q_k) P_i × 100  —  X_i: i. sorunun sınıf ortalaması, P_i: maksimum puanı.", { size: 9, italics: true }),
+    simpleTable(
+      ["ÖÇ", "Öğrenme Çıktısı", "Sorular", "Σ Ort / Σ Maks", "Başarı %", "5'lik", "Durum"],
+      analysis.outcomeStats.map((o) => [
+        o.code,
+        o.text,
+        o.questionLabels.join(", ") || "—",
+        `${round(o.sumAvg, 1)} / ${o.sumMax}`,
+        pct(o.pct),
+        s5(o.scale5),
+        o.pct === null ? "Ölçülmedi" : o.flagged ? "İYİLEŞTİRME GEREKLİ" : scaleLabel(o.pct),
+      ]),
+      [7, 37, 11, 13, 10, 8, 14],
+      PORTRAIT_WIDTH,
+      { size: 9, alignCols: ["center", "left", "center", "center", "center", "center", "center"] },
+    ),
+    sectionTitle("5. ÖÇ – PÇ İlişki Matrisi (0: İlişkisiz – 5: Çok Yüksek Katkı)"),
+    simpleTable(
+      ["ÖÇ", ...programOutcomes.map((p) => p.code.replace("PÇ-", "P"))],
+      course.outcomes.map((o) => [o.code, ...programOutcomes.map((_, j) => course.ocPcMatrix[o.id]?.[j] ?? 0)]),
+      [10, ...programOutcomes.map(() => 90 / Math.max(1, programOutcomes.length))],
+      PORTRAIT_WIDTH,
+      { size: 8.5, alignCols: ["center", ...programOutcomes.map(() => "center" as const)] },
+    ),
+    sectionTitle("6. Program Çıktısı (PÇ) Sağlanma Oranları"),
+    para("Başarı(PÇ_j)% = Σ_k Başarı(ÖÇ_k)% × W_kj / Σ_k W_kj", { size: 9, italics: true }),
+    simpleTable(
+      ["PÇ", "Program Çıktısı", "Σ Ağırlık", "Sağlanma %", "5'lik", "Durum"],
+      analysis.poStats.map((p) => [p.code, p.text, p.weightSum, pct(p.pct), s5(p.scale5), p.pct === null ? "Katkı yok" : p.flagged ? "Eşik altı" : scaleLabel(p.pct)]),
+      [8, 50, 10, 12, 8, 12],
+      PORTRAIT_WIDTH,
+      { size: 9, alignCols: ["center", "left", "center", "center", "center", "center"] },
+    ),
+  ];
+
+  const entries = resolvePuko(ctx);
+  blocks.push(sectionTitle(`7. Sürekli İyileştirme (PUKÖ) Eylem Planı — Eşik: %${threshold}`));
+  if (!entries.length) {
+    blocks.push(para(`Tüm öğrenme çıktıları hedef eşik değerin (%${threshold}) üzerinde gerçekleşmiştir. Mevcut öğretim stratejilerinin sürdürülmesi önerilmektedir.`, { size: 10 }));
+  }
+  entries.forEach((e) => {
+    const o = analysis.outcomeStats.find((x) => x.outcomeId === e.outcomeId)!;
+    blocks.push(para(`${o.code} — ${o.text} (Gerçekleşme: ${pct(o.pct)})`, { bold: true, size: 10, spacingBefore: 120, keepNext: true }));
+    blocks.push(
+      simpleTable(
+        ["Aşama", "Açıklama"],
+        [
+          ["Kök Neden Analizi", e.rootCause],
+          ["P — Planla", e.plan],
+          ["U — Uygula", e.doAction],
+          ["K — Kontrol Et", e.check],
+          ["Ö — Önlem Al", e.act],
+        ],
+        [20, 80],
+        PORTRAIT_WIDTH,
+        { size: 9.5 },
+      ),
+    );
+  });
+  blocks.push(sectionTitle("8. Genel Değerlendirme"));
+  blocks.push(para(ctx.sheet.generalEvaluation || "—", { size: 10, align: "justify" }));
+  blocks.push(
+    signatureTable([
+      { title: "Ders Sorumlusu", name: course.instructor },
+      { title: inst.headTitle || "Bölüm Başkanı", name: inst.headOfDepartment },
+      { title: "Bölüm Kalite Komisyonu", name: "" },
+    ]),
+  );
+  return blocks;
+}
+
+export async function exportPukoDocx(ctx: PukoCtx) {
+  const doc = buildDocument("PUKÖ Raporu", [{ children: pukoBlocks(ctx), footer: `${ctx.course.code} — ${ctx.inst.accreditationBody} PUKÖ Raporu` }]);
+  await saveDocx(doc, `${safeFileName(`${ctx.course.code}_${ctx.exam.title}_PUKO_Raporu`)}.docx`);
+}
+
+// ---------------------------------------------------------------------------
+// Not Excel şablonu
+// ---------------------------------------------------------------------------
+
+export function downloadGradeTemplate(exam: Exam, course: Course, rows: { no: string; name: string; scores?: Record<string, number | null> }[]) {
+  const header = ["Öğrenci No", "Adı Soyadı", ...exam.questions.map((q, i) => `S${i + 1} (${q.points})`), "Toplam"];
+  const maxRow = ["MAKS. PUAN", "", ...exam.questions.map((q) => q.points), exam.questions.reduce((s, q) => s + q.points, 0)];
+  const body = rows.map((r, ri) => {
+    const rowNo = ri + 3;
+    const lastCol = XLSX.utils.encode_col(1 + exam.questions.length);
+    return [
+      r.no,
+      r.name,
+      ...exam.questions.map((q) => r.scores?.[q.id] ?? ""),
+      exam.questions.length ? { f: `SUM(C${rowNo}:${lastCol}${rowNo})` } : 0,
+    ];
+  });
+  const ws = XLSX.utils.aoa_to_sheet([header, maxRow, ...body]);
+  ws["!cols"] = [{ wch: 14 }, { wch: 26 }, ...exam.questions.map(() => ({ wch: 9 })), { wch: 9 }];
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, "Notlar");
+  const info = XLSX.utils.aoa_to_sheet([
+    ["Ders", `${course.code} ${course.name}`],
+    ["Sınav", exam.title],
+    ...exam.questions.map((q, i) => [`S${i + 1}`, `${q.points} puan · ${q.outcomeIds.map((id) => course.outcomes.find((o) => o.id === id)?.code).join(", ")} · ${bloomLabel(q.bloom)}`]),
+  ]);
+  XLSX.utils.book_append_sheet(wb, info, "Soru Bilgisi");
+  XLSX.writeFile(wb, `${safeFileName(`${course.code}_${exam.title}_Not_Sablonu`)}.xlsx`);
+}
+
+export async function readGradeFile(file: File, exam: Exam): Promise<GradeRow[]> {
+  const wb = XLSX.read(await file.arrayBuffer(), { type: "array" });
+  const ws = wb.Sheets["Notlar"] ?? wb.Sheets[wb.SheetNames[0]];
+  const rows = XLSX.utils.sheet_to_json<unknown[]>(ws, { header: 1, defval: "", raw: true });
+  const headerIdx = rows.findIndex((r) => r.some((c) => /öğrenci no|ogrenci no|numara/i.test(String(c))));
+  if (headerIdx < 0) throw new Error('"Öğrenci No" başlık satırı bulunamadı. Lütfen şablonu kullanın.');
+  const header = rows[headerIdx].map((c) => String(c));
+  const noCol = header.findIndex((h) => /öğrenci no|ogrenci no|numara/i.test(h));
+  const nameCol = header.findIndex((h) => /ad/i.test(h) && !/no/i.test(h));
+  const qCols = exam.questions.map((_, i) => header.findIndex((h) => new RegExp(`^S${i + 1}(\\b|\\s|\\()`, "i").test(h.trim())));
+  const out: GradeRow[] = [];
+  rows.slice(headerIdx + 1).forEach((r) => {
+    const no = String(r[noCol] ?? "").trim();
+    if (!/\d{3,}/.test(no)) return;
+    const scores: Record<string, number | null> = {};
+    exam.questions.forEach((q, i) => {
+      const c = qCols[i];
+      const raw = c >= 0 ? r[c] : "";
+      const v = raw === "" || raw === null ? null : Number(String(raw).replace(",", "."));
+      scores[q.id] = v === null || Number.isNaN(v) ? null : clamp(v, 0, q.points);
+    });
+    out.push({ id: uid("gr"), studentNo: no, fullName: nameCol >= 0 ? String(r[nameCol] ?? "").trim() : "", scores });
+  });
+  if (!out.length) throw new Error("Dosyada not satırı bulunamadı.");
+  return out;
+}
