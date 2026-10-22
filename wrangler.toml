@@ -1,0 +1,10 @@
+# Cloudflare Workers — yalnızca statik varlık (sunucu kodu yok)
+# Next.js "output: export" çıktısı (out/) doğrudan servis edilir; out/_headers
+# dosyası (scripts/gen-headers.mjs) güvenlik ve önbellek başlıklarını uygular.
+name = "akredite-sinav"
+compatibility_date = "2026-10-22"
+
+[assets]
+directory = "./out"
+not_found_handling = "404-page"
+html_handling = "auto-trailing-slash"

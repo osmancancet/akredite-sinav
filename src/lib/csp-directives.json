@@ -1,0 +1,21 @@
+{
+  "aiConnect": [
+    "https://generativelanguage.googleapis.com",
+    "https://api.openai.com",
+    "https://api.anthropic.com",
+    "http://localhost:11434",
+    "http://127.0.0.1:11434"
+  ],
+  "directives": {
+    "default-src": ["'self'"],
+    "script-src": ["'self'", "'unsafe-inline'"],
+    "style-src": ["'self'", "'unsafe-inline'"],
+    "img-src": ["'self'", "data:", "blob:"],
+    "font-src": ["'self'", "data:"],
+    "worker-src": ["'self'"],
+    "manifest-src": ["'self'"],
+    "object-src": ["'none'"],
+    "base-uri": ["'self'"],
+    "form-action": ["'none'"]
+  }
+}
