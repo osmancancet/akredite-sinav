@@ -1,7 +1,18 @@
 import type { Metadata, Viewport } from "next";
+import { GeistSans } from "geist/font/sans";
+import { GeistMono } from "geist/font/mono";
+import { Fraunces } from "next/font/google";
 import "katex/dist/katex.min.css";
 import "./globals.css";
 import { CSP } from "@/lib/csp";
+
+// Fraunces derleme sırasında indirilip _next/static altına gömülür; çalışma anında harici istek yoktur.
+const fraunces = Fraunces({
+  subsets: ["latin", "latin-ext"],
+  variable: "--font-fraunces",
+  display: "swap",
+  axes: ["opsz", "SOFT"],
+});
 
 export const metadata: Metadata = {
   title: "AkrediteSınav — Zero-Knowledge Akademik Sınav & MEDEK Stüdyosu",
@@ -12,12 +23,12 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#312e81",
+  themeColor: "#18181b",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="tr" className="h-full">
+    <html lang="tr" className={`h-full ${GeistSans.variable} ${GeistMono.variable} ${fraunces.variable}`}>
       <head>
         <meta httpEquiv="Content-Security-Policy" content={CSP} />
         <meta name="referrer" content="no-referrer" />

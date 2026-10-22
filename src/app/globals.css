@@ -1,9 +1,37 @@
 @import "tailwindcss";
 
+/* ------------------------------------------------------------------ */
+/* AkrediteSınav tasarım sistemi                                       */
+/* Nötr çinko yüzeyler + tek vurgu rengi (brand: derin camgöbeği).     */
+/* Kırmızı / amber / yeşil yalnızca durum bildirimi için ayrılmıştır.  */
+/* ------------------------------------------------------------------ */
+
 @theme {
-  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
-  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
+  --font-display: var(--font-fraunces), "Iowan Old Style", Georgia, serif;
   --font-doc: "Times New Roman", Times, "Liberation Serif", serif;
+
+  --color-brand-50: oklch(0.977 0.014 178);
+  --color-brand-100: oklch(0.948 0.032 178);
+  --color-brand-200: oklch(0.895 0.06 178);
+  --color-brand-300: oklch(0.82 0.088 178);
+  --color-brand-400: oklch(0.72 0.11 178);
+  --color-brand-500: oklch(0.62 0.115 178);
+  --color-brand-600: oklch(0.53 0.1 178);
+  --color-brand-700: oklch(0.45 0.085 178);
+  --color-brand-800: oklch(0.375 0.068 178);
+  --color-brand-900: oklch(0.31 0.052 178);
+  --color-brand-950: oklch(0.215 0.038 178);
+
+  --color-canvas: oklch(0.984 0.002 95);
+  --color-ink: oklch(0.205 0.006 285);
+
+  --radius-xl: 0.875rem;
+  --radius-2xl: 1.125rem;
+
+  --shadow-card: 0 1px 0 0 rgb(24 24 27 / 0.03), 0 1px 2px -1px rgb(24 24 27 / 0.06);
+  --shadow-pop: 0 12px 32px -12px rgb(24 24 27 / 0.22), 0 2px 6px -2px rgb(24 24 27 / 0.08);
 }
 
 :root {
@@ -12,17 +40,37 @@
 
 html,
 body {
-  background: #f1f5f9;
-  color: #0f172a;
+  background: var(--color-canvas);
+  color: var(--color-ink);
 }
 
 body {
   font-family: var(--font-sans);
+  font-feature-settings: "ss01", "cv11";
   -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
 ::selection {
-  background: #c7d2fe;
+  background: var(--color-brand-200);
+  color: var(--color-brand-950);
+}
+
+@layer base {
+  :focus-visible {
+    outline: 2px solid var(--color-brand-500);
+    outline-offset: 2px;
+  }
+}
+
+.font-display {
+  font-family: var(--font-display);
+  font-optical-sizing: auto;
+  letter-spacing: -0.015em;
+}
+
+.tabular {
+  font-variant-numeric: tabular-nums;
 }
 
 .scrollbar-thin::-webkit-scrollbar {
@@ -30,8 +78,23 @@ body {
   height: 8px;
 }
 .scrollbar-thin::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
+  background: #d4d4d8;
   border-radius: 8px;
+}
+
+/* İnce nokta ızgarası — kahraman alanları için */
+.bg-dotgrid {
+  background-image: radial-gradient(rgb(24 24 27 / 0.08) 1px, transparent 1px);
+  background-size: 18px 18px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
 }
 
 /* ------------------------------------------------------------------ */

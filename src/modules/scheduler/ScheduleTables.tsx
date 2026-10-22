@@ -26,7 +26,7 @@ export function CoursesTable() {
       <CardHeader title="Dersler" description="Programa dahil edilecek dersler, sınıf düzeyi ve öğrenci sayıları (öğrenci sayısı derslik bölmeyi belirler)." />
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
-          <thead className="bg-slate-50 text-left text-xs text-slate-500">
+          <thead className="bg-zinc-50 text-left text-xs text-zinc-500">
             <tr>
               <th className="px-4 py-2">Dahil</th>
               <th className="px-4 py-2">Kod</th>
@@ -39,7 +39,7 @@ export function CoursesTable() {
           </thead>
           <tbody>
             {data.courses.map((c) => (
-              <tr key={c.id} className="border-t border-slate-100">
+              <tr key={c.id} className="border-t border-zinc-100">
                 <td className="px-4 py-1.5">
                   <Checkbox checked={included.has(c.id)} onChange={(v) => toggle(c.id, v)} />
                 </td>
@@ -58,7 +58,7 @@ export function CoursesTable() {
                 <td className="px-4 py-1.5">
                   <Input className="h-8 w-20" type="number" value={c.examDurationMin} onChange={(e) => update("courses", (p) => p.map((x) => (x.id === c.id ? { ...x, examDurationMin: Number(e.target.value) || 0 } : x)))} />
                 </td>
-                <td className="px-4 py-1.5 text-slate-600">{c.instructor}</td>
+                <td className="px-4 py-1.5 text-zinc-600">{c.instructor}</td>
               </tr>
             ))}
           </tbody>
@@ -86,7 +86,7 @@ export function RoomsTable() {
       />
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
-          <thead className="bg-slate-50 text-left text-xs text-slate-500">
+          <thead className="bg-zinc-50 text-left text-xs text-zinc-500">
             <tr>
               <th className="px-4 py-2">Derslik</th>
               <th className="px-4 py-2">Bina</th>
@@ -97,14 +97,14 @@ export function RoomsTable() {
           </thead>
           <tbody>
             {rooms.map((r) => (
-              <tr key={r.id} className="border-t border-slate-100">
+              <tr key={r.id} className="border-t border-zinc-100">
                 <td className="px-4 py-1.5"><Input className="h-8" value={r.name} onChange={(e) => set(r.id, { name: e.target.value })} /></td>
                 <td className="px-4 py-1.5"><Input className="h-8" value={r.building} onChange={(e) => set(r.id, { building: e.target.value })} /></td>
                 <td className="px-4 py-1.5"><Input className="h-8 w-24" type="number" value={r.capacity} onChange={(e) => set(r.id, { capacity: Number(e.target.value) || 0 })} /></td>
                 <td className="px-4 py-1.5"><Input className="h-8 w-20" type="number" min={1} value={r.invigilatorsNeeded} onChange={(e) => set(r.id, { invigilatorsNeeded: Math.max(1, Number(e.target.value) || 1) })} /></td>
                 <td className="px-4 py-1.5">
                   <Button size="icon" variant="ghost" aria-label="Dersliği sil" onClick={() => update("rooms", (p) => p.filter((x) => x.id !== r.id))}>
-                    <Trash2 className="h-4 w-4 text-slate-400" />
+                    <Trash2 className="h-4 w-4 text-zinc-400" />
                   </Button>
                 </td>
               </tr>
@@ -145,7 +145,7 @@ export function InvigilatorsTable() {
         />
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
-            <thead className="bg-slate-50 text-left text-xs text-slate-500">
+            <thead className="bg-zinc-50 text-left text-xs text-zinc-500">
               <tr>
                 <th className="px-3 py-2">Unvan</th>
                 <th className="px-3 py-2">Ad Soyad</th>
@@ -157,7 +157,7 @@ export function InvigilatorsTable() {
             </thead>
             <tbody>
               {data.invigilators.map((i) => (
-                <tr key={i.id} onClick={() => setSelected(i.id)} className={cn("border-t border-slate-100 cursor-pointer", selected === i.id && "bg-indigo-50/60")}>
+                <tr key={i.id} onClick={() => setSelected(i.id)} className={cn("border-t border-zinc-100 cursor-pointer", selected === i.id && "bg-brand-50/60")}>
                   <td className="px-3 py-1.5"><Input className="h-8 w-28" value={i.title} onChange={(e) => set(i.id, { title: e.target.value })} /></td>
                   <td className="px-3 py-1.5"><Input className="h-8 min-w-40" value={i.name} onChange={(e) => set(i.id, { name: e.target.value })} /></td>
                   <td className="px-3 py-1.5"><Input className="h-8 min-w-44" value={i.email} onChange={(e) => set(i.id, { email: e.target.value })} /></td>
@@ -165,7 +165,7 @@ export function InvigilatorsTable() {
                   <td className="px-3 py-1.5"><Badge tone={i.unavailable.length ? "amber" : "emerald"}>{i.unavailable.length} dilim</Badge></td>
                   <td className="px-3 py-1.5">
                     <Button size="icon" variant="ghost" aria-label="Gözetmeni sil" onClick={() => update("invigilators", (p) => p.filter((x) => x.id !== i.id))}>
-                      <Trash2 className="h-4 w-4 text-slate-400" />
+                      <Trash2 className="h-4 w-4 text-zinc-400" />
                     </Button>
                   </td>
                 </tr>
@@ -183,9 +183,9 @@ export function InvigilatorsTable() {
                 <tr>
                   <th className="p-1" />
                   {dates.map((d) => (
-                    <th key={d} className="p-1 font-medium text-slate-600">
+                    <th key={d} className="p-1 font-medium text-zinc-600">
                       {trDayName(d).slice(0, 3)}
-                      <div className="font-normal text-slate-400">{formatTrDate(d).slice(0, 5)}</div>
+                      <div className="font-normal text-zinc-400">{formatTrDate(d).slice(0, 5)}</div>
                     </th>
                   ))}
                 </tr>
@@ -193,7 +193,7 @@ export function InvigilatorsTable() {
               <tbody>
                 {data.schedule.settings.slots.map((s) => (
                   <tr key={s.id}>
-                    <td className="p-1 font-medium text-slate-600">{s.start}</td>
+                    <td className="p-1 font-medium text-zinc-600">{s.start}</td>
                     {dates.map((d, di) => {
                       const k = slotKey(di, s.id);
                       const blocked = inv.unavailable.includes(k);
@@ -216,7 +216,7 @@ export function InvigilatorsTable() {
               </tbody>
             </table>
           ) : (
-            <p className="text-sm text-slate-500">Gözetmen seçin.</p>
+            <p className="text-sm text-zinc-500">Gözetmen seçin.</p>
           )}
         </CardBody>
       </Card>
@@ -264,9 +264,9 @@ export function SettingsPanel() {
         <CardBody className="space-y-2">
           {settings.slots.map((s, i) => (
             <div key={s.id} className="flex items-center gap-2">
-              <span className="w-16 text-xs font-medium text-slate-500">{i + 1}. oturum</span>
+              <span className="w-16 text-xs font-medium text-zinc-500">{i + 1}. oturum</span>
               <Input type="time" className="w-32" value={s.start} onChange={(e) => setSlot(s.id, { start: e.target.value })} />
-              <span className="text-slate-400">–</span>
+              <span className="text-zinc-400">–</span>
               <Input type="time" className="w-32" value={s.end} onChange={(e) => setSlot(s.id, { end: e.target.value })} />
               <Button
                 size="icon"
@@ -280,7 +280,7 @@ export function SettingsPanel() {
                   }))
                 }
               >
-                <Trash2 className="h-4 w-4 text-slate-400" />
+                <Trash2 className="h-4 w-4 text-zinc-400" />
               </Button>
             </div>
           ))}

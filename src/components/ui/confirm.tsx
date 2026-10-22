@@ -45,7 +45,7 @@ export function ConfirmHost() {
         </>
       }
     >
-      <div className="text-sm text-slate-700">{req?.message}</div>
+      <div className="text-sm text-zinc-700">{req?.message}</div>
     </Dialog>
   );
 }

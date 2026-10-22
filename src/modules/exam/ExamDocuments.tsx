@@ -129,7 +129,7 @@ export function BlueprintTable({ course, exam, compact }: { course: Course; exam
   return (
     <table className={compact ? "doc-table compact" : "w-full border-collapse text-xs"}>
       <thead>
-        <tr className={compact ? "" : "bg-slate-100 text-slate-700"}>
+        <tr className={compact ? "" : "bg-zinc-100 text-zinc-700"}>
           <th className={cellCls(compact)}>Soru</th>
           <th className={cellCls(compact)}>Tip</th>
           <th className={cellCls(compact)}>Bloom</th>
@@ -149,13 +149,13 @@ export function BlueprintTable({ course, exam, compact }: { course: Course; exam
             <td className={cellCls(compact)}>{bloomLabel(r.question.bloom)}</td>
             {course.outcomes.map((o) => (
               <td key={o.id} className={cellCls(compact, "text-center tabular-nums")}>
-                {r.cells[o.id] ? round(r.cells[o.id], 2) : compact ? "" : <span className="text-slate-300">—</span>}
+                {r.cells[o.id] ? round(r.cells[o.id], 2) : compact ? "" : <span className="text-zinc-300">—</span>}
               </td>
             ))}
             <td className={cellCls(compact, "text-center font-semibold tabular-nums")}>{r.question.points}</td>
           </tr>
         ))}
-        <tr className={compact ? "" : "bg-slate-50 font-semibold"}>
+        <tr className={compact ? "" : "bg-zinc-50 font-semibold"}>
           <td colSpan={3} className={cellCls(compact, "text-right font-bold")}>ÖÇ Toplam Puan</td>
           {course.outcomes.map((o) => (
             <td key={o.id} className={cellCls(compact, `text-center font-bold tabular-nums ${bp.totals[o.id] === 0 && !compact ? "bg-red-50 text-red-700" : ""}`)}>
@@ -164,7 +164,7 @@ export function BlueprintTable({ course, exam, compact }: { course: Course; exam
           ))}
           <td className={cellCls(compact, "text-center font-bold tabular-nums")}>{bp.totalPoints}</td>
         </tr>
-        <tr className={compact ? "" : "bg-slate-50"}>
+        <tr className={compact ? "" : "bg-zinc-50"}>
           <td colSpan={3} className={cellCls(compact, "text-right font-bold")}>Ağırlık (%)</td>
           {course.outcomes.map((o) => (
             <td key={o.id} className={cellCls(compact, "text-center tabular-nums")}>%{round(bp.percents[o.id] ?? 0, 1)}</td>
@@ -177,7 +177,7 @@ export function BlueprintTable({ course, exam, compact }: { course: Course; exam
 }
 
 function cellCls(compact?: boolean, extra = "") {
-  return compact ? extra : `border border-slate-200 px-2 py-1 ${extra}`;
+  return compact ? extra : `border border-zinc-200 px-2 py-1 ${extra}`;
 }
 
 export function AnswerKeyDocument({ inst, course, exam }: { inst: Institution; course: Course; exam: Exam }) {

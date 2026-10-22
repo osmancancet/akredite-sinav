@@ -423,3 +423,32 @@ JSON şeması: {"outcomes": ["ÖÇ-1 metni", "ÖÇ-2 metni"]}`;
 }
 
 export const AI_SYSTEM_PROMPT = SYSTEM_BASE;
+
+/** Bologna ders sayfası metninden yapılandırılmış ders bilgisi çıkarır (kamuya açık katalog verisi). */
+export async function aiExtractCourse(s: AiSettings, pageText: string): Promise<{
+  code: string;
+  name: string;
+  semesterNo: number;
+  credit: number;
+  ects: number;
+  instructor: string;
+  outcomes: string[];
+}> {
+  const prompt = `Aşağıda bir Türk üniversitesinin Bologna ders bilgi paketi sayfasından kopyalanmış metin var. Ders bilgilerini çıkar.
+Kurallar: Öğrenme çıktılarını metindeki sırayla ve metne sadık kalarak yaz (numara ve "ÖÇ1:" gibi önekleri at). Bulamadığın sayısal alan için 0, metin alanı için boş dize kullan.
+JSON şeması:
+{"code": "BLP201", "name": "ders adı", "semesterNo": 3, "credit": 3, "ects": 5, "instructor": "unvan ad soyad", "outcomes": ["...", "..."]}
+
+METİN:
+${pageText.slice(0, 24000)}`;
+  const raw = await aiJson<{ code?: string; name?: string; semesterNo?: number; credit?: number; ects?: number; instructor?: string; outcomes?: string[] }>(s, prompt);
+  return {
+    code: String(raw.code ?? "").trim(),
+    name: String(raw.name ?? "").trim(),
+    semesterNo: Number(raw.semesterNo) || 0,
+    credit: Number(raw.credit) || 0,
+    ects: Number(raw.ects) || 0,
+    instructor: String(raw.instructor ?? "").trim(),
+    outcomes: (raw.outcomes ?? []).map(String).filter((o) => o.trim().length > 3),
+  };
+}

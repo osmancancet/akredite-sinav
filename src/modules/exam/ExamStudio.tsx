@@ -48,8 +48,8 @@ export function ExamStudio() {
     return (
       <Card>
         <CardBody className="py-14 text-center">
-          <FilePlus2 className="mx-auto h-10 w-10 text-slate-300" />
-          <p className="mt-3 text-sm text-slate-600">{data.courses.length ? "Henüz sınav oluşturulmadı." : "Önce Modül 1'de bir ders ekleyin veya örnek veriyi yükleyin."}</p>
+          <FilePlus2 className="mx-auto h-10 w-10 text-zinc-300" />
+          <p className="mt-3 text-sm text-zinc-600">{data.courses.length ? "Henüz sınav oluşturulmadı." : "Önce Modül 1'de bir ders ekleyin veya örnek veriyi yükleyin."}</p>
           {data.courses.length > 0 && (
             <Button className="mt-4" onClick={() => setNewOpen(true)}>
               <FilePlus2 className="h-4 w-4" /> Yeni Sınav Oluştur
@@ -137,7 +137,7 @@ export function ExamStudio() {
           >
             <Trash2 className="h-4 w-4 text-red-500" />
           </Button>
-          <div className="mx-1 hidden h-9 w-px bg-slate-200 lg:block" />
+          <div className="mx-1 hidden h-9 w-px bg-zinc-200 lg:block" />
           <div className="flex flex-wrap gap-2">
             <Button onClick={() => doWord("paper")} loading={busy === "paper"}>
               <FileDown className="h-4 w-4" /> Sınav Kağıdı (.docx A+B)
@@ -192,7 +192,7 @@ export function ExamStudio() {
               )}
             </div>
             {rightTab === "preview" && (
-              <div className="max-h-[calc(100vh-11rem)] overflow-auto rounded-xl bg-slate-300/60 p-4 scrollbar-thin">
+              <div className="max-h-[calc(100vh-11rem)] overflow-auto rounded-xl bg-zinc-300/60 p-4 scrollbar-thin">
                 <div style={{ zoom: 0.72 }}>
                   {booklet === "key" ? (
                     <AnswerKeyDocument inst={data.institution} course={course} exam={exam} />
@@ -260,11 +260,11 @@ function BlueprintPanel() {
               return (
                 <div key={o.id} title={o.text}>
                   <div className="flex justify-between text-xs">
-                    <span className="font-semibold text-slate-700">{o.code}</span>
-                    <span className="tabular-nums text-slate-600">%{round(pct, 1)}</span>
+                    <span className="font-semibold text-zinc-700">{o.code}</span>
+                    <span className="tabular-nums text-zinc-600">%{round(pct, 1)}</span>
                   </div>
-                  <div className="mt-1 h-2 rounded-full bg-slate-100">
-                    <div className={cn("h-2 rounded-full", pct === 0 ? "bg-red-400" : "bg-indigo-600")} style={{ width: `${Math.max(pct, pct === 0 ? 2 : 0)}%` }} />
+                  <div className="mt-1 h-2 rounded-full bg-zinc-100">
+                    <div className={cn("h-2 rounded-full", pct === 0 ? "bg-red-400" : "bg-brand-600")} style={{ width: `${Math.max(pct, pct === 0 ? 2 : 0)}%` }} />
                   </div>
                 </div>
               );
@@ -274,11 +274,11 @@ function BlueprintPanel() {
             {BLOOM_LEVELS.map((b) => (
               <div key={b.value}>
                 <div className="flex justify-between text-xs">
-                  <span className="text-slate-700">{b.order}. {b.label}</span>
-                  <span className="tabular-nums text-slate-600">{bp.bloomTotals[b.value]} p</span>
+                  <span className="text-zinc-700">{b.order}. {b.label}</span>
+                  <span className="tabular-nums text-zinc-600">{bp.bloomTotals[b.value]} p</span>
                 </div>
-                <div className="mt-1 h-2 rounded-full bg-slate-100">
-                  <div className="h-2 rounded-full bg-violet-500" style={{ width: `${(bp.bloomTotals[b.value] / maxBloom) * 100}%` }} />
+                <div className="mt-1 h-2 rounded-full bg-zinc-100">
+                  <div className="h-2 rounded-full bg-zinc-800" style={{ width: `${(bp.bloomTotals[b.value] / maxBloom) * 100}%` }} />
                 </div>
               </div>
             ))}
@@ -299,7 +299,7 @@ function PrintMenu({ onPrint }: { onPrint: (k: "A" | "B" | "AB" | "key") => void
       {open && (
         <>
           <div className="fixed inset-0 z-10" onClick={() => setOpen(false)} />
-          <div className="absolute right-0 z-20 mt-2 w-60 rounded-xl border border-slate-200 bg-white p-1.5 shadow-xl">
+          <div className="absolute right-0 z-20 mt-2 w-60 rounded-xl border border-zinc-200 bg-white p-1.5 shadow-xl">
             {(
               [
                 ["A", "A Kitapçığı"],
@@ -310,7 +310,7 @@ function PrintMenu({ onPrint }: { onPrint: (k: "A" | "B" | "AB" | "key") => void
             ).map(([k, label]) => (
               <button
                 key={k}
-                className="block w-full rounded-lg px-3 py-2 text-left text-sm hover:bg-slate-50 cursor-pointer"
+                className="block w-full rounded-lg px-3 py-2 text-left text-sm hover:bg-zinc-50 cursor-pointer"
                 onClick={() => {
                   setOpen(false);
                   onPrint(k);
@@ -319,7 +319,7 @@ function PrintMenu({ onPrint }: { onPrint: (k: "A" | "B" | "AB" | "key") => void
                 {label}
               </button>
             ))}
-            <div className="px-3 pb-1 pt-1 text-[11px] text-slate-500">Yazdır penceresinde &quot;PDF olarak kaydet&quot; seçin.</div>
+            <div className="px-3 pb-1 pt-1 text-[11px] text-zinc-500">Yazdır penceresinde &quot;PDF olarak kaydet&quot; seçin.</div>
           </div>
         </>
       )}
@@ -350,8 +350,8 @@ function NewExamDialog({ open, onClose }: { open: boolean; onClose: () => void }
           ))}
         </Select>
       </Field>
-      <p className="mt-2 text-xs text-slate-500">
-        <Badge tone="indigo">{data.courses.find((c) => c.id === courseId)?.outcomes.length ?? 0} ÖÇ</Badge> ile eşleştirilebilir.
+      <p className="mt-2 text-xs text-zinc-500">
+        <Badge tone="brand">{data.courses.find((c) => c.id === courseId)?.outcomes.length ?? 0} ÖÇ</Badge> ile eşleştirilebilir.
       </p>
     </Dialog>
   );

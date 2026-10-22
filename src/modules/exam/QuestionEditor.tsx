@@ -56,8 +56,8 @@ export function QuestionEditor() {
 
   return (
     <div className="space-y-3">
-      <div className="flex flex-wrap items-center gap-2 rounded-xl border border-slate-200 bg-white p-3">
-        <span className="text-xs font-medium text-slate-500">Soru ekle:</span>
+      <div className="flex flex-wrap items-center gap-2 rounded-xl border border-zinc-200 bg-white p-3">
+        <span className="text-xs font-medium text-zinc-500">Soru ekle:</span>
         {QUESTION_TYPES.map((t) => (
           <Button key={t.value} size="sm" variant="outline" onClick={() => add(t.value)}>
             <Plus className="h-3 w-3" /> {t.label}
@@ -91,7 +91,7 @@ export function QuestionEditor() {
         />
       ))}
       {exam.questions.length === 0 && (
-        <div className="rounded-xl border border-dashed border-slate-300 bg-white p-10 text-center text-sm text-slate-500">
+        <div className="rounded-xl border border-dashed border-zinc-300 bg-white p-10 text-center text-sm text-zinc-500">
           Bu sınavda henüz soru yok. Yukarıdan bir soru tipi seçin veya AI ile üretin.
         </div>
       )}
@@ -121,7 +121,7 @@ function OutcomePicker({ course, value, onChange }: { course: Course; value: str
             onClick={() => onChange(on ? value.filter((x) => x !== o.id) : [...value, o.id])}
             className={cn(
               "rounded-full px-2.5 py-1 text-[11px] font-semibold ring-1 transition-colors cursor-pointer",
-              on ? "bg-indigo-600 text-white ring-indigo-600" : "bg-white text-slate-600 ring-slate-300 hover:bg-slate-50",
+              on ? "bg-brand-600 text-white ring-brand-600" : "bg-white text-zinc-600 ring-zinc-300 hover:bg-zinc-50",
             )}
           >
             {on && <Check className="mr-0.5 inline h-3 w-3" />}
@@ -192,16 +192,16 @@ function QuestionCard({
   };
 
   return (
-    <div className={cn("rounded-xl border bg-white shadow-sm", open ? "border-indigo-300 ring-1 ring-indigo-100" : "border-slate-200")}>
+    <div className={cn("rounded-xl border bg-white shadow-sm", open ? "border-brand-300 ring-1 ring-brand-100" : "border-zinc-200")}>
       <div className="flex items-center gap-2 px-4 py-2.5">
         <button onClick={onToggle} className="flex min-w-0 flex-1 items-center gap-2 text-left cursor-pointer">
-          {open ? <ChevronDown className="h-4 w-4 text-slate-400" /> : <ChevronRight className="h-4 w-4 text-slate-400" />}
-          <span className="rounded-md bg-indigo-50 px-2 py-0.5 text-xs font-bold text-indigo-700">S{index + 1}</span>
-          <span className="truncate text-sm text-slate-800">{q.text.replace(/\*\*/g, "") || <em className="text-slate-400">Soru metni girilmedi</em>}</span>
+          {open ? <ChevronDown className="h-4 w-4 text-zinc-400" /> : <ChevronRight className="h-4 w-4 text-zinc-400" />}
+          <span className="rounded-md bg-brand-50 px-2 py-0.5 text-xs font-bold text-brand-700">S{index + 1}</span>
+          <span className="truncate text-sm text-zinc-800">{q.text.replace(/\*\*/g, "") || <em className="text-zinc-400">Soru metni girilmedi</em>}</span>
         </button>
         <Badge>{questionTypeLabel(q.type)}</Badge>
-        <Badge tone="violet">{BLOOM_LEVELS.find((b) => b.value === q.bloom)?.label}</Badge>
-        <Badge tone={codes.length ? "indigo" : "red"}>{codes.length ? codes.join(", ") : "ÖÇ yok"}</Badge>
+        <Badge>{BLOOM_LEVELS.find((b) => b.value === q.bloom)?.label}</Badge>
+        <Badge tone={codes.length ? "brand" : "red"}>{codes.length ? codes.join(", ") : "ÖÇ yok"}</Badge>
         <Badge tone="emerald">{q.points} p</Badge>
         <div className="flex items-center">
           <Button size="icon" variant="ghost" onClick={() => onMove(-1)} disabled={index === 0} aria-label="Yukarı taşı">
@@ -220,7 +220,7 @@ function QuestionCard({
       </div>
 
       {open && (
-        <div className="space-y-4 border-t border-slate-100 px-4 py-4">
+        <div className="space-y-4 border-t border-zinc-100 px-4 py-4">
           <div className="flex flex-wrap gap-2">
             <Button size="sm" variant="ai" onClick={adapt} loading={busy === "adapt"}>
               <Wand2 className="h-3.5 w-3.5" /> MEDEK&apos;e Uyarla
@@ -265,7 +265,7 @@ function QuestionCard({
 
           {q.type === "mcq" && (
             <div className="space-y-2">
-              <div className="text-xs font-medium text-slate-600">Şıklar (doğru şıkkı işaretleyin)</div>
+              <div className="text-xs font-medium text-zinc-600">Şıklar (doğru şıkkı işaretleyin)</div>
               {q.options.map((o, i) => (
                 <div key={o.id} className="flex items-center gap-2">
                   <button
@@ -273,7 +273,7 @@ function QuestionCard({
                     onClick={() => onChange({ correctOptionId: o.id })}
                     className={cn(
                       "flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-xs font-bold ring-1 cursor-pointer",
-                      q.correctOptionId === o.id ? "bg-emerald-600 text-white ring-emerald-600" : "bg-white text-slate-600 ring-slate-300",
+                      q.correctOptionId === o.id ? "bg-emerald-600 text-white ring-emerald-600" : "bg-white text-zinc-600 ring-zinc-300",
                     )}
                     title="Doğru şık olarak işaretle"
                   >
@@ -322,9 +322,9 @@ function QuestionCard({
               <Field label="LaTeX İfadesi">
                 <Textarea rows={3} className="font-mono text-xs" value={q.latex ?? ""} onChange={(e) => onChange({ latex: e.target.value })} spellCheck={false} />
               </Field>
-              <div className="rounded-lg border border-slate-200 bg-slate-50 p-3">
-                <div className="mb-1 text-[11px] font-medium text-slate-500">Canlı Önizleme (KaTeX, çevrimdışı)</div>
-                {q.latex ? <Latex expr={q.latex} /> : <span className="text-xs text-slate-400">İfade girin…</span>}
+              <div className="rounded-lg border border-zinc-200 bg-zinc-50 p-3">
+                <div className="mb-1 text-[11px] font-medium text-zinc-500">Canlı Önizleme (KaTeX, çevrimdışı)</div>
+                {q.latex ? <Latex expr={q.latex} /> : <span className="text-xs text-zinc-400">İfade girin…</span>}
               </div>
             </div>
           )}
@@ -335,7 +335,7 @@ function QuestionCard({
 
           <div>
             <div className="mb-1 flex items-center justify-between">
-              <span className="text-xs font-medium text-slate-600">Kısmi Puanlama Rubriği</span>
+              <span className="text-xs font-medium text-zinc-600">Kısmi Puanlama Rubriği</span>
               <span className={cn("text-xs font-medium", Math.abs(rubricSum - q.points) < 0.001 ? "text-emerald-600" : "text-amber-600")}>
                 Rubrik toplamı: {rubricSum} / {q.points}
               </span>
@@ -432,7 +432,7 @@ function AiGenerateDialog({ open, onClose, course, onCreate }: { open: boolean; 
         <Field label="Konu / odak (isteğe bağlı)">
           <Input value={topic} onChange={(e) => setTopic(e.target.value)} placeholder="örn. LEFT JOIN ve alt sorgular" />
         </Field>
-        <p className="text-[11px] text-slate-500">
+        <p className="text-[11px] text-zinc-500">
           Bloom fiil ipucu: {BLOOM_LEVELS.find((b) => b.value === bloom)?.verbs}
         </p>
       </div>

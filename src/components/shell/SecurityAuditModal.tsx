@@ -128,8 +128,8 @@ function CipherInspector() {
         <Proof ok={key ? !key.extractable : true} label="CryptoKey.extractable" value={key ? String(key.extractable) : "—"} />
       </div>
 
-      <div className="rounded-xl border border-slate-200">
-        <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 px-4 py-2.5">
+      <div className="rounded-xl border border-zinc-200">
+        <div className="flex flex-wrap items-center justify-between gap-2 border-b border-zinc-100 px-4 py-2.5">
           <div className="text-sm font-medium">IndexedDB → AkrediteSinavVault.records (diskte duran gerçek veri)</div>
           <div className="flex items-center gap-2">
             <Badge tone="emerald">{records.length} şifreli kayıt · {(totalBytes / 1024).toFixed(1)} KB</Badge>
@@ -139,15 +139,15 @@ function CipherInspector() {
           </div>
         </div>
         <div className="grid gap-0 lg:grid-cols-[220px_1fr]">
-          <div className="max-h-72 overflow-y-auto border-r border-slate-100 p-2 scrollbar-thin">
+          <div className="max-h-72 overflow-y-auto border-r border-zinc-100 p-2 scrollbar-thin">
             {records.map((r) => (
               <button
                 key={r.key}
                 onClick={() => setSelected(r.key)}
-                className={cn("flex w-full items-center justify-between rounded-md px-2 py-1.5 text-left text-xs cursor-pointer", selected === r.key ? "bg-indigo-50 text-indigo-800" : "hover:bg-slate-50")}
+                className={cn("flex w-full items-center justify-between rounded-md px-2 py-1.5 text-left text-xs cursor-pointer", selected === r.key ? "bg-brand-50 text-brand-800" : "hover:bg-zinc-50")}
               >
                 <span>{LABELS[r.key] ?? r.key}</span>
-                <span className="tabular-nums text-slate-400">{(r.byteLength / 1024).toFixed(1)}K</span>
+                <span className="tabular-nums text-zinc-400">{(r.byteLength / 1024).toFixed(1)}K</span>
               </button>
             ))}
           </div>
@@ -156,7 +156,7 @@ function CipherInspector() {
               <div className="mb-1 flex items-center gap-1 text-[11px] font-semibold text-red-700">
                 <XCircle className="h-3.5 w-3.5" /> Bellekteki açık metin (yalnızca bu sekmede)
               </div>
-              <pre className="h-56 overflow-auto rounded-lg bg-slate-900 p-2 text-[10.5px] leading-snug text-slate-200 scrollbar-thin">{plain.slice(0, 2500)}</pre>
+              <pre className="h-56 overflow-auto rounded-lg bg-zinc-900 p-2 text-[10.5px] leading-snug text-zinc-200 scrollbar-thin">{plain.slice(0, 2500)}</pre>
             </div>
             <div className="min-w-0">
               <div className="mb-1 flex items-center gap-1 text-[11px] font-semibold text-emerald-700">
@@ -166,15 +166,15 @@ function CipherInspector() {
                 {rec ? bytesToBase64(rec.ciphertext).slice(0, 2500) : "Kayıt bulunamadı"}
               </pre>
               {rec && (
-                <div className="mt-1 text-[10.5px] text-slate-500">
+                <div className="mt-1 text-[10.5px] text-zinc-500">
                   IV (12 byte): <span className="font-mono">{bytesToHex(rec.iv)}</span> · AAD: <span className="font-mono">{rec.key}</span> · {new Date(rec.updatedAt).toLocaleString("tr-TR")}
                 </div>
               )}
             </div>
           </div>
         </div>
-        <div className="flex items-center gap-2 border-t border-slate-100 px-4 py-2 text-xs">
-          <span className="text-slate-500">Görüntülenecek koleksiyon:</span>
+        <div className="flex items-center gap-2 border-t border-zinc-100 px-4 py-2 text-xs">
+          <span className="text-zinc-500">Görüntülenecek koleksiyon:</span>
           <Select className="h-8 w-56" value={selected} onChange={(e) => setSelected(e.target.value as CollectionKey)}>
             {records.map((r) => (
               <option key={r.key} value={r.key}>
@@ -182,15 +182,15 @@ function CipherInspector() {
               </option>
             ))}
           </Select>
-          <span className="text-slate-400">Bir soruyu düzenleyin — şifreli metin her yazımda yeni IV ile tamamen değişir.</span>
+          <span className="text-zinc-400">Bir soruyu düzenleyin — şifreli metin her yazımda yeni IV ile tamamen değişir.</span>
         </div>
       </div>
 
-      <div className="rounded-xl border border-slate-200 p-4">
+      <div className="rounded-xl border border-zinc-200 p-4">
         <div className="flex flex-wrap items-center justify-between gap-2">
           <div>
             <div className="text-sm font-medium">Canlı Bütünlük (Tamper) Testi</div>
-            <div className="text-xs text-slate-500">Bir soru metnini şifreler, tek bit değiştirir ve GCM etiketinin değişikliği reddettiğini gösterir.</div>
+            <div className="text-xs text-zinc-500">Bir soru metnini şifreler, tek bit değiştirir ve GCM etiketinin değişikliği reddettiğini gösterir.</div>
           </div>
           <Button size="sm" onClick={runTamperTest}>Testi Çalıştır</Button>
         </div>
@@ -198,7 +198,7 @@ function CipherInspector() {
           <div className="mt-3 grid gap-2 text-xs sm:grid-cols-3">
             <Proof ok={tamper.ok} label="Şifrele → Çöz" value={tamper.ok ? "Başarılı (aynı metin)" : "Hata"} />
             <Proof ok={tamper.tampered} label="1 bit değiştirilmiş veri" value={tamper.tampered ? "REDDEDİLDİ (OperationError)" : "Kabul edildi!"} />
-            <div className="rounded-lg bg-slate-50 p-2 font-mono text-[10px] break-all text-slate-600">IV {tamper.iv}<br />{tamper.ct.slice(0, 120)}…</div>
+            <div className="rounded-lg bg-zinc-50 p-2 font-mono text-[10px] break-all text-zinc-600">IV {tamper.iv}<br />{tamper.ct.slice(0, 120)}…</div>
           </div>
         )}
       </div>
@@ -224,14 +224,14 @@ function NetworkProof() {
         <Proof ok label="Kullanıcı başlatmalı BYOK AI çağrısı" value={`${ai.length} istek (yalnızca siz tetiklerseniz)`} />
         <Proof ok label="Yerel uygulama dosyası" value={`${local.length} kaynak (aynı köken)`} />
       </div>
-      <div className="rounded-xl border border-slate-200">
-        <div className="flex items-center justify-between border-b border-slate-100 px-4 py-2.5 text-sm font-medium">
+      <div className="rounded-xl border border-zinc-200">
+        <div className="flex items-center justify-between border-b border-zinc-100 px-4 py-2.5 text-sm font-medium">
           Canlı ağ günlüğü (fetch · XHR · sendBeacon · WebSocket · PerformanceObserver)
           <Button size="sm" variant="ghost" onClick={clearNetworkEvents}>Temizle</Button>
         </div>
         <div className="max-h-64 overflow-y-auto scrollbar-thin">
           <table className="w-full text-xs">
-            <thead className="sticky top-0 bg-slate-50 text-left text-slate-500">
+            <thead className="sticky top-0 bg-zinc-50 text-left text-zinc-500">
               <tr>
                 <th className="px-3 py-1.5">Saat</th>
                 <th className="px-3 py-1.5">Tür</th>
@@ -241,32 +241,32 @@ function NetworkProof() {
             </thead>
             <tbody>
               {[...events].reverse().map((e) => (
-                <tr key={e.id} className="border-t border-slate-100">
-                  <td className="px-3 py-1 tabular-nums text-slate-500">{new Date(e.time).toLocaleTimeString("tr-TR")}</td>
+                <tr key={e.id} className="border-t border-zinc-100">
+                  <td className="px-3 py-1 tabular-nums text-zinc-500">{new Date(e.time).toLocaleTimeString("tr-TR")}</td>
                   <td className="px-3 py-1">{e.kind}</td>
                   <td className="max-w-md truncate px-3 py-1 font-mono text-[10.5px]">{shortUrl(e.url)}</td>
                   <td className="px-3 py-1">
                     {e.category === "local" && <Badge tone="emerald">Yerel</Badge>}
-                    {e.category === "ai" && <Badge tone="violet">BYOK AI</Badge>}
+                    {e.category === "ai" && <Badge tone="brand">BYOK AI</Badge>}
                     {e.category === "external" && <Badge tone="red">Harici</Badge>}
                   </td>
                 </tr>
               ))}
               {events.length === 0 && (
                 <tr>
-                  <td colSpan={4} className="px-3 py-6 text-center text-slate-400">Henüz hiçbir ağ olayı yok.</td>
+                  <td colSpan={4} className="px-3 py-6 text-center text-zinc-400">Henüz hiçbir ağ olayı yok.</td>
                 </tr>
               )}
             </tbody>
           </table>
         </div>
       </div>
-      <div className="rounded-xl border border-slate-200 p-4">
+      <div className="rounded-xl border border-zinc-200 p-4">
         <div className="text-sm font-medium">Tarayıcı seviyesinde kilit: Content-Security-Policy</div>
-        <p className="mt-1 text-xs text-slate-500">
+        <p className="mt-1 text-xs text-zinc-500">
           Uygulama kodu bile izin verilmeyen bir adrese istek atmaya çalışsa tarayıcı bunu engeller. connect-src yalnızca uygulamanın kendisini ve sizin seçtiğiniz AI sağlayıcılarını içerir.
         </p>
-        <pre className="mt-2 whitespace-pre-wrap break-all rounded-lg bg-slate-900 p-3 font-mono text-[10.5px] text-slate-200">{CSP.split("; ").join(";\n")}</pre>
+        <pre className="mt-2 whitespace-pre-wrap break-all rounded-lg bg-zinc-900 p-3 font-mono text-[10.5px] text-zinc-200">{CSP.split("; ").join(";\n")}</pre>
       </div>
     </div>
   );
@@ -333,16 +333,16 @@ function OfflineProof() {
 
   return (
     <div className="space-y-4">
-      <div className={cn("flex items-center gap-4 rounded-xl p-5 ring-1", online ? "bg-slate-50 ring-slate-200" : "bg-emerald-50 ring-emerald-200")}>
-        <Plane className={cn("h-10 w-10", online ? "text-slate-400" : "text-emerald-600")} />
+      <div className={cn("flex items-center gap-4 rounded-xl p-5 ring-1", online ? "bg-zinc-50 ring-zinc-200" : "bg-emerald-50 ring-emerald-200")}>
+        <Plane className={cn("h-10 w-10", online ? "text-zinc-400" : "text-emerald-600")} />
         <div>
           <div className="text-base font-semibold">{online ? "Şu anda ÇEVRİMİÇİ" : "ÇEVRİMDIŞI — Uçak Modu aktif"}</div>
-          <div className="text-xs text-slate-600">
+          <div className="text-xs text-zinc-600">
             navigator.onLine = <span className="font-mono">{String(online)}</span> · Durum canlı olarak izleniyor.
           </div>
         </div>
       </div>
-      <ol className="list-decimal space-y-1 pl-5 text-sm text-slate-700">
+      <ol className="list-decimal space-y-1 pl-5 text-sm text-zinc-700">
         <li>Wi-Fi&apos;yi kapatın veya Uçak Modunu açın (ya da Geliştirici Araçları → Network → Offline).</li>
         <li>Yukarıdaki durumun &quot;ÇEVRİMDIŞI&quot; olarak değiştiğini görün.</li>
         <li>Aşağıdaki düğmeyle Word çıktısı üretin; ardından herhangi bir modülde sınav kağıdı, tutanak veya PUKÖ raporu indirin.</li>
@@ -350,7 +350,7 @@ function OfflineProof() {
       <Button onClick={generate} loading={busy} variant="success">
         <FileDown className="h-4 w-4" /> Çevrimdışı Kanıt Raporu Üret (.docx)
       </Button>
-      <p className="text-xs text-slate-500">
+      <p className="text-xs text-zinc-500">
         Tüm modüller tek bir statik pakette yüklenir; çıktılar (docx, xlsx, PDF/yazdır) tamamen tarayıcınızda üretilir. Service Worker uygulama dosyalarını önbelleğe alır, böylece sayfa yenilense bile çevrimdışı açılır.
       </p>
     </div>
@@ -360,7 +360,7 @@ function OfflineProof() {
 function Proof({ ok, label, value, big }: { ok: boolean; label: string; value: string; big?: boolean }) {
   return (
     <div className={cn("rounded-lg p-3 ring-1", ok ? "bg-emerald-50 ring-emerald-200" : "bg-red-50 ring-red-200")}>
-      <div className="flex items-center gap-1 text-[11px] font-medium text-slate-600">
+      <div className="flex items-center gap-1 text-[11px] font-medium text-zinc-600">
         {ok ? <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600" /> : <XCircle className="h-3.5 w-3.5 text-red-600" />}
         {label}
       </div>

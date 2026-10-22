@@ -49,7 +49,7 @@ export function MedekModule() {
   if (!exam || !course) {
     return (
       <Card>
-        <CardBody className="py-12 text-center text-sm text-slate-500">Önce Modül 2&apos;de bir sınav oluşturun.</CardBody>
+        <CardBody className="py-12 text-center text-sm text-zinc-500">Önce Modül 2&apos;de bir sınav oluşturun.</CardBody>
       </Card>
     );
   }
@@ -76,11 +76,11 @@ export function MedekModule() {
             </Select>
           </Field>
           <div className="grid flex-[2] grid-cols-2 gap-3 md:grid-cols-5">
-            <StatTile label="Öğrenci" value={analysis.stats.n} icon={<Users className="h-4 w-4 text-indigo-500" />} />
+            <StatTile label="Öğrenci" value={analysis.stats.n} icon={<Users className="h-4 w-4 text-brand-500" />} />
             <StatTile label="Ortalama" value={round(analysis.stats.mean, 1)} hint={`σ ${round(analysis.stats.sd, 1)}`} />
             <StatTile label="Başarı Oranı" value={`%${round(analysis.stats.passRate, 0)}`} hint="≥ %50 puan" />
             <StatTile label="ÖÇ Eşik Altı" value={`${flagged.length} / ${course.outcomes.length}`} tone={flagged.length ? "red" : "emerald"} hint={`Hedef %${threshold}`} />
-            <StatTile label="Ort. PÇ Sağlanma" value={`%${round(avgNonNull(analysis.poStats.map((p) => p.pct)), 1)}`} tone="indigo" />
+            <StatTile label="Ort. PÇ Sağlanma" value={`%${round(avgNonNull(analysis.poStats.map((p) => p.pct)), 1)}`} tone="brand" />
           </div>
         </CardBody>
       </Card>
@@ -191,7 +191,7 @@ function GradeEntry({ exam, course, sheet, setSheet }: { exam: Exam; course: Cou
       />
       <div className="max-h-[620px] overflow-auto scrollbar-thin">
         <table className="w-full border-collapse text-sm">
-          <thead className="sticky top-0 z-10 bg-slate-50 text-xs text-slate-600">
+          <thead className="sticky top-0 z-10 bg-zinc-50 text-xs text-zinc-600">
             <tr>
               <th className="px-2 py-2 text-left">#</th>
               <th className="px-2 py-2 text-left">Öğrenci No</th>
@@ -199,10 +199,10 @@ function GradeEntry({ exam, course, sheet, setSheet }: { exam: Exam; course: Cou
               {exam.questions.map((q, i) => (
                 <th key={q.id} className="px-1 py-2 text-center" title={`${bloomLabel(q.bloom)} · ${q.outcomeIds.map((id) => course.outcomes.find((o) => o.id === id)?.code).join(", ")}`}>
                   S{i + 1}
-                  <div className="font-normal text-slate-400">/{q.points}</div>
+                  <div className="font-normal text-zinc-400">/{q.points}</div>
                 </th>
               ))}
-              <th className="px-2 py-2 text-center">Toplam<div className="font-normal text-slate-400">/{total}</div></th>
+              <th className="px-2 py-2 text-center">Toplam<div className="font-normal text-zinc-400">/{total}</div></th>
               <th />
             </tr>
           </thead>
@@ -210,8 +210,8 @@ function GradeEntry({ exam, course, sheet, setSheet }: { exam: Exam; course: Cou
             {sheet.rows.map((r, ri) => {
               const t = rowTotal(r, exam);
               return (
-                <tr key={r.id} className="border-t border-slate-100">
-                  <td className="px-2 py-0.5 text-xs text-slate-400">{ri + 1}</td>
+                <tr key={r.id} className="border-t border-zinc-100">
+                  <td className="px-2 py-0.5 text-xs text-zinc-400">{ri + 1}</td>
                   <td className="px-2 py-0.5">
                     <input className="w-24 bg-transparent font-mono text-xs outline-none" value={r.studentNo} onChange={(e) => setRow(r.id, { studentNo: e.target.value })} />
                   </td>
@@ -232,14 +232,14 @@ function GradeEntry({ exam, course, sheet, setSheet }: { exam: Exam; course: Cou
                             const raw = e.target.value;
                             setRow(r.id, { scores: { ...r.scores, [q.id]: raw === "" ? null : clamp(Number(raw), 0, q.points) } });
                           }}
-                          className={cn("h-7 w-14 rounded border border-slate-200 px-1 text-center text-xs tabular-nums outline-none focus:border-indigo-400", v !== null && v !== undefined && v < q.points * 0.5 && "bg-red-50")}
+                          className={cn("h-7 w-14 rounded border border-zinc-200 px-1 text-center text-xs tabular-nums outline-none focus:border-brand-400", v !== null && v !== undefined && v < q.points * 0.5 && "bg-red-50")}
                         />
                       </td>
                     );
                   })}
                   <td className="px-2 py-0.5 text-center font-semibold tabular-nums">{round(t, 1)}</td>
                   <td className="px-1">
-                    <button className="text-slate-300 hover:text-red-500 cursor-pointer" onClick={() => setSheet({ rows: sheet.rows.filter((x) => x.id !== r.id) })} aria-label="Satırı sil">
+                    <button className="text-zinc-300 hover:text-red-500 cursor-pointer" onClick={() => setSheet({ rows: sheet.rows.filter((x) => x.id !== r.id) })} aria-label="Satırı sil">
                       <Trash2 className="h-3.5 w-3.5" />
                     </button>
                   </td>
@@ -248,7 +248,7 @@ function GradeEntry({ exam, course, sheet, setSheet }: { exam: Exam; course: Cou
             })}
             {!sheet.rows.length && (
               <tr>
-                <td colSpan={exam.questions.length + 5} className="px-3 py-10 text-center text-slate-400">
+                <td colSpan={exam.questions.length + 5} className="px-3 py-10 text-center text-zinc-400">
                   Not girilmedi. Simülasyon, Excel veya OBS listesi ile başlayın.
                 </td>
               </tr>
@@ -256,7 +256,7 @@ function GradeEntry({ exam, course, sheet, setSheet }: { exam: Exam; course: Cou
           </tbody>
         </table>
       </div>
-      <div className="border-t border-slate-100 px-4 py-2">
+      <div className="border-t border-zinc-100 px-4 py-2">
         <Button size="sm" variant="ghost" onClick={() => setSheet({ rows: [...sheet.rows, { id: uid("gr"), studentNo: "", fullName: "", scores: {} }] })}>
           <Plus className="h-3.5 w-3.5" /> Satır ekle
         </Button>
@@ -291,9 +291,9 @@ function MatrixEditor({ course }: { course: Course }) {
         <table className="w-full min-w-[900px] border-collapse text-xs">
           <thead>
             <tr>
-              <th className="w-64 p-1 text-left text-slate-500">Öğrenme Çıktısı</th>
+              <th className="w-64 p-1 text-left text-zinc-500">Öğrenme Çıktısı</th>
               {pos.map((p) => (
-                <th key={p.id} className="p-1 font-semibold text-slate-700" title={p.text}>
+                <th key={p.id} className="p-1 font-semibold text-zinc-700" title={p.text}>
                   {p.code}
                 </th>
               ))}
@@ -303,7 +303,7 @@ function MatrixEditor({ course }: { course: Course }) {
             {course.outcomes.map((o) => (
               <tr key={o.id}>
                 <td className="p-1 align-middle" title={o.text}>
-                  <span className="font-bold text-indigo-700">{o.code}</span> <span className="line-clamp-1 text-slate-600">{o.text}</span>
+                  <span className="font-bold text-brand-700">{o.code}</span> <span className="line-clamp-1 text-zinc-600">{o.text}</span>
                 </td>
                 {pos.map((p, j) => {
                   const w = course.ocPcMatrix[o.id]?.[j] ?? 0;
@@ -311,7 +311,7 @@ function MatrixEditor({ course }: { course: Course }) {
                     <td key={p.id} className="p-0.5">
                       <button
                         onClick={(e) => setW(o.id, j, e.shiftKey ? (w + 5) % 6 : (w + 1) % 6)}
-                        className={cn("h-9 w-full rounded-md text-sm font-semibold tabular-nums ring-1 ring-slate-200 cursor-pointer", WEIGHT_BG[w])}
+                        className={cn("h-9 w-full rounded-md text-sm font-semibold tabular-nums ring-1 ring-zinc-200 cursor-pointer", WEIGHT_BG[w])}
                         title={`${o.code} → ${p.code}: ${w}`}
                       >
                         {w || "·"}
@@ -322,19 +322,19 @@ function MatrixEditor({ course }: { course: Course }) {
               </tr>
             ))}
             <tr>
-              <td className="p-1 text-right font-semibold text-slate-500">Σ Ağırlık</td>
+              <td className="p-1 text-right font-semibold text-zinc-500">Σ Ağırlık</td>
               {pos.map((p, j) => (
-                <td key={p.id} className="p-1 text-center font-semibold tabular-nums text-slate-600">
+                <td key={p.id} className="p-1 text-center font-semibold tabular-nums text-zinc-600">
                   {course.outcomes.reduce((s, o) => s + (course.ocPcMatrix[o.id]?.[j] ?? 0), 0)}
                 </td>
               ))}
             </tr>
           </tbody>
         </table>
-        <div className="mt-3 flex items-center gap-2 text-[11px] text-slate-500">
+        <div className="mt-3 flex items-center gap-2 text-[11px] text-zinc-500">
           Ağırlık ölçeği:
           {WEIGHT_BG.map((bg, i) => (
-            <span key={i} className={cn("inline-flex h-5 w-7 items-center justify-center rounded ring-1 ring-slate-200", bg)}>
+            <span key={i} className={cn("inline-flex h-5 w-7 items-center justify-center rounded ring-1 ring-zinc-200", bg)}>
               {i}
             </span>
           ))}
@@ -349,7 +349,7 @@ function AnalysisView({ ctx }: { ctx: PukoCtx }) {
   if (!analysis.stats.n) {
     return (
       <Card>
-        <CardBody className="py-12 text-center text-sm text-slate-500">Analiz için not girişi gerekli. &quot;Soru Bazlı Not Girişi&quot; sekmesinden simülasyon yapabilirsiniz.</CardBody>
+        <CardBody className="py-12 text-center text-sm text-zinc-500">Analiz için not girişi gerekli. &quot;Soru Bazlı Not Girişi&quot; sekmesinden simülasyon yapabilirsiniz.</CardBody>
       </Card>
     );
   }
@@ -368,7 +368,7 @@ function AnalysisView({ ctx }: { ctx: PukoCtx }) {
             labelWidth={52}
           />
           <table className="mt-4 w-full text-xs">
-            <thead className="text-left text-slate-500">
+            <thead className="text-left text-zinc-500">
               <tr>
                 <th className="py-1">ÖÇ</th>
                 <th>Σ Ort / Σ Maks</th>
@@ -379,7 +379,7 @@ function AnalysisView({ ctx }: { ctx: PukoCtx }) {
             </thead>
             <tbody>
               {analysis.outcomeStats.map((o) => (
-                <tr key={o.outcomeId} className="border-t border-slate-100">
+                <tr key={o.outcomeId} className="border-t border-zinc-100">
                   <td className="py-1 font-semibold">{o.code}</td>
                   <td className="tabular-nums">{round(o.sumAvg, 1)} / {o.sumMax}</td>
                   <td className="tabular-nums">{o.pct === null ? "—" : `%${round(o.pct, 1)}`}</td>
@@ -490,7 +490,7 @@ function PukoPanel({ ctx, setSheet }: { ctx: PukoCtx; setSheet: (p: Partial<Grad
                   <div className="flex items-center gap-2">
                     <Badge tone="red">{o.code}</Badge>
                     <span className="text-sm font-medium">%{round(o.pct ?? 0, 1)}</span>
-                    <span className="truncate text-xs text-slate-600">{o.text}</span>
+                    <span className="truncate text-xs text-zinc-600">{o.text}</span>
                   </div>
                   <div className="mt-3 grid gap-2">
                     {(
@@ -527,7 +527,7 @@ function PukoPanel({ ctx, setSheet }: { ctx: PukoCtx; setSheet: (p: Partial<Grad
               </Button>
             )}
             {flagged.length > 0 && Object.keys(sheet.puko).length === 0 && (
-              <p className="text-[11px] text-slate-500">
+              <p className="text-[11px] text-zinc-500">
                 Öneriler {flagged.map((f) => f.code).join(", ")} için soru bazlı başarı ve Bloom düzeyinden otomatik türetildi ({suggestPuko(flagged[0], exam, analysis, threshold).rootCause.slice(0, 60)}…).
               </p>
             )}
@@ -557,7 +557,7 @@ function PukoPanel({ ctx, setSheet }: { ctx: PukoCtx; setSheet: (p: Partial<Grad
           </CardBody>
         </Card>
       </div>
-      <div className="max-h-[calc(100vh-10rem)] overflow-auto rounded-xl bg-slate-300/60 p-4 scrollbar-thin 2xl:sticky 2xl:top-20">
+      <div className="max-h-[calc(100vh-10rem)] overflow-auto rounded-xl bg-zinc-300/60 p-4 scrollbar-thin 2xl:sticky 2xl:top-20">
         <div style={{ zoom: 0.68 }}>
           <PukoDocument ctx={ctx} />
         </div>

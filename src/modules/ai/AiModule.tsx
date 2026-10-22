@@ -87,11 +87,11 @@ function ProviderSettings() {
               }}
               className={cn(
                 "rounded-xl px-3 py-3 text-left ring-1 transition-colors cursor-pointer",
-                ai.provider === p.value ? "bg-indigo-600 text-white ring-indigo-600" : "bg-white ring-slate-200 hover:bg-slate-50",
+                ai.provider === p.value ? "bg-brand-600 text-white ring-brand-600" : "bg-white ring-zinc-200 hover:bg-zinc-50",
               )}
             >
               <div className="text-sm font-semibold">{p.label}</div>
-              <div className={cn("text-[11px]", ai.provider === p.value ? "text-indigo-100" : "text-slate-500")}>
+              <div className={cn("text-[11px]", ai.provider === p.value ? "text-brand-100" : "text-zinc-500")}>
                 {p.value === "gemini" ? "Ücretsiz katman" : p.value === "ollama" ? "Tam yerel · %100 offline" : "Ücretli API"}
               </div>
             </button>
@@ -105,7 +105,7 @@ function ProviderSettings() {
               <>
                 Anahtar kasada AES-256-GCM ile şifreli saklanır.{" "}
                 {provider.keyUrl && (
-                  <a href={provider.keyUrl} target="_blank" rel="noreferrer noopener" className="inline-flex items-center gap-0.5 text-indigo-600 underline">
+                  <a href={provider.keyUrl} target="_blank" rel="noreferrer noopener" className="inline-flex items-center gap-0.5 text-brand-600 underline">
                     Anahtar al <ExternalLink className="h-3 w-3" />
                   </a>
                 )}
@@ -126,7 +126,7 @@ function ProviderSettings() {
                 {show ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
               </Button>
               <Button variant="ghost" size="icon" className="h-9 w-9" onClick={() => set({ keys: { ...ai.keys, [ai.provider]: "" } })} aria-label="Anahtarı sil">
-                <Trash2 className="h-4 w-4 text-slate-400" />
+                <Trash2 className="h-4 w-4 text-zinc-400" />
               </Button>
             </div>
           </Field>
@@ -157,7 +157,7 @@ function ProviderSettings() {
             </Field>
           ) : (
             <Field label={`Yaratıcılık (temperature): ${ai.temperature.toFixed(1)}`} hint={ai.provider === "anthropic" ? "Claude modellerinde kullanılmaz; düzey 'effort: medium' ile ayarlıdır." : undefined}>
-              <input type="range" min={0} max={1} step={0.1} value={ai.temperature} onChange={(e) => set({ temperature: Number(e.target.value) })} className="mt-2 w-full accent-indigo-600" disabled={ai.provider === "anthropic"} />
+              <input type="range" min={0} max={1} step={0.1} value={ai.temperature} onChange={(e) => set({ temperature: Number(e.target.value) })} className="mt-2 w-full accent-brand-600" disabled={ai.provider === "anthropic"} />
             </Field>
           )}
         </div>
@@ -184,10 +184,10 @@ function GeminiGuide() {
     <Card>
       <CardHeader icon={<KeyRound className="h-4 w-4" />} title="30 Saniyede Ücretsiz Gemini Anahtarı Al" description="Google AI Studio ücretsiz katmanı (gemini-2.5-flash) akademik kullanım için yeterlidir." />
       <CardBody>
-        <ol className="space-y-2 text-sm text-slate-700">
+        <ol className="space-y-2 text-sm text-zinc-700">
           {[
             <>
-              <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noreferrer noopener" className="font-medium text-indigo-600 underline">
+              <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noreferrer noopener" className="font-medium text-brand-600 underline">
                 aistudio.google.com/app/apikey
               </a>{" "}
               adresini açın ve Google hesabınızla giriş yapın.
@@ -197,7 +197,7 @@ function GeminiGuide() {
             <>Soldaki alana yapıştırın, <strong>&quot;Bağlantıyı Test Et&quot;</strong> deyin. Hazırsınız!</>,
           ].map((s, i) => (
             <li key={i} className="flex gap-3">
-              <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-indigo-600 text-xs font-bold text-white">{i + 1}</span>
+              <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-brand-600 text-xs font-bold text-white">{i + 1}</span>
               <span>{s}</span>
             </li>
           ))}
@@ -214,7 +214,7 @@ function SecurityNotes() {
   return (
     <Card>
       <CardHeader icon={<ShieldCheck className="h-4 w-4" />} title="Zero-Knowledge AI İlkeleri" />
-      <CardBody className="space-y-2 text-xs text-slate-600">
+      <CardBody className="space-y-2 text-xs text-zinc-600">
         {[
           [Lock, "API anahtarları IndexedDB'de AES-256-GCM ile şifreli tutulur; .akredite yedeğine de şifreli girer."],
           [ShieldCheck, "Öğrenci ad, numara ve notları hiçbir AI isteğine eklenmez; PUKÖ için yalnızca toplu yüzdeler gönderilir."],
@@ -294,13 +294,13 @@ function QualityChat() {
             </Select>
           )}
         </div>
-        <div className="min-h-64 max-h-[480px] flex-1 space-y-3 overflow-y-auto rounded-xl bg-slate-50 p-3 scrollbar-thin">
+        <div className="min-h-64 max-h-[480px] flex-1 space-y-3 overflow-y-auto rounded-xl bg-zinc-50 p-3 scrollbar-thin">
           {messages.length === 0 && (
             <div className="space-y-2">
-              <p className="text-xs text-slate-500">Hızlı başlangıç:</p>
+              <p className="text-xs text-zinc-500">Hızlı başlangıç:</p>
               {QUICK_PROMPTS.map((p) => (
-                <button key={p} onClick={() => send(p)} disabled={!!busy} className="block w-full rounded-lg bg-white px-3 py-2 text-left text-sm text-slate-700 ring-1 ring-slate-200 hover:ring-indigo-300 cursor-pointer">
-                  <Sparkles className="mr-1.5 inline h-3.5 w-3.5 text-violet-500" />
+                <button key={p} onClick={() => send(p)} disabled={!!busy} className="block w-full rounded-lg bg-white px-3 py-2 text-left text-sm text-zinc-700 ring-1 ring-zinc-200 hover:ring-brand-300 cursor-pointer">
+                  <Sparkles className="mr-1.5 inline h-3.5 w-3.5 text-brand-600" />
                   {p}
                 </button>
               ))}
@@ -310,11 +310,11 @@ function QualityChat() {
             </div>
           )}
           {messages.map((m, i) => (
-            <div key={i} className={cn("max-w-[90%] whitespace-pre-wrap rounded-xl px-3 py-2 text-sm", m.role === "user" ? "ml-auto bg-indigo-600 text-white" : "bg-white text-slate-800 ring-1 ring-slate-200")}>
+            <div key={i} className={cn("max-w-[90%] whitespace-pre-wrap rounded-xl px-3 py-2 text-sm", m.role === "user" ? "ml-auto bg-brand-600 text-white" : "bg-white text-zinc-800 ring-1 ring-zinc-200")}>
               {m.role === "user" ? m.content.split("\n\n[Bağlam")[0] : m.content}
             </div>
           ))}
-          {busy === "chat" && <div className="w-24 animate-pulse rounded-xl bg-white px-3 py-2 text-sm text-slate-400 ring-1 ring-slate-200">yazıyor…</div>}
+          {busy === "chat" && <div className="w-24 animate-pulse rounded-xl bg-white px-3 py-2 text-sm text-zinc-400 ring-1 ring-zinc-200">yazıyor…</div>}
           <div ref={endRef} />
         </div>
         <form
@@ -360,10 +360,10 @@ function ActionsIndex() {
       <CardHeader icon={<Sparkles className="h-4 w-4" />} title="Modül İçi Tek Tık AI Aksiyonları" />
       <CardBody className="space-y-2">
         {actions.map((a) => (
-          <button key={a.title} onClick={() => navigateTo(a.module)} className="block w-full rounded-lg px-3 py-2 text-left ring-1 ring-slate-200 hover:bg-violet-50 hover:ring-violet-200 cursor-pointer">
-            <div className="text-sm font-medium text-slate-900">{a.title}</div>
-            <div className="text-[11px] text-violet-700">{a.where}</div>
-            <div className="text-[11px] text-slate-500">{a.desc}</div>
+          <button key={a.title} onClick={() => navigateTo(a.module)} className="block w-full rounded-lg px-3 py-2 text-left ring-1 ring-zinc-200 hover:bg-brand-50/60 hover:ring-brand-200 cursor-pointer">
+            <div className="text-sm font-medium text-zinc-900">{a.title}</div>
+            <div className="text-[11px] text-brand-700">{a.where}</div>
+            <div className="text-[11px] text-zinc-500">{a.desc}</div>
           </button>
         ))}
       </CardBody>

@@ -8,19 +8,20 @@ type Variant = "default" | "secondary" | "outline" | "ghost" | "destructive" | "
 type Size = "sm" | "md" | "lg" | "icon";
 
 const variants: Record<Variant, string> = {
-  default: "bg-indigo-700 text-white hover:bg-indigo-800 shadow-sm",
-  secondary: "bg-slate-100 text-slate-900 hover:bg-slate-200",
-  outline: "border border-slate-300 bg-white text-slate-800 hover:bg-slate-50",
-  ghost: "text-slate-700 hover:bg-slate-100",
+  default: "bg-zinc-900 text-white shadow-[inset_0_1px_0_rgb(255_255_255/0.08)] hover:bg-zinc-800 active:bg-zinc-950",
+  secondary: "bg-zinc-100 text-zinc-900 hover:bg-zinc-200/80",
+  outline: "border border-zinc-200 bg-white text-zinc-800 shadow-[var(--shadow-card)] hover:border-zinc-300 hover:bg-zinc-50",
+  ghost: "text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900",
   destructive: "bg-red-600 text-white hover:bg-red-700",
-  success: "bg-emerald-600 text-white hover:bg-emerald-700",
-  ai: "bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white hover:from-violet-700 hover:to-fuchsia-700 shadow-sm",
+  success: "bg-brand-700 text-white hover:bg-brand-800",
+  // AI eylemleri: gradyan yok — vurgu renginde ince çerçeve, metin mürekkep
+  ai: "border border-brand-200 bg-brand-50/70 text-brand-900 hover:border-brand-300 hover:bg-brand-100/70 [&_svg]:text-brand-600",
 };
 
 const sizes: Record<Size, string> = {
   sm: "h-8 px-3 text-xs gap-1.5",
-  md: "h-9 px-4 text-sm gap-2",
-  lg: "h-11 px-6 text-sm gap-2",
+  md: "h-9 px-3.5 text-[13px] gap-2",
+  lg: "h-11 px-5 text-sm gap-2",
   icon: "h-8 w-8 p-0",
 };
 
@@ -36,7 +37,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       ref={ref}
       disabled={disabled || loading}
       className={cn(
-        "inline-flex items-center justify-center whitespace-nowrap rounded-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-1 disabled:pointer-events-none disabled:opacity-50 cursor-pointer",
+        "inline-flex cursor-pointer items-center justify-center whitespace-nowrap rounded-lg font-medium tracking-[-0.005em] transition-[background-color,border-color,color,box-shadow] duration-150 disabled:pointer-events-none disabled:opacity-45",
         variants[variant],
         sizes[size],
         className,

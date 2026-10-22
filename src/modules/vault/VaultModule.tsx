@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import {
+  Download,
   BookOpen,
   Building2,
   CalendarClock,
@@ -15,11 +16,12 @@ import {
   ShieldCheck,
   Trash2,
   Unlock,
+  Upload,
   Users,
 } from "lucide-react";
 import { useData, useVault } from "@/lib/store";
 import type { Course, Institution, UnitType } from "@/lib/types";
-import { Card, CardBody, CardHeader, StatTile } from "@/components/ui/card";
+import { Card, CardBody, CardHeader } from "@/components/ui/card";
 import { Field, Input, Select, Textarea } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -27,9 +29,13 @@ import { toast } from "@/components/ui/toast";
 import { confirmDialog } from "@/components/ui/confirm";
 import { Dialog } from "@/components/ui/dialog";
 import { navigateTo } from "@/hooks/useHashRoute";
-import { KDF_ITERATIONS } from "@/lib/cryptoVault";
+import { KDF_ITERATIONS, listEncryptedRecords } from "@/lib/cryptoVault";
+import { CryptoLattice } from "@/components/three/CryptoLattice";
+import { useShellUi } from "@/components/shell/shellStore";
 import { uid } from "@/lib/utils";
 import { UniversityPicker } from "./UniversityPicker";
+import { CourseImportDialog } from "./CourseImportDialog";
+import { exportCatalogXlsx } from "@/lib/courseImport";
 
 export function VaultModule() {
   const data = useData();
@@ -37,13 +43,14 @@ export function VaultModule() {
   const totalQuestions = data.exams.reduce((s, e) => s + e.questions.length, 0);
   return (
     <div className="space-y-6">
+      <VaultHero />
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-6">
-        <QuickTile icon={<BookOpen className="h-4 w-4" />} label="Ders" value={data.courses.length} onClick={() => navigateTo("kasa")} />
-        <QuickTile icon={<FileText className="h-4 w-4" />} label="Sınav / Soru" value={`${data.exams.length} / ${totalQuestions}`} onClick={() => navigateTo("sinav")} />
-        <QuickTile icon={<CalendarClock className="h-4 w-4" />} label="Programlı Sınav" value={data.schedule.entries.length} onClick={() => navigateTo("program")} />
-        <QuickTile icon={<Users className="h-4 w-4" />} label="Öğrenci (OBS)" value={totalStudents} onClick={() => navigateTo("oturma")} />
-        <QuickTile icon={<LayoutGrid className="h-4 w-4" />} label="Rubrik" value={data.rubrics.length} onClick={() => navigateTo("rubrik")} />
-        <QuickTile icon={<LineChart className="h-4 w-4" />} label="Not Çizelgesi" value={Object.keys(data.grades).length} onClick={() => navigateTo("medek")} />
+        <QuickTile icon={<BookOpen />} label="Ders" value={data.courses.length} onClick={() => document.getElementById("ders-katalogu")?.scrollIntoView({ behavior: "smooth" })} />
+        <QuickTile icon={<FileText />} label="Sınav / soru" value={`${data.exams.length}/${totalQuestions}`} onClick={() => navigateTo("sinav")} />
+        <QuickTile icon={<CalendarClock />} label="Programlı sınav" value={data.schedule.entries.length} onClick={() => navigateTo("program")} />
+        <QuickTile icon={<Users />} label="Öğrenci (OBS)" value={totalStudents} onClick={() => navigateTo("oturma")} />
+        <QuickTile icon={<LayoutGrid />} label="Rubrik" value={data.rubrics.length} onClick={() => navigateTo("rubrik")} />
+        <QuickTile icon={<LineChart />} label="Not çizelgesi" value={Object.keys(data.grades).length} onClick={() => navigateTo("medek")} />
       </div>
       <div className="grid gap-6 xl:grid-cols-[1.3fr_1fr]">
         <InstitutionCard />
@@ -52,15 +59,90 @@ export function VaultModule() {
           <ProgramOutcomesCard />
         </div>
       </div>
-      <CoursesCard />
+      <div id="ders-katalogu" className="scroll-mt-20">
+        <CoursesCard />
+      </div>
     </div>
+  );
+}
+
+function VaultHero() {
+  const writeCount = useVault((s) => s.writeCount);
+  const mode = useVault((s) => s.mode);
+  const lastSavedAt = useVault((s) => s.lastSavedAt);
+  const setAudit = useShellUi((s) => s.setAudit);
+  const setBackup = useShellUi((s) => s.setBackup);
+  const [stats, setStats] = React.useState<{ records: number; bytes: number } | null>(null);
+
+  React.useEffect(() => {
+    let alive = true;
+    listEncryptedRecords().then((r) => {
+      if (alive) setStats({ records: r.length, bytes: r.reduce((s, x) => s + x.byteLength, 0) });
+    });
+    return () => {
+      alive = false;
+    };
+  }, [writeCount]);
+
+  return (
+    <section className="relative overflow-hidden rounded-2xl border border-zinc-200/80 bg-white shadow-[var(--shadow-card)]">
+      <div className="bg-dotgrid absolute inset-0 opacity-60 [mask-image:linear-gradient(to_left,black,transparent_70%)]" />
+      <div className="relative grid items-center gap-2 lg:grid-cols-[1.1fr_1fr]">
+        <div className="p-7 sm:p-9">
+          <div className="inline-flex items-center gap-2 rounded-full border border-brand-200 bg-brand-50/80 px-2.5 py-1 font-mono text-[10.5px] uppercase tracking-[0.12em] text-brand-800">
+            <span className="h-1.5 w-1.5 rounded-full bg-brand-600" /> Zero-Knowledge kasa aktif
+          </div>
+          <h2 className="font-display mt-4 text-[34px] font-medium leading-[1.08] text-zinc-950 sm:text-[40px]">
+            Sınavlarınız bu cihazda,
+            <br />
+            <span className="text-brand-700">yalnızca sizin anahtarınızla</span> açılır.
+          </h2>
+          <p className="mt-3 max-w-lg text-sm leading-relaxed text-zinc-500">
+            Her koleksiyon IndexedDB&apos;ye AES-256-GCM ile, her yazımda yeni bir IV ile şifrelenir. Sunucu yok, hesap yok, ağ çıkışı yok. Kafes her şifreli yazımda titreşir.
+          </p>
+          <dl className="mt-6 grid max-w-lg grid-cols-3 gap-px overflow-hidden rounded-xl border border-zinc-200/80 bg-zinc-200/80">
+            {[
+              ["Şifreli kayıt", stats ? String(stats.records) : "—"],
+              ["Disk", stats ? `${(stats.bytes / 1024).toFixed(1)} KB` : "—"],
+              ["Son yazım", lastSavedAt ? new Date(lastSavedAt).toLocaleTimeString("tr-TR", { hour: "2-digit", minute: "2-digit", second: "2-digit" }) : "—"],
+            ].map(([k, v]) => (
+              <div key={k} className="bg-white px-3.5 py-3">
+                <dt className="text-[11px] text-zinc-500">{k}</dt>
+                <dd className="mt-0.5 font-mono text-[15px] text-zinc-900 tabular-nums">{v}</dd>
+              </div>
+            ))}
+          </dl>
+          <div className="mt-6 flex flex-wrap gap-2">
+            <Button onClick={() => setAudit(true)}>
+              <ShieldCheck className="h-4 w-4" /> Güvenliği kanıtla
+            </Button>
+            <Button variant="outline" onClick={() => setBackup("export")}>
+              <Download className="h-4 w-4" /> .akredite yedeği al
+            </Button>
+          </div>
+          <p className="mt-3 font-mono text-[10.5px] text-zinc-400">
+            {mode === "password" ? "master parola · PBKDF2-SHA256 · 100.000 it." : "cihaz anahtarı · non-extractable CryptoKey"}
+          </p>
+        </div>
+        <div className="relative h-[300px] lg:h-[420px]">
+          <CryptoLattice pulseKey={writeCount} />
+        </div>
+      </div>
+    </section>
   );
 }
 
 function QuickTile({ icon, label, value, onClick }: { icon: React.ReactNode; label: string; value: React.ReactNode; onClick: () => void }) {
   return (
-    <button onClick={onClick} className="text-left cursor-pointer">
-      <StatTile label={label} value={value} icon={<span className="text-indigo-500">{icon}</span>} />
+    <button
+      onClick={onClick}
+      className="group cursor-pointer rounded-xl border border-zinc-200/80 bg-white p-4 text-left shadow-[var(--shadow-card)] transition-colors hover:border-zinc-300"
+    >
+      <div className="flex items-center justify-between text-[11.5px] font-medium text-zinc-500">
+        {label}
+        <span className="text-zinc-300 transition-colors group-hover:text-brand-600 [&_svg]:h-4 [&_svg]:w-4">{icon}</span>
+      </div>
+      <div className="mt-2 font-mono text-[24px] leading-none text-zinc-900 tabular-nums">{value}</div>
     </button>
   );
 }
@@ -89,16 +171,16 @@ function InstitutionCard() {
       />
       <CardBody className="space-y-4">
         <div className="flex items-center gap-4">
-          <div className="flex h-20 w-20 items-center justify-center overflow-hidden rounded-xl border border-dashed border-slate-300 bg-slate-50">
+          <div className="flex h-20 w-20 items-center justify-center overflow-hidden rounded-xl border border-dashed border-zinc-300 bg-zinc-50">
             {inst.logoDataUrl ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img src={inst.logoDataUrl} alt="Logo" className="h-full w-full object-contain" />
             ) : (
-              <ImagePlus className="h-6 w-6 text-slate-400" />
+              <ImagePlus className="h-6 w-6 text-zinc-400" />
             )}
           </div>
           <div className="space-y-2">
-            <label className="inline-flex cursor-pointer items-center gap-2 rounded-md border border-slate-300 px-3 py-1.5 text-xs font-medium hover:bg-slate-50">
+            <label className="inline-flex cursor-pointer items-center gap-2 rounded-md border border-zinc-300 px-3 py-1.5 text-xs font-medium hover:bg-zinc-50">
               <ImagePlus className="h-3.5 w-3.5" /> Logo Yükle (PNG/JPG)
               <input type="file" accept="image/png,image/jpeg" className="hidden" onChange={(e) => onLogo(e.target.files?.[0])} />
             </label>
@@ -107,7 +189,7 @@ function InstitutionCard() {
                 <Trash2 className="h-3.5 w-3.5" /> Logoyu kaldır
               </Button>
             )}
-            <p className="text-[11px] text-slate-500">Logo da şifreli kasada saklanır.</p>
+            <p className="text-[11px] text-zinc-500">Logo da şifreli kasada saklanır.</p>
           </div>
         </div>
         <div className="grid gap-3 sm:grid-cols-2">
@@ -208,10 +290,10 @@ function SecurityCard() {
         icon={<ShieldCheck className="h-4 w-4" />}
         title="AES-256 Master Key Yönetimi"
         description={`PBKDF2-SHA256 · ${KDF_ITERATIONS.toLocaleString("tr-TR")} iterasyon · AES-256-GCM`}
-        actions={<Badge tone={mode === "password" ? "emerald" : "indigo"}>{mode === "password" ? "Master Parola" : "Otomatik Yerel Anahtar"}</Badge>}
+        actions={<Badge tone={mode === "password" ? "emerald" : "brand"}>{mode === "password" ? "Master Parola" : "Otomatik Yerel Anahtar"}</Badge>}
       />
       <CardBody className="space-y-3 text-sm">
-        <p className="text-slate-600">
+        <p className="text-zinc-600">
           {mode === "password"
             ? "Kasanız master parolanızdan türetilen anahtarla şifreli. Anahtar yalnızca bu oturumun belleğinde yaşar; kilitlediğinizde silinir."
             : "Kasanız, tarayıcıda üretilen ve dışa aktarılamayan (non-extractable) bir AES-256 cihaz anahtarıyla şifreli. Ek koruma için master parola belirleyebilirsiniz."}
@@ -268,7 +350,7 @@ function SecurityCard() {
           </Field>
           <div className="flex gap-1">
             {[0, 1, 2, 3].map((i) => (
-              <div key={i} className={`h-1.5 flex-1 rounded ${i < strength ? ["bg-red-500", "bg-amber-500", "bg-lime-500", "bg-emerald-600"][strength - 1] : "bg-slate-200"}`} />
+              <div key={i} className={`h-1.5 flex-1 rounded ${i < strength ? ["bg-red-500", "bg-amber-500", "bg-lime-500", "bg-emerald-600"][strength - 1] : "bg-zinc-200"}`} />
             ))}
           </div>
           <Field label="Parola (tekrar)">
@@ -289,7 +371,7 @@ function ProgramOutcomesCard() {
       <CardBody className="max-h-80 space-y-2 overflow-y-auto scrollbar-thin">
         {pos.map((po, i) => (
           <div key={po.id} className="flex gap-2">
-            <span className="mt-2 w-12 shrink-0 text-xs font-semibold text-indigo-700">{po.code}</span>
+            <span className="mt-2 w-12 shrink-0 text-xs font-semibold text-brand-700">{po.code}</span>
             <Textarea
               className="min-h-[40px] text-xs"
               rows={2}
@@ -306,6 +388,7 @@ function ProgramOutcomesCard() {
 function CoursesCard() {
   const data = useData();
   const update = useVault((s) => s.update);
+  const [importOpen, setImportOpen] = React.useState(false);
   const setCourse = (id: string, patch: Partial<Course>) => update("courses", (prev) => prev.map((c) => (c.id === id ? { ...c, ...patch } : c)));
 
   const addCourse = () => {
@@ -332,17 +415,26 @@ function CoursesCard() {
     <Card>
       <CardHeader
         icon={<BookOpen className="h-4 w-4" />}
-        title="Dersler"
-        description="Sınav kağıdı, sınav programı ve MEDEK analizlerinin ortak ders kataloğu. Öğrenme çıktıları Modül 2'de düzenlenir."
+        title="Ders kataloğu"
+        description="Sınav kağıdı, sınav programı ve MEDEK analizlerinin ortak ders kataloğu. Bologna'dan yapıştırarak veya Excel ile toplu aktarabilirsiniz."
         actions={
-          <Button size="sm" onClick={addCourse}>
-            <Plus className="h-3.5 w-3.5" /> Ders Ekle
-          </Button>
+          <>
+            <Button size="sm" variant="outline" onClick={() => exportCatalogXlsx(data.courses, data.programOutcomes)} disabled={!data.courses.length}>
+              <Download className="h-3.5 w-3.5" /> Excel&apos;e aktar
+            </Button>
+            <Button size="sm" variant="outline" onClick={() => setImportOpen(true)}>
+              <Upload className="h-3.5 w-3.5" /> İçe aktar
+            </Button>
+            <Button size="sm" onClick={addCourse}>
+              <Plus className="h-3.5 w-3.5" /> Ders ekle
+            </Button>
+          </>
         }
       />
+      <CourseImportDialog open={importOpen} onClose={() => setImportOpen(false)} />
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
-          <thead className="bg-slate-50 text-left text-xs text-slate-500">
+          <thead className="bg-zinc-50 text-left text-xs text-zinc-500">
             <tr>
               <th className="px-4 py-2">Kod</th>
               <th className="px-4 py-2">Ders Adı</th>
@@ -356,7 +448,7 @@ function CoursesCard() {
           </thead>
           <tbody>
             {data.courses.map((c) => (
-              <tr key={c.id} className="border-t border-slate-100">
+              <tr key={c.id} className="border-t border-zinc-100">
                 <td className="px-4 py-1.5">
                   <Input className="h-8 w-24" value={c.code} onChange={(e) => setCourse(c.id, { code: e.target.value })} />
                 </td>
@@ -383,7 +475,7 @@ function CoursesCard() {
                   </div>
                 </td>
                 <td className="px-4 py-1.5">
-                  <Badge tone="indigo">{c.outcomes.length}</Badge>
+                  <Badge tone="brand">{c.outcomes.length}</Badge>
                 </td>
                 <td className="px-4 py-1.5">
                   <Button
@@ -412,15 +504,15 @@ function CoursesCard() {
                       }
                     }}
                   >
-                    <Trash2 className="h-4 w-4 text-slate-400" />
+                    <Trash2 className="h-4 w-4 text-zinc-400" />
                   </Button>
                 </td>
               </tr>
             ))}
             {data.courses.length === 0 && (
               <tr>
-                <td colSpan={8} className="px-4 py-8 text-center text-sm text-slate-400">
-                  Henüz ders yok. &quot;Ders Ekle&quot; ile başlayın veya üst bardan örnek veriyi yükleyin.
+                <td colSpan={8} className="px-4 py-8 text-center text-sm text-zinc-400">
+                  Henüz ders yok. &quot;İçe aktar&quot; ile Bologna sayfasından veya Excel&apos;den aktarın ya da &quot;Ders ekle&quot; ile başlayın.
                 </td>
               </tr>
             )}

@@ -91,11 +91,11 @@ export function SchedulerModule() {
   return (
     <div className="space-y-4">
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-5">
-        <StatTile label="Programlanan Sınav" value={`${schedule.entries.length} / ${schedule.settings.courseIds.length}`} icon={<CalendarRange className="h-4 w-4 text-indigo-500" />} />
+        <StatTile label="Programlanan Sınav" value={`${schedule.entries.length} / ${schedule.settings.courseIds.length}`} icon={<CalendarRange className="h-4 w-4 text-brand-500" />} />
         <StatTile label="Kesin Çakışma" value={hard.length} tone={hard.length ? "red" : "emerald"} hint={hard.length ? "Takvimde kırmızı" : "Sınıf, derslik, gözetmen çakışması yok"} icon={hard.length ? <XCircle className="h-4 w-4 text-red-500" /> : <CheckCircle2 className="h-4 w-4 text-emerald-500" />} />
         <StatTile label="Yumuşak Uyarı" value={soft.length} tone={soft.length ? "amber" : "emerald"} hint={`Günde ≤ ${schedule.settings.maxExamsPerClassPerDay} sınav kuralı`} icon={<AlertTriangle className="h-4 w-4 text-amber-500" />} />
-        <StatTile label="Adalet Skoru" value={`%${fair.toFixed(1)}`} tone={fair >= 80 ? "emerald" : fair >= 60 ? "amber" : "red"} hint={`σ = ${round(stdDev(loads.map((l) => l.count)), 2)} görev`} icon={<Scale className="h-4 w-4 text-indigo-500" />} />
-        <StatTile label="Yerleştirilemeyen" value={unplaced.length} tone={unplaced.length ? "amber" : "slate"} icon={<DoorOpen className="h-4 w-4 text-slate-400" />} />
+        <StatTile label="Adalet Skoru" value={`%${fair.toFixed(1)}`} tone={fair >= 80 ? "emerald" : fair >= 60 ? "amber" : "red"} hint={`σ = ${round(stdDev(loads.map((l) => l.count)), 2)} görev`} icon={<Scale className="h-4 w-4 text-brand-500" />} />
+        <StatTile label="Yerleştirilemeyen" value={unplaced.length} tone={unplaced.length ? "amber" : "slate"} icon={<DoorOpen className="h-4 w-4 text-zinc-400" />} />
       </div>
 
       <Card>
@@ -180,11 +180,11 @@ export function SchedulerModule() {
             </Card>
             <Card>
               <CardHeader title="Çözücü Günlüğü" />
-              <CardBody className="max-h-48 space-y-1 overflow-y-auto text-xs text-slate-600 scrollbar-thin">
+              <CardBody className="max-h-48 space-y-1 overflow-y-auto text-xs text-zinc-600 scrollbar-thin">
                 {schedule.log.map((l, i) => (
                   <div key={i}>• {l}</div>
                 ))}
-                {!schedule.log.length && <div className="text-slate-400">Henüz dağıtım yapılmadı.</div>}
+                {!schedule.log.length && <div className="text-zinc-400">Henüz dağıtım yapılmadı.</div>}
               </CardBody>
             </Card>
           </div>
@@ -271,7 +271,7 @@ function OutputsPanel({ ctx }: { ctx: ScheduleCtx }) {
       </Card>
       <Card className="lg:col-span-2">
         <CardHeader title="İlan Panosu Önizleme" />
-        <CardBody className="overflow-auto bg-slate-200/60">
+        <CardBody className="overflow-auto bg-zinc-200/60">
           <div style={{ zoom: 0.62 }}>
             <BoardDocument ctx={ctx} />
           </div>

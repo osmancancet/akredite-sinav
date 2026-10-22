@@ -8,7 +8,7 @@ import { cn, formatTrDate, trDayName } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "@/components/ui/toast";
 
-const CLASS_TONES = ["bg-sky-50 border-sky-200", "bg-violet-50 border-violet-200", "bg-amber-50 border-amber-200", "bg-teal-50 border-teal-200"];
+const CLASS_TONES = ["bg-sky-50 border-sky-200", "bg-rose-50 border-rose-200", "bg-amber-50 border-amber-200", "bg-teal-50 border-teal-200"];
 
 export function ScheduleGrid({
   schedule,
@@ -60,15 +60,15 @@ export function ScheduleGrid({
           </div>
         </div>
       )}
-      <div className="overflow-x-auto rounded-xl border border-slate-200 bg-white">
+      <div className="overflow-x-auto rounded-xl border border-zinc-200 bg-white">
         <table className="w-full min-w-[760px] table-fixed border-collapse">
           <thead>
             <tr>
-              <th className="w-20 border-b border-slate-200 bg-slate-50 px-2 py-2 text-xs font-semibold text-slate-500">Saat</th>
+              <th className="w-20 border-b border-zinc-200 bg-zinc-50 px-2 py-2 text-xs font-semibold text-zinc-500">Saat</th>
               {dates.map((d) => (
-                <th key={d} className="border-b border-l border-slate-200 bg-slate-50 px-2 py-2 text-xs font-semibold text-slate-700">
+                <th key={d} className="border-b border-l border-zinc-200 bg-zinc-50 px-2 py-2 text-xs font-semibold text-zinc-700">
                   {trDayName(d)}
-                  <div className="font-normal text-slate-500">{formatTrDate(d)}</div>
+                  <div className="font-normal text-zinc-500">{formatTrDate(d)}</div>
                 </th>
               ))}
             </tr>
@@ -76,9 +76,9 @@ export function ScheduleGrid({
           <tbody>
             {schedule.settings.slots.map((slot) => (
               <tr key={slot.id}>
-                <td className="border-b border-slate-200 bg-slate-50 px-2 py-2 text-center text-xs font-semibold text-slate-600">
+                <td className="border-b border-zinc-200 bg-zinc-50 px-2 py-2 text-center text-xs font-semibold text-zinc-600">
                   {slot.start}
-                  <div className="font-normal text-slate-400">{slot.end}</div>
+                  <div className="font-normal text-zinc-400">{slot.end}</div>
                 </td>
                 {dates.map((d, di) => {
                   const key = `${di}|${slot.id}`;
@@ -92,7 +92,7 @@ export function ScheduleGrid({
                       }}
                       onDragLeave={() => setOver((o) => (o === key ? null : o))}
                       onDrop={(e) => onDrop(e, di, slot.id)}
-                      className={cn("h-28 border-b border-l border-slate-200 p-1.5 align-top transition-colors", over === key && "bg-indigo-50 ring-2 ring-inset ring-indigo-300")}
+                      className={cn("h-28 border-b border-l border-zinc-200 p-1.5 align-top transition-colors", over === key && "bg-brand-50 ring-2 ring-inset ring-brand-300")}
                     >
                       <div className="space-y-1.5">
                         {entries.map((e) => {
@@ -114,19 +114,19 @@ export function ScheduleGrid({
                                 .join("\n")}`}
                             >
                               <div className="flex items-center gap-1">
-                                <GripVertical className="h-3 w-3 text-slate-400" />
-                                <span className="font-bold text-slate-900">{c?.code}</span>
+                                <GripVertical className="h-3 w-3 text-zinc-400" />
+                                <span className="font-bold text-zinc-900">{c?.code}</span>
                                 <Badge className="px-1.5 py-0 text-[9.5px]">{c?.classYear}. sınıf</Badge>
                                 <button
-                                  className="ml-auto text-slate-400 hover:text-slate-700 cursor-pointer"
+                                  className="ml-auto text-zinc-400 hover:text-zinc-700 cursor-pointer"
                                   title={e.locked ? "Kilidi aç (otomatik dağıtım yeniden yerleştirebilir)" : "Kilitle (otomatik dağıtımda yerinde kalır)"}
                                   onClick={() => onChange({ ...schedule, entries: schedule.entries.map((x) => (x.id === e.id ? { ...x, locked: !x.locked } : x)) })}
                                 >
-                                  {e.locked ? <Lock className="h-3 w-3 text-indigo-600" /> : <LockOpen className="h-3 w-3" />}
+                                  {e.locked ? <Lock className="h-3 w-3 text-brand-600" /> : <LockOpen className="h-3 w-3" />}
                                 </button>
                               </div>
-                              <div className="truncate text-slate-700">{c?.name}</div>
-                              <div className="mt-0.5 flex items-center justify-between text-slate-500">
+                              <div className="truncate text-zinc-700">{c?.name}</div>
+                              <div className="mt-0.5 flex items-center justify-between text-zinc-500">
                                 <span className="truncate">{e.rooms.map((r) => rooms.find((x) => x.id === r.roomId)?.name).join(" + ")}</span>
                                 <span className="flex items-center gap-0.5">
                                   <Users className="h-3 w-3" />

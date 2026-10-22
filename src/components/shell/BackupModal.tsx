@@ -78,7 +78,7 @@ export function BackupModal({ mode, onClose }: { mode: false | "export" | "impor
       onClose={onClose}
       title="Şifreli .akredite Yedek Paketi"
       description={`PBKDF2-SHA256 (${KDF_ITERATIONS.toLocaleString("tr-TR")} iterasyon) + AES-256-GCM. Yedek parolası hiçbir yerde saklanmaz.`}
-      icon={<FileLock2 className="h-5 w-5 text-indigo-600" />}
+      icon={<FileLock2 className="h-5 w-5 text-brand-600" />}
       footer={
         tab === "export" ? (
           <Button onClick={doExport} loading={busy}>
@@ -113,7 +113,7 @@ export function BackupModal({ mode, onClose }: { mode: false | "export" | "impor
             <Input type="password" value={pw2} onChange={(e) => setPw2(e.target.value)} autoComplete="new-password" />
           </Field>
         )}
-        <div className="rounded-lg bg-slate-50 p-3 text-xs text-slate-600">
+        <div className="rounded-lg bg-zinc-50 p-3 text-xs text-zinc-600">
           {tab === "export"
             ? "Paket; tüm dersler, sınavlar, öğrenci listeleri, program, rubrikler, notlar ve şifreli AI anahtarlarınızı içerir. Başka bir bilgisayarda aynı parolayla açabilirsiniz."
             : "Hatalı parola veya değiştirilmiş dosyada AES-GCM kimlik doğrulama etiketi tutmaz ve içe aktarma reddedilir."}

@@ -70,11 +70,11 @@ export function UniversityPicker() {
         size="xl"
         title="Üniversite Seç — Antet ve Logoyu Otomatik Doldur"
         description={`${UNIVERSITIES.length} yükseköğretim kurumu, ${withLogo} logo. Logolar uygulamayla birlikte yerel olarak gelir; seçim internet gerektirmez.`}
-        icon={<Building2 className="h-5 w-5 text-indigo-600" />}
+        icon={<Building2 className="h-5 w-5 text-brand-600" />}
       >
         <div className="flex flex-wrap items-center gap-3">
           <div className="relative min-w-64 flex-1">
-            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-slate-400" />
+            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-zinc-400" />
             <Input autoFocus className="pl-8" placeholder="Üniversite veya şehir ara… (örn. ege, izmir, teknik)" value={q} onChange={(e) => setQ(e.target.value)} />
           </div>
           <Tabs
@@ -86,7 +86,7 @@ export function UniversityPicker() {
               { value: "Vakıf", label: "Vakıf" },
             ]}
           />
-          <span className="text-xs text-slate-500">{list.length} sonuç</span>
+          <span className="text-xs text-zinc-500">{list.length} sonuç</span>
         </div>
         <div className="mt-4 grid max-h-[60vh] grid-cols-2 gap-2 overflow-y-auto pr-1 scrollbar-thin sm:grid-cols-3 lg:grid-cols-4">
           {list.map((u) => {
@@ -98,31 +98,31 @@ export function UniversityPicker() {
                 disabled={!!busy}
                 className={cn(
                   "flex items-center gap-3 rounded-xl p-2.5 text-left ring-1 transition-colors cursor-pointer disabled:opacity-60",
-                  active ? "bg-indigo-50 ring-indigo-400" : "bg-white ring-slate-200 hover:bg-slate-50",
+                  active ? "bg-brand-50 ring-brand-400" : "bg-white ring-zinc-200 hover:bg-zinc-50",
                 )}
               >
-                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-white ring-1 ring-slate-100">
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-white ring-1 ring-zinc-100">
                   {u.logo ? (
                     // eslint-disable-next-line @next/next/no-img-element
                     <img src={`/logos/${u.logo}`} alt="" loading="lazy" className="max-h-11 max-w-11 object-contain" />
                   ) : (
-                    <ImageOff className="h-5 w-5 text-slate-300" />
+                    <ImageOff className="h-5 w-5 text-zinc-300" />
                   )}
                 </div>
                 <div className="min-w-0">
-                  <div className="line-clamp-2 text-xs font-semibold text-slate-900">{u.name}</div>
+                  <div className="line-clamp-2 text-xs font-semibold text-zinc-900">{u.name}</div>
                   <div className="mt-0.5 flex items-center gap-1">
-                    <Badge tone={u.type === "Devlet" ? "sky" : "violet"} className="px-1.5 py-0 text-[10px]">{u.type}</Badge>
-                    <span className="truncate text-[10.5px] text-slate-500">{u.city}</span>
-                    {active && <Check className="h-3.5 w-3.5 text-indigo-600" />}
+                    <Badge tone={u.type === "Devlet" ? "sky" : "amber"} className="px-1.5 py-0 text-[10px]">{u.type}</Badge>
+                    <span className="truncate text-[10.5px] text-zinc-500">{u.city}</span>
+                    {active && <Check className="h-3.5 w-3.5 text-brand-600" />}
                   </div>
                 </div>
               </button>
             );
           })}
-          {!list.length && <div className="col-span-full py-10 text-center text-sm text-slate-400">Sonuç bulunamadı.</div>}
+          {!list.length && <div className="col-span-full py-10 text-center text-sm text-zinc-400">Sonuç bulunamadı.</div>}
         </div>
-        <p className="mt-3 text-[11px] text-slate-500">
+        <p className="mt-3 text-[11px] text-zinc-500">
           Logolar ilgili kurumların tescilli işaretleridir; yalnızca kurumunuzun resmi belgelerinde kullanım içindir. Kaynak listesi: <span className="font-mono">public/logos/KAYNAKLAR.md</span>
         </p>
       </Dialog>

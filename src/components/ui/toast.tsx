@@ -32,7 +32,7 @@ export const toast = {
 const icons = {
   success: <CheckCircle2 className="h-5 w-5 text-emerald-600" />,
   error: <XCircle className="h-5 w-5 text-red-600" />,
-  info: <Info className="h-5 w-5 text-indigo-600" />,
+  info: <Info className="h-5 w-5 text-brand-600" />,
   warning: <TriangleAlert className="h-5 w-5 text-amber-600" />,
 };
 
@@ -48,13 +48,13 @@ export function Toaster() {
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, x: 40 }}
-            className="pointer-events-auto flex gap-3 rounded-xl border border-slate-200 bg-white p-3 shadow-lg"
+            className="pointer-events-auto flex gap-3 rounded-xl border border-zinc-200 bg-white p-3 shadow-lg"
             onClick={() => remove(t.id)}
           >
             {icons[t.tone]}
             <div className="min-w-0 flex-1">
-              <div className="text-sm font-medium text-slate-900">{t.title}</div>
-              {t.description && <div className="mt-0.5 break-words text-xs text-slate-600">{t.description}</div>}
+              <div className="text-sm font-medium text-zinc-900">{t.title}</div>
+              {t.description && <div className="mt-0.5 break-words text-xs text-zinc-600">{t.description}</div>}
             </div>
           </motion.div>
         ))}

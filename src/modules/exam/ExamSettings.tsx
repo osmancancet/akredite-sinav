@@ -118,7 +118,7 @@ export function OutcomesEditor() {
       <CardBody className="space-y-2">
         {course.outcomes.map((o, i) => (
           <div key={o.id} className="flex items-start gap-2">
-            <span className="mt-2 w-12 shrink-0 text-xs font-bold text-indigo-700">{o.code}</span>
+            <span className="mt-2 w-12 shrink-0 text-xs font-bold text-brand-700">{o.code}</span>
             <Textarea
               rows={2}
               className="min-h-[44px] text-sm"
@@ -137,7 +137,7 @@ export function OutcomesEditor() {
                 })
               }
             >
-              <Trash2 className="h-4 w-4 text-slate-400" />
+              <Trash2 className="h-4 w-4 text-zinc-400" />
             </Button>
           </div>
         ))}
@@ -170,12 +170,12 @@ export function OutcomesEditor() {
             onChange={(e) => setRaw(e.target.value)}
             placeholder={"Bu dersi başarıyla tamamlayan öğrenci;\n1. Veri tabanı kavramlarını açıklar.\n2. ER diyagramı çizer.\nÖÇ3: SQL sorguları yazar.\n• Normalizasyon uygular."}
           />
-          <div className="rounded-lg border border-slate-200 bg-slate-50 p-3">
-            <div className="mb-2 text-xs font-semibold text-slate-600">Ayıklanan ÖÇ&apos;ler ({parsed.length})</div>
+          <div className="rounded-lg border border-zinc-200 bg-zinc-50 p-3">
+            <div className="mb-2 text-xs font-semibold text-zinc-600">Ayıklanan ÖÇ&apos;ler ({parsed.length})</div>
             <ol className="space-y-1.5 text-sm">
               {parsed.map((p, i) => (
                 <li key={i} className="flex gap-2">
-                  <span className="w-12 shrink-0 text-xs font-bold text-indigo-700">ÖÇ-{(mode === "append" ? course.outcomes.length : 0) + i + 1}</span>
+                  <span className="w-12 shrink-0 text-xs font-bold text-brand-700">ÖÇ-{(mode === "append" ? course.outcomes.length : 0) + i + 1}</span>
                   <span>{p}</span>
                 </li>
               ))}

@@ -84,8 +84,8 @@ export function RubricStudio() {
 
       {!rubric ? (
         <Card>
-          <CardBody className="py-12 text-center text-sm text-slate-500">
-            <ClipboardList className="mx-auto mb-2 h-8 w-8 text-slate-300" />
+          <CardBody className="py-12 text-center text-sm text-zinc-500">
+            <ClipboardList className="mx-auto mb-2 h-8 w-8 text-zinc-300" />
             Henüz rubrik yok. Yukarıdan bir şablon seçin.
           </CardBody>
         </Card>
@@ -207,20 +207,20 @@ export function RubricStudio() {
               <table className="w-full min-w-[1100px] border-collapse text-sm">
                 <thead>
                   <tr className="text-xs">
-                    <th className="w-60 border-b border-slate-200 bg-slate-50 px-3 py-2 text-left text-slate-600">Kriter · ÖÇ · Ağırlık</th>
+                    <th className="w-60 border-b border-zinc-200 bg-zinc-50 px-3 py-2 text-left text-zinc-600">Kriter · ÖÇ · Ağırlık</th>
                     {RUBRIC_LEVELS.map((l, i) => (
-                      <th key={l.key} className={cn("border-b border-l border-slate-200 px-3 py-2 text-left", LEVEL_BG[i])}>
-                        <span className="font-semibold text-slate-800">{l.label}</span>
-                        <span className="ml-1 font-normal text-slate-500">%{l.range[0]}–{l.range[1]}</span>
+                      <th key={l.key} className={cn("border-b border-l border-zinc-200 px-3 py-2 text-left", LEVEL_BG[i])}>
+                        <span className="font-semibold text-zinc-800">{l.label}</span>
+                        <span className="ml-1 font-normal text-zinc-500">%{l.range[0]}–{l.range[1]}</span>
                       </th>
                     ))}
-                    <th className="w-10 border-b border-slate-200 bg-slate-50" />
+                    <th className="w-10 border-b border-zinc-200 bg-zinc-50" />
                   </tr>
                 </thead>
                 <tbody>
                   {rubric.criteria.map((c) => (
                     <tr key={c.id} className="align-top">
-                      <td className="border-b border-slate-200 px-3 py-2">
+                      <td className="border-b border-zinc-200 px-3 py-2">
                         <Input value={c.name} onChange={(e) => setCriterion(c.id, { name: e.target.value })} className="font-medium" />
                         <div className="mt-2 flex flex-wrap gap-1">
                           {course?.outcomes.map((o) => {
@@ -230,7 +230,7 @@ export function RubricStudio() {
                                 key={o.id}
                                 title={o.text}
                                 onClick={() => setCriterion(c.id, { outcomeIds: on ? c.outcomeIds.filter((x) => x !== o.id) : [...c.outcomeIds, o.id] })}
-                                className={cn("rounded-full px-2 py-0.5 text-[10.5px] font-semibold ring-1 cursor-pointer", on ? "bg-indigo-600 text-white ring-indigo-600" : "bg-white text-slate-500 ring-slate-300")}
+                                className={cn("rounded-full px-2 py-0.5 text-[10.5px] font-semibold ring-1 cursor-pointer", on ? "bg-brand-600 text-white ring-brand-600" : "bg-white text-zinc-500 ring-zinc-300")}
                               >
                                 {on && <Check className="mr-0.5 inline h-2.5 w-2.5" />}
                                 {o.code}
@@ -238,14 +238,14 @@ export function RubricStudio() {
                             );
                           })}
                         </div>
-                        <div className="mt-2 flex items-center gap-2 text-xs text-slate-500">
+                        <div className="mt-2 flex items-center gap-2 text-xs text-zinc-500">
                           Ağırlık
                           <Input type="number" step={0.5} className="h-8 w-20" value={c.weight} onChange={(e) => setCriterion(c.id, { weight: Number(e.target.value) || 0 })} />
                           puan
                         </div>
                       </td>
                       {c.levels.map((t, i) => (
-                        <td key={i} className={cn("border-b border-l border-slate-200 px-2 py-2", LEVEL_BG[i], "bg-opacity-40")}>
+                        <td key={i} className={cn("border-b border-l border-zinc-200 px-2 py-2", LEVEL_BG[i], "bg-opacity-40")}>
                           <Textarea
                             rows={4}
                             className="min-h-[96px] bg-white/80 text-xs"
@@ -256,12 +256,12 @@ export function RubricStudio() {
                               setCriterion(c.id, { levels });
                             }}
                           />
-                          <div className="mt-1 text-right text-[10.5px] font-medium text-slate-500">{levelPointRange(c.weight, i)} puan</div>
+                          <div className="mt-1 text-right text-[10.5px] font-medium text-zinc-500">{levelPointRange(c.weight, i)} puan</div>
                         </td>
                       ))}
-                      <td className="border-b border-slate-200 px-1 py-2">
+                      <td className="border-b border-zinc-200 px-1 py-2">
                         <Button size="icon" variant="ghost" aria-label="Kriteri sil" onClick={() => setRubric({ criteria: rubric.criteria.filter((x) => x.id !== c.id) })}>
-                          <Trash2 className="h-4 w-4 text-slate-400" />
+                          <Trash2 className="h-4 w-4 text-zinc-400" />
                         </Button>
                       </td>
                     </tr>
@@ -273,7 +273,7 @@ export function RubricStudio() {
 
           <Card>
             <CardHeader title="A4 Yatay Önizleme" />
-            <CardBody className="overflow-auto bg-slate-200/60">
+            <CardBody className="overflow-auto bg-zinc-200/60">
               <div style={{ zoom: 0.6 }}>
                 <RubricDocument inst={data.institution} course={course} rubric={rubric} />
               </div>
