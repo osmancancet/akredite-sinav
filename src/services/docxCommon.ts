@@ -25,6 +25,7 @@ import { saveAs } from "file-saver";
 import * as XLSX from "xlsx";
 import type { Institution } from "@/lib/types";
 import { trUpper } from "@/lib/utils";
+import { BRAND } from "@/lib/brand";
 
 export const FONT = "Times New Roman";
 export const PORTRAIT_WIDTH = 9638; // A4 - 2×2cm kenar boşluğu (twip)
@@ -295,9 +296,9 @@ export interface SectionSpec {
 
 export function buildDocument(title: string, sections: SectionSpec[]): Document {
   return new Document({
-    creator: "AkrediteSınav",
+    creator: BRAND.name,
     title,
-    description: "AkrediteSınav — Zero-Knowledge akademik belge üreticisi",
+    description: `${BRAND.name} — Zero-Knowledge akademik belge üreticisi`,
     styles: {
       default: {
         document: { run: { font: FONT, size: 22 }, paragraph: { spacing: { line: 264 } } },
@@ -347,6 +348,13 @@ export async function saveDocx(doc: Document, fileName: string): Promise<void> {
   const name = fileName.endsWith(".docx") ? fileName : `${fileName}.docx`;
   if (collector) collector.push({ fileName: name, blob });
   else saveAs(blob, name);
+}
+
+/** Toplayıcı etkinse (kanıta ekleme, ZIP) dosyayı ona verir; değilse false döner ve çağıran indirir */
+export function pushCollected(fileName: string, blob: Blob): boolean {
+  if (!collector) return false;
+  collector.push({ fileName, blob });
+  return true;
 }
 
 export function saveWorkbook(wb: XLSX.WorkBook, fileName: string): void {

@@ -27,6 +27,7 @@ import { CSP } from "@/lib/csp";
 import type { CollectionKey } from "@/lib/types";
 import { buildDocument, letterhead, para, saveDocx, sectionTitle, simpleTable, infoTable } from "@/services/docxCommon";
 import { cn, todayIso, fixed } from "@/lib/utils";
+import { BRAND } from "@/lib/brand";
 
 const LABELS: Partial<Record<CollectionKey, string>> = {
   institution: "Kurum Anteti",
@@ -296,7 +297,7 @@ function OfflineProof() {
       const meta = await getKeyringMeta();
       const doc = buildDocument("Zero-Knowledge Güvenlik Denetim Kanıt Raporu", [
         {
-          footer: "AkrediteSınav — Güvenlik Denetim Kanıtı",
+          footer: `${BRAND.name} — Güvenlik Denetim Kanıtı`,
           children: [
             ...letterhead(data.institution, "Zero-Knowledge Güvenlik Denetim Kanıt Raporu", `Rapor tarihi: ${new Date().toLocaleString("tr-TR")}`),
             infoTable([
@@ -318,7 +319,7 @@ function OfflineProof() {
             sectionTitle("Content-Security-Policy"),
             para(CSP, { size: 8, font: "Courier New" }),
             para(
-              "Bu belge, AkrediteSınav uygulamasının tarayıcı içinde (istemci tarafında) docx kütüphanesi ile ürettiği bir çıktıdır. Belge üretimi sırasında hiçbir sunucuya veri gönderilmemiştir.",
+              `Bu belge, ${BRAND.name} uygulamasının tarayıcı içinde (istemci tarafında) docx kütüphanesi ile ürettiği bir çıktıdır. Belge üretimi sırasında hiçbir sunucuya veri gönderilmemiştir.`,
               { size: 9, italics: true, spacingBefore: 200 },
             ),
           ],

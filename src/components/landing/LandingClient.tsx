@@ -8,6 +8,7 @@ import { ThemeToggle } from "@/components/shell/ThemeToggle";
 import { BrandMark } from "@/components/shell/BrandMark";
 import { useTheme } from "@/hooks/useTheme";
 import { cn } from "@/lib/utils";
+import { BRAND } from "@/lib/brand";
 
 /** Eski "/#/modül" bağlantılarını uygulamaya yönlendirir. */
 export function HashRedirect() {
@@ -34,7 +35,7 @@ export function LandingNav() {
       <div className="mx-auto flex h-16 max-w-6xl items-center gap-6 px-5">
         <Link href="/" className="flex items-center gap-2.5">
           <BrandMark className="h-8 w-8" />
-          <span className="font-display text-[18px] font-medium text-zinc-950">AkrediteSınav</span>
+          <span className="font-display text-[18px] font-medium text-zinc-950">{BRAND.name}</span>
         </Link>
         <nav className="hidden items-center gap-6 text-[13.5px] text-zinc-600 md:flex">
           <a href="#ozellikler" className="hover:text-zinc-950">Özellikler</a>

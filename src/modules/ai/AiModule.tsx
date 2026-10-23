@@ -29,6 +29,7 @@ import { toast } from "@/components/ui/toast";
 import { navigateTo } from "@/hooks/useHashRoute";
 import { AI_SYSTEM_PROMPT, aiChat, isConfigured, testConnection, type ChatMessage } from "@/services/aiCopilotService";
 import { useAiRunner } from "./useAi";
+import { BRAND } from "@/lib/brand";
 
 export function AiModule() {
   return (
@@ -73,7 +74,7 @@ function ProviderSettings() {
       <CardHeader
         icon={<Bot className="h-4 w-4" />}
         title="AI Sağlayıcısı (Kendi Anahtarını Getir)"
-        description="İstekler tarayıcınızdan doğrudan sağlayıcıya gider. Arada AkrediteSınav sunucusu yoktur."
+        description={`İstekler tarayıcınızdan doğrudan sağlayıcıya gider. Arada ${BRAND.name} sunucusu yoktur.`}
         actions={<Badge tone={isConfigured(ai) ? "emerald" : "amber"}>{isConfigured(ai) ? "Yapılandırıldı" : "Anahtar bekleniyor"}</Badge>}
       />
       <CardBody className="space-y-4">

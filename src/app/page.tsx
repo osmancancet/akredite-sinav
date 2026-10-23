@@ -3,21 +3,19 @@ import {
   ArrowRight,
   BookOpenCheck,
   CalendarClock,
-  ClipboardList,
   FileArchive,
   FileText,
   FlaskConical,
   KeyRound,
-  LayoutGrid,
   LineChart,
   Lock,
-  Microscope,
-  Network,
   Plane,
   ShieldCheck,
   Sparkles,
   WifiOff,
   FolderCheck,
+  Gauge,
+  Users,
 } from "lucide-react";
 import { ACCREDITATION_BODIES, YOKAK_REGISTRY_ACCESSED, YOKAK_REGISTRY_URL } from "@/lib/accreditationBodies";
 import { UNIVERSITIES } from "@/lib/universities";
@@ -25,25 +23,25 @@ import frameworkIndex from "../../public/frameworks/index.json";
 import type { FrameworkIndexEntry } from "@/lib/accreditation/types";
 import { HashRedirect, HeroLattice, LandingNav } from "@/components/landing/LandingClient";
 import { BrandMark } from "@/components/shell/BrandMark";
+import { BRAND } from "@/lib/brand";
 
 const FEATURES = [
-  { icon: FileText, title: "Sınav kağıdı ve belirtke", body: "Her soru ÖÇ ve Bloom düzeyiyle etiketlenir; belirtke tablosu, A/B kitapçık ve MEDEK denetimi kendiliğinden oluşur. Resmi Word ve A4 PDF tek tıkta." },
-  { icon: BookOpenCheck, title: "Word'den soru aktarma ve banka", body: "Hazır sınavınızı yapıştırın: numara, puan, şıklar, doğru cevap, kod ve Bloom düzeyi algılanır. Sorular dönemler arası soru bankasında yaşar." },
-  { icon: CalendarClock, title: "Çakışmasız sınav programı", body: "Sınıf, derslik, gözetmen ve öğrenci düzeyinde çakışma yok. Kalabalık dersler otomatik bölünür, gözetmen yükü standart sapmaya göre dengelenir." },
-  { icon: LayoutGrid, title: "Kelebek düzeni ve tutanaklar", body: "OBS listesinden KVKK maskeli kapı listesi, imzalı yoklama tutanağı, sınav zarfı etiketi ve kanıt klasörü kapakları." },
-  { icon: ClipboardList, title: "Analitik rubrikler", body: "Proje, laboratuvar, sunum ve 3+1 iş yeri eğitimi için ÖÇ eşleşmeli dört düzeyli dereceli puanlama anahtarları." },
-  { icon: LineChart, title: "ÖÇ/PÇ başarı ve PUKÖ", body: "Soru bazlı notlardan ÖÇ ve PÇ gerçekleşmesi hesaplanır; eşik altı çıktılar için kök neden ve eylem planıyla PUKÖ raporu yazılır." },
-  { icon: Microscope, title: "Madde analizi", body: "Güçlük, ayırt edicilik (%27), madde-toplam korelasyonu, Cronbach α ve ölçmenin standart hatası — Ebel ölçütleriyle karar önerisi." },
-  { icon: Network, title: "Program çıktıları panosu", body: "Dersler × PÇ planlanan katkı ve gerçekleşen başarı; hiçbir dersin desteklemediği çıktılar öz değerlendirme öncesinde görünür olur." },
-  { icon: FileArchive, title: "Tek tık kanıt klasörü", body: "Bir sınavın bütün resmi belgeleri klasörlenmiş tek ZIP'te; her dosya SHA-256 bütünlük özetiyle listelenir." },
-  { icon: FolderCheck, title: "Akreditasyon kanıt merkezi", body: "Kuruluşunuzu seçin: ölçütler, alt ölçütler ve kuruluşun kendi örnek kanıt listesi sayfa atfıyla gelir. Dosyalar şifreli eklenir; görev, öz değerlendirme ve kanıt paketi tek yerde." },
+  { icon: FolderCheck, title: "Akreditasyon kanıt merkezi", body: "Kuruluşunuzu seçin: ölçütler, alt ölçütler ve kuruluşun kendi örnek kanıt listesi belge ve sayfa atfıyla gelir. Kanıt başına durum, sorumlu, son tarih ve şifreli dosyalar." },
+  { icon: Users, title: "Ekipten şifreli kanıt toplama", body: "Öğretim elemanına kalem kalem kanıt talebi gönderin; belgelerini kendi tarayıcısında ekleyip yalnızca sizin açabileceğiniz şifreli bir teslim paketiyle döndürsün. Sunucu yok." },
+  { icon: Sparkles, title: "Kanıt üreticileri", body: "Sınav kağıdı, cevap anahtarı, belirtke, kağıt kapakları, rubrik, PUKÖ raporu: kuruluş belgesinde adıyla geçen kanıt kalemlerine önerilir, tek tıkla ve tek kopya olarak eklenir." },
+  { icon: Gauge, title: "Öz değerlendirme ve iyileştirme", body: "MEDEK Rehberi'nin 1–5 düzey tanımları ve YÖKAK olgunluk düzeyleri; düşük düzeyden iyileştirme eylemi, öz değerlendirme çalışma raporu ve YÖKAK tahmini puanı." },
+  { icon: FileText, title: "Ders dosyası ve ÖDR tabloları", body: "Ders başına bilgi formu ve bütün ölçme araçlarının belgeleri tek ZIP'te. MEDEK ÖDR Tablo 5.1, 5.2, 6.1, 6.2 şablon sütunlarıyla, uygulama verisinden ön doldurulmuş." },
+  { icon: BookOpenCheck, title: "Sınav kağıdı ve belirtke", body: "ÖÇ ve Bloom etiketli sorular, Word'den toplu aktarma, soru bankası, A/B kitapçık ve belirtke tablosu. Resmi Word ve A4 PDF tek tıkta." },
+  { icon: LineChart, title: "ÖÇ/PÇ başarısı ve madde analizi", body: "Soru bazlı notlardan ÖÇ ve PÇ gerçekleşmesi, güçlük, ayırt edicilik ve Cronbach α; eşik altı çıktılar için PUKÖ raporu ve program çıktıları panosu." },
+  { icon: CalendarClock, title: "Sınav programı ve tutanaklar", body: "Çakışmasız takvim, dengeli gözetmen dağılımı, KVKK maskeli kapı listesi, imzalı yoklama tutanağı ve sınav zarfı etiketi." },
+  { icon: FileArchive, title: "Tek tık kanıt paketi", body: "Ölçüt klasörlerine ayrılmış, her dosyası SHA-256 özetiyle listelenmiş ZIP; YÖKAK adlandırma kuralına uygun. Kanıt matrisi Excel'de." },
 ];
 
 const STEPS = [
-  { k: "01", t: "Hazırlık", d: "Ders kataloğu Bologna sayfasından, ÖÇ'ler ve sorular Word'den aktarılır." },
-  { k: "02", t: "Operasyon", d: "Program, gözetmen tebliğleri, takvim dosyaları ve kapı listeleri üretilir." },
-  { k: "03", t: "Ölçme", d: "Notlar girilir; ÖÇ, PÇ ve madde analizleri anında hesaplanır." },
-  { k: "04", t: "Kalite", d: "PUKÖ raporu ve program panosu, seçtiğiniz akreditasyonun ölçütlerine kanıt olarak tek tıkla eklenir." },
+  { k: "01", t: "Kuruluşu seçin", d: "Ölçütler ve kuruluşun örnek kanıtları hazır gelir; her kaleme sorumlu ve tarih atanır." },
+  { k: "02", t: "Ekipten toplayın", d: "Öğretim elemanlarına şifreli kanıt talebi gönderin; teslim paketleri ilgili kanıtlara kendiliğinden eklenir." },
+  { k: "03", t: "Uygulamada üretin", d: "Sınav, ölçme ve PUKÖ belgeleri uygulamada üretilir ve önerilen kanıt kalemlerine bağlanır." },
+  { k: "04", t: "Teslim edin", d: "Öz değerlendirme taslağı, kanıt matrisi ve SHA-256 içindekili kanıt paketi tek tıkla hazır." },
 ];
 
 const FAQ = [
@@ -52,6 +50,7 @@ const FAQ = [
   { q: "Bilgisayar değiştirirsem ne olur?", a: "Tüm kasayı parolalı .akredite dosyası olarak indirip diğer bilgisayarda geri yükleyebilirsiniz. Paket PBKDF2 (100.000 iterasyon) ve AES-256-GCM ile şifrelenir." },
   { q: "Yapay zekâ verilerimi bir yere gönderir mi?", a: "Yalnızca siz bir AI eylemini başlattığınızda ve kendi anahtarınızla; istek tarayıcınızdan doğrudan seçtiğiniz sağlayıcıya gider. Öğrenci kimlik bilgileri hiçbir isteğe eklenmez. Tamamen yerel çalışmak için Ollama desteklenir." },
   { q: "Hangi akreditasyon kuruluşları destekleniyor?", a: "YÖKAK'ın tescilli 29 program akreditasyon kuruluşunun tamamı ile YÖKAK Kurumsal Akreditasyon Programı. Ölçütler ve örnek kanıtlar her kuruluşun kendi yayımladığı belgeden, belge ve sayfa atfıyla alınmıştır; belgede açıkça yazmayan kanıtlar “ölçütten türetilmiş” olarak ayrıca işaretlenir. Listede olmayan bir çerçeve (ör. iç denetim) için kendi ölçüt setinizi tanımlayabilirsiniz." },
+  { q: "Öğretim elemanlarından kanıtları nasıl toplarım?", a: "Görevler ekranında bir sorumlunun yanındaki “Kanıt talebi gönder” ile ona atanmış kalemler için bir talep dosyası indirirsiniz. Öğretim elemanı dosyayı kendi tarayıcısında açar, belgelerini ekler ve şifreli teslim paketini size geri gönderir; içe aktardığınızda dosyalar doğru kanıtlara eklenir. Hesap veya sunucu gerekmez." },
   { q: "Kanıt dosyalarım nereye yükleniyor?", a: "Hiçbir yere. Eklediğiniz PDF, Word veya görsel dosyalar tarayıcınızda AES-256-GCM ile şifrelenip cihazınızdaki kasaya yazılır; .akredite yedeğine de şifreli olarak dahil edilir. Kanıt paketi ZIP'i yine tarayıcıda üretilir ve her dosyanın SHA-256 özetini içerir." },
 ];
 
@@ -76,12 +75,12 @@ export default function Landing() {
               <span className="h-1.5 w-1.5 rounded-full bg-brand-600" /> Zero-Knowledge · tarayıcı içi şifreli
             </div>
             <h1 className="font-display mt-5 text-[44px] font-medium leading-[1.04] tracking-[-0.02em] text-zinc-950 sm:text-[58px]">
-              Sınavdan akreditasyona,
+              Akreditasyon kanıtlarınız,
               <br />
-              <span className="text-brand-700">bütün dönem tek kasada.</span>
+              <span className="text-brand-700">tek ve şifreli bir yerde.</span>
             </h1>
             <p className="mt-5 max-w-xl text-[16.5px] leading-relaxed text-zinc-600">
-              Akademisyenler, bölüm başkanları ve kalite komisyonları için sınav kağıdı, sınav programı, kapı listesi, rubrik, ÖÇ/PÇ analizi, PUKÖ raporu ve akreditasyon kanıt yönetimi. Verileriniz cihazınızdan hiç çıkmaz.
+              Kalite komisyonları ve bölüm başkanları için: YÖKAK tescilli kuruluşların ölçütleri ve örnek kanıtları hazır, ekipten kanıt toplama şifreli, sınav ve ölçme belgeleri uygulamada üretilir. Verileriniz cihazınızdan hiç çıkmaz.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <Link href="/app" className="inline-flex h-11 items-center gap-2 rounded-lg bg-zinc-900 px-5 text-sm font-medium text-white transition-colors hover:bg-zinc-800">
@@ -118,12 +117,12 @@ export default function Landing() {
             <span className="h-2.5 w-2.5 rounded-full bg-zinc-200" />
             <span className="h-2.5 w-2.5 rounded-full bg-zinc-200" />
             <span className="h-2.5 w-2.5 rounded-full bg-zinc-200" />
-            <span className="ml-3 font-mono text-[11px] text-zinc-400">akredite-sinav · Genel Bakış</span>
+            <span className="ml-3 font-mono text-[11px] text-zinc-400">{BRAND.name} · Akreditasyon Kanıt Merkezi</span>
           </div>
           {/* eslint-disable-next-line @next/next/no-img-element -- statik dışa aktarımda next/image optimizasyonu yok */}
-          <img src="/screens/overview-light.jpg" alt="AkrediteSınav Genel Bakış ekranı: dönem iş akışı, yaklaşan sınavlar ve hızlı eylemler" className="block w-full dark:hidden" loading="lazy" />
+          <img src="/screens/kanit-light.jpg" alt={`${BRAND.name} Akreditasyon Kanıt Merkezi: MEDEK ölçütleri, rehber düzeyiyle öz değerlendirme ve kuruluşun örnek kanıtları`} className="block w-full dark:hidden" loading="lazy" />
           {/* eslint-disable-next-line @next/next/no-img-element -- statik dışa aktarımda next/image optimizasyonu yok */}
-          <img src="/screens/overview-dark.jpg" alt="AkrediteSınav Genel Bakış ekranı, koyu tema" className="hidden w-full dark:block" loading="lazy" />
+          <img src="/screens/kanit-dark.jpg" alt={`${BRAND.name} Akreditasyon Kanıt Merkezi, koyu tema`} className="hidden w-full dark:block" loading="lazy" />
         </div>
       </section>
 
@@ -131,9 +130,9 @@ export default function Landing() {
       <section className="mx-auto max-w-6xl px-5 py-24">
         <div className="grid gap-10 lg:grid-cols-[0.8fr_1.2fr]">
           <div>
-            <div className="font-mono text-[11px] uppercase tracking-[0.14em] text-brand-700">Dönem iş akışı</div>
-            <h2 className="font-display mt-3 text-[34px] font-medium leading-tight text-zinc-950">Dağınık Word dosyaları yerine tek bir akış.</h2>
-            <p className="mt-4 text-[15px] leading-relaxed text-zinc-600">Genel Bakış ekranı dönemin neresinde olduğunuzu gösterir ve sıradaki adıma tek tıkla götürür.</p>
+            <div className="font-mono text-[11px] uppercase tracking-[0.14em] text-brand-700">Nasıl çalışır</div>
+            <h2 className="font-display mt-3 text-[34px] font-medium leading-tight text-zinc-950">E-posta zincirleri ve paylaşılan klasörler yerine tek bir akış.</h2>
+            <p className="mt-4 text-[15px] leading-relaxed text-zinc-600">Genel Bakış, hangi ölçütte ne kadar hazır olduğunuzu, geciken kanıtları ve yanıt bekleyen talepleri gösterir.</p>
           </div>
           <ol className="grid gap-px overflow-hidden rounded-2xl border border-zinc-200/80 bg-zinc-200/80 sm:grid-cols-2">
             {STEPS.map((s) => (
@@ -151,8 +150,8 @@ export default function Landing() {
       <section id="ozellikler" className="scroll-mt-20 border-y border-zinc-200/70 bg-white/60 py-24">
         <div className="mx-auto max-w-6xl px-5">
           <div className="max-w-2xl">
-            <div className="font-mono text-[11px] uppercase tracking-[0.14em] text-brand-700">Modüller</div>
-            <h2 className="font-display mt-3 text-[34px] font-medium leading-tight text-zinc-950">Ölçme-değerlendirmenin bütün kanıtları, ilk günden resmi formatta.</h2>
+            <div className="font-mono text-[11px] uppercase tracking-[0.14em] text-brand-700">Özellikler</div>
+            <h2 className="font-display mt-3 text-[34px] font-medium leading-tight text-zinc-950">Kanıtı toplamak, üretmek ve teslim etmek için gereken her şey.</h2>
           </div>
           <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {FEATURES.map(({ icon: Icon, title, body }) => (
@@ -183,6 +182,7 @@ export default function Landing() {
               { icon: Lock, t: "AES-256-GCM, her yazımda yeni IV", d: "Anahtar dışa aktarılamaz (non-extractable) bir cihaz anahtarıdır veya master parolanızdan PBKDF2 ile 100.000 iterasyonla türetilir." },
               { icon: KeyRound, t: "Şifreli taşınabilir yedek", d: ".akredite paketi parolanız olmadan açılamaz; değiştirilmiş dosya GCM doğrulamasından geçemez." },
               { icon: WifiOff, t: "İçerik Güvenlik Politikası ile ağ kilidi", d: "Tarayıcı, uygulamanın kendisi ve sizin seçtiğiniz AI sağlayıcısı dışındaki her adrese isteği engeller." },
+              { icon: Users, t: "Ekip alışverişi de uçtan uca şifreli", d: "Kanıt talebi her seferinde yeni bir ECDH P-256 anahtarı taşır; teslim paketi AES-256-GCM ile şifrelenir ve yalnızca talebi oluşturan kasa açabilir. İki tarafta aynı doğrulama kodu görünür." },
               { icon: Plane, t: "Uçak modunda tam işlev", d: "Service Worker uygulama dosyalarını önbelleğe alır; internet kesikken sayfa yeniden yüklenir ve tüm çıktılar üretilir." },
             ].map(({ icon: Icon, t, d }) => (
               <div key={t} className="flex gap-4 rounded-2xl border border-zinc-200/80 bg-white p-5 shadow-[var(--shadow-card)]">
@@ -271,7 +271,7 @@ export default function Landing() {
       <footer className="border-t border-zinc-200/70">
         <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-4 px-5 py-8 text-[12.5px] text-zinc-500">
           <BrandMark className="h-6 w-6" />
-          <span>AkrediteSınav · Zero-Knowledge akademik stüdyo</span>
+          <span>{BRAND.name} · {BRAND.descriptor}</span>
           <span className="ml-auto flex items-center gap-4">
             <FlaskConical className="h-3.5 w-3.5" />
             <a href="https://github.com/osmancancet/akredite-sinav" target="_blank" rel="noreferrer noopener" className="hover:text-zinc-900">

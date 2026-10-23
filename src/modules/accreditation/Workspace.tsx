@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { BookMarked, FileArchive, FileSpreadsheet, FileText, Gauge, GraduationCap, ListChecks, ListTodo, Loader2, Paperclip, Plus, Search, Trash2, Users } from "lucide-react";
+import { BookMarked, FileArchive, FileSpreadsheet, FileText, Gauge, GraduationCap, ListChecks, ListTodo, Loader2, Paperclip, Plus, Search, Send, Sparkles, Trash2, Users, Wrench } from "lucide-react";
 import { useData, useVault } from "@/lib/store";
 import type { ActiveFramework, EvidenceStatus, FwCriterion, FwEvidence, FwSub } from "@/lib/accreditation/types";
 import { STATUS_LABEL } from "@/lib/accreditation/types";
@@ -14,20 +14,30 @@ import { Tabs } from "@/components/ui/tabs";
 import { Field, Input, Select } from "@/components/ui/form";
 import { toast } from "@/components/ui/toast";
 import { confirmDialog } from "@/components/ui/confirm";
-import { exportEvidenceMatrix, exportEvidencePackage, exportSelfStudyDocx } from "@/services/accreditationService";
-import { EvidenceItem, SourceLink, STATUS_DOT, StatusSelect } from "./EvidenceItem";
+import { exportEvidenceMatrix, exportEvidencePackage, exportSelfStudyDocx, listAppDocuments } from "@/services/accreditationService";
+import { frameworkSuggestions } from "@/lib/accreditation/matcher";
+import { ActionsSection, ActionsTable } from "./Actions";
+import { GeneratorsView } from "./GeneratorsView";
+import { RequestDialog, TeamCoordinator } from "./Team";
+import { EvidenceItem, SourceLink, STATUS_DOT, StatusSelect, type DocContext } from "./EvidenceItem";
 import type { AccreditationApi } from "./useAccreditation";
 
-type View = "olcutler" | "gorevler" | "kaynaklar";
+type View = "olcutler" | "ureticiler" | "gorevler" | "ekip" | "kaynaklar";
 const SUB_PAGE = 15;
 /** "Ölçüt 1" → "1" (başlık zaten ölçüt adını taşıyor) */
-const shortId = (id: string) => id.replace(/^(Ölçüt|Standart|Kriter)\s+/i, "");
-type Filter = "all" | "open" | "unassigned" | "files";
+const shortId = (id: string) => id.replace(/^(Ölçüt|Standart|Kriter)\s+/i, "").replace(/\s+[–-]\s+.*$/, "");
+type Filter = "all" | "open" | "unassigned" | "files" | "noYear" | "suggested";
 
 export function Workspace({ fw, api, onCatalog }: { fw: ActiveFramework; api: AccreditationApi; onCatalog: () => void }) {
   const [view, setView] = React.useState<View>("olcutler");
   const [selected, setSelected] = React.useState<string>(fw.snapshot.criteria[0]?.id ?? "");
   const ws = api.ws;
+  const data = useData();
+  const docs = React.useMemo(() => listAppDocuments(data), [data]);
+  const suggestions = React.useMemo(() => frameworkSuggestions(ws, fw), [ws, fw]);
+  const ctx: DocContext = React.useMemo(() => ({ docs, suggestions }), [docs, suggestions]);
+  const openActions = (ws.actions[fw.slug] ?? []).filter((a) => a.status === "open").length;
+  const pendingTeam = ws.requests.filter((r) => r.slug === fw.slug && !r.submissions.length).length;
   const p = progressOf(ws, fw);
   const tasks = fw.snapshot.criteria.flatMap((c) => criterionEvidence(ws, fw, c)).filter((e) => {
     const r = ws.records[recKey(fw.slug, e.id)];
@@ -55,13 +65,22 @@ export function Workspace({ fw, api, onCatalog }: { fw: ActiveFramework; api: Ac
         onChange={setView}
         items={[
           { value: "olcutler", label: "Ölçütler ve kanıtlar", icon: <ListChecks /> },
-          { value: "gorevler", label: "Görevler", icon: <ListTodo />, badge: tasks ? <span className="ml-1 rounded bg-zinc-200/80 px-1 font-mono text-[10px]">{tasks}</span> : undefined },
+          { value: "ureticiler", label: "Kanıt üreticileri", icon: <Sparkles /> },
+          {
+            value: "gorevler",
+            label: "Görevler ve eylemler",
+            icon: <ListTodo />,
+            badge: tasks + openActions ? <span className="ml-1 rounded bg-zinc-200/80 px-1 font-mono text-[10px]">{tasks + openActions}</span> : undefined,
+          },
+          { value: "ekip", label: "Ekip", icon: <Users />, badge: pendingTeam ? <span className="ml-1 rounded bg-zinc-200/80 px-1 font-mono text-[10px]">{pendingTeam}</span> : undefined },
           { value: "kaynaklar", label: "Kaynak belgeler ve kurallar", icon: <BookMarked /> },
         ]}
       />
 
-      {view === "olcutler" && <CriteriaView fw={fw} api={api} selected={selected} onSelect={setSelected} />}
+      {view === "olcutler" && <CriteriaView fw={fw} api={api} selected={selected} onSelect={setSelected} ctx={ctx} />}
+      {view === "ureticiler" && <GeneratorsView fw={fw} api={api} ctx={ctx} onOpen={goTo} />}
       {view === "gorevler" && <TasksView fw={fw} api={api} onOpen={goTo} />}
+      {view === "ekip" && <TeamCoordinator fw={fw} api={api} />}
       {view === "kaynaklar" && <SourcesView fw={fw} api={api} />}
     </div>
   );
@@ -169,7 +188,8 @@ function ScoreTile({ fw, api }: { fw: ActiveFramework; api: AccreditationApi }) 
 // Ölçütler
 // ---------------------------------------------------------------------------
 
-function CriteriaView({ fw, api, selected, onSelect }: { fw: ActiveFramework; api: AccreditationApi; selected: string; onSelect: (id: string) => void }) {
+function CriteriaView({ fw, api, selected, onSelect, ctx }: { fw: ActiveFramework; api: AccreditationApi; selected: string; onSelect: (id: string) => void; ctx: DocContext }) {
+  const year = useData().institution.academicYear;
   const [filter, setFilter] = React.useState<Filter>("all");
   const [query, setQuery] = React.useState("");
   const ws = api.ws;
@@ -183,6 +203,8 @@ function CriteriaView({ fw, api, selected, onSelect }: { fw: ActiveFramework; ap
     if (filter === "open" && (st === "ready" || st === "na")) return false;
     if (filter === "unassigned" && (r?.owner || st === "ready" || st === "na")) return false;
     if (filter === "files" && !r?.attachments.length) return false;
+    if (filter === "noYear" && (st === "na" || r?.attachments.some((a) => a.period === year))) return false;
+    if (filter === "suggested" && (r?.attachments.length || !ctx.docs.some((d) => d.available && (ctx.suggestions.get(e.id) ?? []).some((x) => x.kind === d.kind)))) return false;
     if (q && !foldTr(`${e.title} ${r?.note ?? ""} ${r?.owner ?? ""}`).includes(q)) return false;
     return true;
   };
@@ -201,6 +223,8 @@ function CriteriaView({ fw, api, selected, onSelect }: { fw: ActiveFramework; ap
             <option value="open">Tamamlanmamış</option>
             <option value="unassigned">Sorumlusu atanmamış</option>
             <option value="files">Dosyası olan</option>
+            <option value="noYear">{year} dosyası olmayan</option>
+            <option value="suggested">Uygulamada hazır belgesi olan, eklenmemiş</option>
           </Select>
         </div>
         <nav className="max-h-[calc(100vh-14rem)] overflow-y-auto py-1" aria-label="Ölçütler">
@@ -232,12 +256,12 @@ function CriteriaView({ fw, api, selected, onSelect }: { fw: ActiveFramework; ap
           })}
         </nav>
       </Card>
-      {current && <CriterionPanel key={current.id} fw={fw} c={current} api={api} visible={visible} filtering={filtering} />}
+      {current && <CriterionPanel key={current.id} fw={fw} c={current} api={api} visible={visible} filtering={filtering} ctx={ctx} />}
     </div>
   );
 }
 
-function CriterionPanel({ fw, c, api, visible, filtering }: { fw: ActiveFramework; c: FwCriterion; api: AccreditationApi; visible: (e: FwEvidence) => boolean; filtering: boolean }) {
+function CriterionPanel({ fw, c, api, visible, filtering, ctx }: { fw: ActiveFramework; c: FwCriterion; api: AccreditationApi; visible: (e: FwEvidence) => boolean; filtering: boolean; ctx: DocContext }) {
   const [open, setOpen] = React.useState<string | null>(null);
   const [newTitle, setNewTitle] = React.useState("");
   const [subQuery, setSubQuery] = React.useState("");
@@ -258,7 +282,7 @@ function CriterionPanel({ fw, c, api, visible, filtering }: { fw: ActiveFramewor
     return (
       <ul className="space-y-1">
         {shown.map((e) => (
-          <EvidenceItem key={e.id} fw={fw} e={e} api={api} custom={customIds.has(e.id)} open={open === e.id} onToggle={() => setOpen(open === e.id ? null : e.id)} />
+          <EvidenceItem key={e.id} fw={fw} e={e} api={api} custom={customIds.has(e.id)} open={open === e.id} onToggle={() => setOpen(open === e.id ? null : e.id)} ctx={ctx} />
         ))}
       </ul>
     );
@@ -298,7 +322,7 @@ function CriterionPanel({ fw, c, api, visible, filtering }: { fw: ActiveFramewor
           </div>
         )}
         {(showAll || subQuery ? shownSubs : shownSubs.slice(0, SUB_PAGE)).map((s) => (
-          <SubBlock key={s.id} fw={fw} s={s} api={api}>
+          <SubBlock key={s.id} fw={fw} s={s} api={api} criterionId={c.id}>
             {list(all.filter((e) => e.sub === s.id))}
           </SubBlock>
         ))}
@@ -314,6 +338,7 @@ function CriterionPanel({ fw, c, api, visible, filtering }: { fw: ActiveFramewor
             {!general.length && !subs.length && <p className="px-3 text-xs text-zinc-500">Bu ölçüt için kuruluş belgesinde kanıt listesi yok; aşağıdan kendi kanıt kalemlerinizi ekleyin.</p>}
           </section>
         )}
+        <ActionsSection fw={fw} api={api} criterionId={c.id} />
         <form
           className="flex gap-2 border-t border-zinc-100 pt-4"
           onSubmit={(ev) => {
@@ -333,7 +358,7 @@ function CriterionPanel({ fw, c, api, visible, filtering }: { fw: ActiveFramewor
   );
 }
 
-function SubBlock({ fw, s, api, children }: { fw: ActiveFramework; s: FwSub; api: AccreditationApi; children: React.ReactNode }) {
+function SubBlock({ fw, s, api, children, criterionId }: { fw: ActiveFramework; s: FwSub; api: AccreditationApi; children: React.ReactNode; criterionId: string }) {
   const [expanded, setExpanded] = React.useState(false);
   const scale = fw.snapshot.scale;
   return (
@@ -350,11 +375,11 @@ function SubBlock({ fw, s, api, children }: { fw: ActiveFramework; s: FwSub; api
             {expanded ? "Daha az göster" : "Tamamını göster"}
           </button>
         )}
-        {s.maturity && <LevelPicker fw={fw} api={api} unitId={s.id} levels={s.maturity} label="Olgunluk düzeyi" />}
+        {s.maturity && <LevelPicker fw={fw} api={api} unitId={s.id} levels={s.maturity} label="Olgunluk düzeyi" criterionId={criterionId} statement={s.title ?? s.text} />}
         {s.rubric?.map((r) => (
           <div key={r.id} className="mt-3 rounded-lg border border-zinc-100 bg-zinc-50/60 px-3 py-2.5">
             <p className="text-[12px] leading-relaxed text-zinc-700">{r.statement}</p>
-            <LevelPicker fw={fw} api={api} unitId={r.id} levels={r.levels} scale={scale} label="Öz değerlendirme" />
+            <LevelPicker fw={fw} api={api} unitId={r.id} levels={r.levels} scale={scale} label="Öz değerlendirme" criterionId={criterionId} statement={r.statement} />
             <SourceLink source={r.source} className="mt-1.5 text-[10.5px]" />
           </div>
         ))}
@@ -373,6 +398,8 @@ function LevelPicker({
   levels,
   scale,
   label,
+  criterionId,
+  statement,
 }: {
   fw: ActiveFramework;
   api: AccreditationApi;
@@ -380,8 +407,12 @@ function LevelPicker({
   levels: Record<string, string>;
   scale?: Record<string, string>;
   label: string;
+  criterionId: string;
+  statement: string;
 }) {
   const level = api.ws.maturity[matKey(fw.slug, unitId)];
+  const hasAction = (api.ws.actions[fw.slug] ?? []).some((a) => a.unitId === unitId && a.status === "open");
+  const next = level ? levels[String(level + 1)] : undefined;
   const keys = Object.keys(levels).sort();
   return (
     <div className="mt-2.5">
@@ -404,6 +435,24 @@ function LevelPicker({
         ))}
       </div>
       {level && levels[String(level)] && <p className="mt-2 rounded-md bg-white px-3 py-2 text-[12px] leading-relaxed text-zinc-700 ring-1 ring-inset ring-zinc-200/80">{levels[String(level)]}</p>}
+      {level != null && level <= 2 && !hasAction && (
+        <Button
+          size="sm"
+          variant="outline"
+          className="mt-2"
+          onClick={() => {
+            api.addAction(fw.slug, {
+              criterionId,
+              unitId,
+              title: `${unitId}: ${level}. düzeyden ${level + 1}. düzeye — ${next ?? statement}`.slice(0, 240),
+            });
+            toast.success("İyileştirme eylemi açıldı", "Görevler ve eylemler sekmesinde sorumlu ve tarih atayın.");
+          }}
+        >
+          <Wrench className="h-3.5 w-3.5" /> İyileştirme eylemi aç
+        </Button>
+      )}
+      {hasAction && <p className="mt-1.5 text-[11px] text-amber-800">Bu satır için açık bir iyileştirme eylemi var.</p>}
     </div>
   );
 }
@@ -414,6 +463,7 @@ function LevelPicker({
 
 function TasksView({ fw, api, onOpen }: { fw: ActiveFramework; api: AccreditationApi; onOpen: (criterionId: string) => void }) {
   const ws = api.ws;
+  const [requestFor, setRequestFor] = React.useState<string | null>(null);
   const [owner, setOwner] = React.useState("");
   const [status, setStatus] = React.useState<EvidenceStatus | "open" | "">("open");
   const today = todayIso();
@@ -431,6 +481,8 @@ function TasksView({ fw, api, onOpen }: { fw: ActiveFramework; api: Accreditatio
 
   return (
     <div className="grid items-start gap-6 xl:grid-cols-[1fr_300px]">
+      <div className="min-w-0 space-y-6">
+      <ActionsTable fw={fw} api={api} onOpen={onOpen} />
       <Card>
         <CardHeader
           icon={<ListTodo />}
@@ -498,8 +550,9 @@ function TasksView({ fw, api, onOpen }: { fw: ActiveFramework; api: Accreditatio
           </CardBody>
         )}
       </Card>
+      </div>
       <Card>
-        <CardHeader icon={<Users />} title="Sorumlu bazında" />
+        <CardHeader icon={<Users />} title="Sorumlu bazında" description="Kişiye kanıt talebi dosyası gönderebilirsiniz." />
         <ul className="divide-y divide-zinc-100">
           {owners.length ? (
             owners.map((o) => {
@@ -520,6 +573,11 @@ function TasksView({ fw, api, onOpen }: { fw: ActiveFramework; api: Accreditatio
                     </div>
                     {late > 0 && <div className="mt-1 text-[11px] text-red-700">{late} gecikmiş</div>}
                   </button>
+                  {mine.length > done && (
+                    <Button size="sm" variant="ghost" className="mt-1 h-7 px-2 text-[11.5px]" onClick={() => setRequestFor(o)}>
+                      <Send className="h-3 w-3" /> Kanıt talebi gönder
+                    </Button>
+                  )}
                 </li>
               );
             })
@@ -535,6 +593,7 @@ function TasksView({ fw, api, onOpen }: { fw: ActiveFramework; api: Accreditatio
           ))}
         </div>
       </Card>
+      <RequestDialog fw={fw} api={api} recipient={requestFor} onClose={() => setRequestFor(null)} />
     </div>
   );
 }

@@ -100,13 +100,17 @@ export interface FrameworkIndexEntry {
 export type EvidenceStatus = "missing" | "in-progress" | "ready" | "na";
 
 export interface EvidenceAttachment {
-  id: string; // şifreli blob kimliği
+  id: string; // şifreli blob kimliği (aynı dosya birden çok kanıta bağlanabilir)
   name: string;
   size: number;
   mime: string;
   sha256: string;
   addedAt: string;
-  origin: "upload" | "app";
+  origin: "upload" | "app" | "team";
+  /** Akademik yıl, ör. "2025-2026" */
+  period?: string;
+  /** Ekip teslimiyle geldiyse teslim eden */
+  submittedBy?: string;
 }
 
 export interface EvidenceRecord {
@@ -131,15 +135,89 @@ export interface ActiveFramework {
   snapshot: Framework; // etkinleştirme anındaki ölçüt sürümü (çevrimdışı + denetim izi)
 }
 
+/** Düşük öz değerlendirme düzeyinden veya ölçütten açılan iyileştirme eylemi (PUKÖ) */
+export interface ImprovementAction {
+  id: string;
+  criterionId: string;
+  unitId?: string; // rehber satırı / alt ölçüt
+  title: string;
+  owner?: string;
+  due?: string;
+  status: "open" | "done";
+  note?: string;
+  createdAt: string;
+  doneAt?: string;
+}
+
+/** Talep dosyasında öğretim elemanına gösterilen kanıt kalemi (yalnızca kamuya açık ölçüt metni) */
+export interface RequestItem {
+  evidenceId: string;
+  title: string;
+  criterionId: string;
+  criterionTitle: string;
+  sub?: string;
+  basis?: string;
+  source?: string;
+}
+
+export interface RequestSubmissionLog {
+  id: string;
+  receivedAt: string;
+  submittedAt: string;
+  respondent: string;
+  files: number;
+  items: number;
+}
+
+/** Koordinatörün gönderdiği kanıt talebi; özel anahtar yalnızca bu kasada (şifreli) durur */
+export interface EvidenceRequest {
+  id: string;
+  slug: string;
+  createdAt: string;
+  recipient: string;
+  message?: string;
+  due?: string;
+  items: string[];
+  publicJwk: JsonWebKey;
+  privateJwk: JsonWebKey;
+  fingerprint: string;
+  /** Gönderilen talep dosyasının birebir kopyası (yeniden indirme aynı doğrulama kodunu verir) */
+  file: import("./exchange").RequestFile;
+  submissions: RequestSubmissionLog[];
+}
+
+/** Öğretim elemanının aldığı talep ve hazırladığı cevaplar */
+export interface IncomingRequest {
+  id: string;
+  receivedAt: string;
+  coordinator: string;
+  institution: string;
+  frameworkCode: string;
+  frameworkName?: string;
+  scopeLabel: string;
+  recipient: string;
+  message?: string;
+  due?: string;
+  publicJwk: JsonWebKey;
+  fingerprint: string;
+  items: RequestItem[];
+  answers: Record<string, { note?: string; attachments: EvidenceAttachment[] }>;
+  submissions: string[];
+}
+
 export interface AccreditationWorkspace {
   active: ActiveFramework[];
   current: string | null;
   records: Record<string, EvidenceRecord>; // `${slug}::${evidenceId}`
   custom: Record<string, CustomEvidence[]>; // slug -> özel kanıtlar
   maturity: Record<string, number>; // `${slug}::${subId}` -> 1..5
+  actions: Record<string, ImprovementAction[]>; // slug -> eylemler
+  requests: EvidenceRequest[];
+  inbox: IncomingRequest[];
+  profileName?: string;
 }
 
-export const emptyWorkspace = (): AccreditationWorkspace => ({ active: [], current: null, records: {}, custom: {}, maturity: {} });
+export const emptyWorkspace = (): AccreditationWorkspace => ({ active: [], current: null, records: {}, custom: {}, maturity: {}, actions: {}, requests: [], inbox: [] });
 
 export const STATUS_LABEL: Record<EvidenceStatus, string> = {
   missing: "Eksik",

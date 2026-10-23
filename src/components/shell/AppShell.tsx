@@ -55,6 +55,7 @@ import { RubricStudio } from "@/modules/rubric/RubricStudio";
 import { MedekModule } from "@/modules/medek/MedekModule";
 import { AiModule } from "@/modules/ai/AiModule";
 import { AccreditationModule } from "@/modules/accreditation/AccreditationModule";
+import { BRAND } from "@/lib/brand";
 
 const VIEWS: Record<ModuleId, React.ComponentType> = {
   genel: OverviewModule,
@@ -211,7 +212,7 @@ export function AppShell() {
         <div className="flex items-center gap-2.5 px-4 pb-3 pt-4">
           <BrandMark className="h-8 w-8" />
           <div className="min-w-0 leading-tight">
-            <div className="font-display text-[17px] font-medium text-zinc-950">AkrediteSınav</div>
+            <div className="font-display text-[17px] font-medium text-zinc-950">{BRAND.name}</div>
             <div className="truncate text-[11px] text-zinc-500">Zero-Knowledge akademik stüdyo</div>
           </div>
           <button className="ml-auto text-zinc-500 lg:hidden" onClick={() => setMobileNav(false)} aria-label="Menüyü kapat">

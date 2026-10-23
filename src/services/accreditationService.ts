@@ -32,8 +32,11 @@ import {
 import { exportAnswerKeyDocx, exportExamDocx, exportOpticKeyXlsx } from "./examExportService";
 import { exportPukoDocx, exportProgramPanelDocx, downloadGradeTemplate } from "./medekExportService";
 import { exportRubricDocx } from "./rubricExportService";
-import { exportAttendanceDocx, exportDoorListDocx } from "./seatingExportService";
+import { exportAttendanceDocx, exportDoorListDocx, exportEvidenceCoversDocx, pickEvidenceSamples } from "./seatingExportService";
+import { exportCourseFile, exportCourseInfoDocx, exportOdrTablesDocx } from "./courseFileService";
+import type { AppDocKind } from "@/lib/accreditation/matcher";
 import { exportBoardDocx } from "./scheduleExportService";
+import { BRAND } from "@/lib/brand";
 
 // ---------------------------------------------------------------------------
 // Çerçeve kataloğu
@@ -57,12 +60,34 @@ export async function loadFramework(slug: string): Promise<Framework> {
 
 export const MAX_ATTACHMENT_BYTES = 50 * 1024 * 1024;
 
-export async function storeAttachment(key: CryptoKey, file: { name: string; type: string; data: ArrayBuffer }, origin: "upload" | "app"): Promise<EvidenceAttachment> {
+export async function storeAttachment(
+  key: CryptoKey,
+  file: { name: string; type: string; data: ArrayBuffer },
+  origin: EvidenceAttachment["origin"],
+  extra: { period?: string; submittedBy?: string; addedAt?: string } = {},
+): Promise<EvidenceAttachment> {
   if (file.data.byteLength > MAX_ATTACHMENT_BYTES) throw new Error(`${file.name}: 50 MB sınırını aşıyor.`);
   const id = uid("ev");
   const sha256 = bytesToHex(await crypto.subtle.digest("SHA-256", file.data));
   await writeBlob(key, id, file.data);
-  return { id, name: file.name, size: file.data.byteLength, mime: file.type || "application/octet-stream", sha256, addedAt: new Date().toISOString(), origin };
+  return {
+    id,
+    name: file.name,
+    size: file.data.byteLength,
+    mime: file.type || "application/octet-stream",
+    sha256,
+    addedAt: extra.addedAt ?? new Date().toISOString(),
+    origin,
+    ...(extra.period ? { period: extra.period } : {}),
+    ...(extra.submittedBy ? { submittedBy: extra.submittedBy } : {}),
+  };
+}
+
+/** "2025-2026" → ["2026-2027", "2025-2026", "2024-2025", "2023-2024"] (seçim listesi) */
+export function academicYears(current: string): string[] {
+  const m = current.match(/^(\d{4})\s*[-–]\s*(\d{4})$/);
+  const y = m ? Number(m[1]) : new Date().getFullYear();
+  return [1, 0, -1, -2, -3].map((d) => `${y + d}-${y + d + 1}`);
 }
 
 export async function downloadAttachment(key: CryptoKey, a: EvidenceAttachment) {
@@ -81,6 +106,7 @@ export async function removeAttachment(a: EvidenceAttachment) {
 
 export interface AppDocument {
   id: string;
+  kind: AppDocKind;
   group: string;
   label: string;
   available: boolean;
@@ -91,57 +117,90 @@ export interface AppDocument {
 export function listAppDocuments(data: VaultData): AppDocument[] {
   const inst = data.institution;
   const out: AppDocument[] = [];
-  data.exams.forEach((exam) => {
-    const course = data.courses.find((c) => c.id === exam.courseId);
-    if (!course) return;
-    const g = `${course.code} — ${exam.title}`;
-    const sheet = data.grades[exam.id];
-    const plan = data.seating[exam.id];
-    const threshold = inst.targetThreshold || 60;
+  const threshold = inst.targetThreshold || 60;
+  data.courses.forEach((course) => {
+    const g = `${course.code} ${course.name}`;
+    const exams = data.exams.filter((e) => e.courseId === course.id);
     out.push(
-      { id: `exam-${exam.id}`, group: g, label: "Sınav kağıdı (A/B)", available: exam.questions.length > 0, reason: "Soru yok", generate: () => collectOutputs(() => exportExamDocx(inst, course, exam, ["A", "B"])) },
-      { id: `key-${exam.id}`, group: g, label: "Cevap anahtarı, rubrik ve belirtke tablosu", available: exam.questions.length > 0, reason: "Soru yok", generate: () => collectOutputs(() => exportAnswerKeyDocx(inst, course, exam)) },
+      { id: `info-${course.id}`, kind: "courseInfo", group: g, label: "Ders bilgi formu (ÖÇ, ÖÇ–PÇ matrisi, ölçme araçları)", available: true, generate: () => collectOutputs(() => exportCourseInfoDocx(data, course.id)) },
       {
-        id: `optic-${exam.id}`,
+        id: `file-${course.id}`,
+        kind: "courseFile",
         group: g,
-        label: "Optik cevap anahtarı",
-        available: exam.questions.some((q) => q.type === "mcq" || q.type === "truefalse"),
-        reason: "Nesnel soru yok",
-        generate: () => collectOutputs(() => exportOpticKeyXlsx(course, exam)),
-      },
-      {
-        id: `puko-${exam.id}`,
-        group: g,
-        label: "ÖÇ/PÇ analizi ve PUKÖ raporu",
-        available: (sheet?.rows.length ?? 0) > 0,
-        reason: "Not girilmemiş",
-        generate: () => collectOutputs(() => exportPukoDocx({ inst, course, exam, programOutcomes: data.programOutcomes, sheet: sheet!, analysis: computeAnalysis(exam, course, data.programOutcomes, sheet, threshold), threshold })),
-      },
-      {
-        id: `grades-${exam.id}`,
-        group: g,
-        label: "Soru bazlı not çizelgesi",
-        available: (sheet?.rows.length ?? 0) > 0,
-        reason: "Not girilmemiş",
-        generate: () => collectOutputs(() => downloadGradeTemplate(exam, course, sheet!.rows.map((r) => ({ no: r.studentNo, name: r.fullName, scores: r.scores })), "Not_Cizelgesi")),
+        label: "Ders dosyası (.zip, tüm ölçme araçları)",
+        available: exams.length > 0,
+        reason: "Sınav yok",
+        generate: () => collectOutputs(async () => void (await exportCourseFile(data, course.id))),
       },
     );
-    if (plan) {
-      const ctx = { inst, course, exam, plan, students: data.students[course.id] ?? [], rooms: data.rooms, invigilators: data.invigilators, schedule: data.schedule };
+    exams.forEach((exam) => {
+      const eg = `${course.code} — ${exam.title}`;
+      const sheet = data.grades[exam.id];
+      const plan = data.seating[exam.id];
+      const hasGrades = (sheet?.rows.length ?? 0) > 0;
       out.push(
-        { id: `att-${exam.id}`, group: g, label: "Yoklama ve imza tutanağı", available: true, generate: () => collectOutputs(() => exportAttendanceDocx(ctx)) },
-        { id: `door-${exam.id}`, group: g, label: "Kapı listesi (KVKK maskeli)", available: true, generate: () => collectOutputs(() => exportDoorListDocx(ctx, true)) },
+        { id: `exam-${exam.id}`, kind: "exam", group: eg, label: "Sınav kağıdı (A/B)", available: exam.questions.length > 0, reason: "Soru yok", generate: () => collectOutputs(() => exportExamDocx(inst, course, exam, ["A", "B"])) },
+        { id: `key-${exam.id}`, kind: "answerKey", group: eg, label: "Cevap anahtarı, rubrik ve belirtke tablosu", available: exam.questions.length > 0, reason: "Soru yok", generate: () => collectOutputs(() => exportAnswerKeyDocx(inst, course, exam)) },
+        {
+          id: `optic-${exam.id}`,
+          kind: "answerKey",
+          group: eg,
+          label: "Optik cevap anahtarı",
+          available: exam.questions.some((q) => q.type === "mcq" || q.type === "truefalse"),
+          reason: "Nesnel soru yok",
+          generate: () => collectOutputs(() => exportOpticKeyXlsx(course, exam)),
+        },
+        {
+          id: `puko-${exam.id}`,
+          kind: "puko",
+          group: eg,
+          label: "ÖÇ/PÇ analizi, madde analizi ve PUKÖ raporu",
+          available: hasGrades,
+          reason: "Not girilmemiş",
+          generate: () => collectOutputs(() => exportPukoDocx({ inst, course, exam, programOutcomes: data.programOutcomes, sheet: sheet!, analysis: computeAnalysis(exam, course, data.programOutcomes, sheet, threshold), threshold })),
+        },
+        {
+          id: `grades-${exam.id}`,
+          kind: "grades",
+          group: eg,
+          label: "Soru bazlı not çizelgesi",
+          available: hasGrades,
+          reason: "Not girilmemiş",
+          generate: () => collectOutputs(() => downloadGradeTemplate(exam, course, sheet!.rows.map((r) => ({ no: r.studentNo, name: r.fullName, scores: r.scores })), "Not_Cizelgesi")),
+        },
+        {
+          id: `covers-${exam.id}`,
+          kind: "covers",
+          group: eg,
+          label: "En yüksek / orta / en düşük kağıt kapakları",
+          available: hasGrades,
+          reason: "Not girilmemiş",
+          generate: () =>
+            collectOutputs(() => {
+              const picked = pickEvidenceSamples(exam, sheet);
+              return exportEvidenceCoversDocx({ inst, course, exam }, picked.samples, picked.classMean, false);
+            }),
+        },
       );
-    }
+      if (plan) {
+        const ctx = { inst, course, exam, plan, students: data.students[course.id] ?? [], rooms: data.rooms, invigilators: data.invigilators, schedule: data.schedule };
+        out.push(
+          { id: `att-${exam.id}`, kind: "attendance", group: eg, label: "Sınav yoklama ve imza tutanağı", available: true, generate: () => collectOutputs(() => exportAttendanceDocx(ctx)) },
+          { id: `door-${exam.id}`, kind: "attendance", group: eg, label: "Kapı listesi (KVKK maskeli)", available: true, generate: () => collectOutputs(() => exportDoorListDocx(ctx, true)) },
+        );
+      }
+    });
   });
   data.rubrics.forEach((r) => {
     const course = data.courses.find((c) => c.id === r.courseId);
-    out.push({ id: `rubric-${r.id}`, group: "Rubrikler", label: r.title, available: r.criteria.length > 0, reason: "Kriter yok", generate: () => collectOutputs(() => exportRubricDocx(inst, course, r)) });
+    out.push({ id: `rubric-${r.id}`, kind: "rubric", group: "Rubrikler", label: r.title, available: r.criteria.length > 0, reason: "Kriter yok", generate: () => collectOutputs(() => exportRubricDocx(inst, course, r)) });
   });
   out.push(
-    { id: "program-panel", group: "Program düzeyi", label: "Program çıktıları sağlanma raporu", available: data.courses.length > 0, reason: "Ders yok", generate: () => collectOutputs(() => exportProgramPanelDocx(data)) },
+    { id: "program-panel", kind: "programPanel", group: "Program düzeyi", label: "Program çıktıları sağlanma raporu", available: data.courses.length > 0, reason: "Ders yok", generate: () => collectOutputs(() => exportProgramPanelDocx(data)) },
+    { id: "odr-tables", kind: "odrTables", group: "Program düzeyi", label: "MEDEK ÖDR Tablo 5.1, 5.2, 6.1, 6.2 (ön doldurulmuş)", available: data.courses.length > 0, reason: "Ders yok", generate: () => collectOutputs(() => exportOdrTablesDocx(data)) },
     {
       id: "board",
+      kind: "board",
       group: "Program düzeyi",
       label: "Sınav programı (ilan panosu)",
       available: data.schedule.entries.length > 0,
@@ -185,7 +244,7 @@ export function exportEvidenceMatrix(data: VaultData, fw: ActiveFramework) {
         r?.owner ?? "",
         r?.due ? formatTrDate(r.due) : "",
         r?.attachments.length ?? 0,
-        (r?.attachments ?? []).map((a) => a.name).join("; "),
+        (r?.attachments ?? []).map((a) => `${a.name}${a.period ? ` [${a.period}]` : ""}${a.submittedBy ? ` (teslim: ${a.submittedBy})` : ""}`).join("; "),
         r?.note ?? "",
         e.source,
       ]);
@@ -216,6 +275,15 @@ export function exportEvidenceMatrix(data: VaultData, fw: ActiveFramework) {
     ]),
     "Özet",
   );
+  const acts = ws.actions?.[fw.slug] ?? [];
+  if (acts.length) {
+    const aSheet = XLSX.utils.aoa_to_sheet([
+      ["Ölçüt", "Satır / alt ölçüt", "Eylem", "Sorumlu", "Son tarih", "Durum", "Açılış", "Tamamlanma"],
+      ...acts.map((a) => [a.criterionId, a.unitId ?? "", a.title, a.owner ?? "", a.due ? formatTrDate(a.due) : "", a.status === "done" ? "Tamamlandı" : "Açık", formatTrDate(a.createdAt.slice(0, 10)), a.doneAt ? formatTrDate(a.doneAt.slice(0, 10)) : ""]),
+    ]);
+    aSheet["!cols"] = [10, 12, 70, 20, 11, 11, 11, 11].map((wch) => ({ wch }));
+    XLSX.utils.book_append_sheet(wb, aSheet, "İyileştirme Eylemleri");
+  }
   const units = assessmentUnits(fw);
   if (units.length) {
     const scale = fw.snapshot.scale;
@@ -313,6 +381,19 @@ export async function exportSelfStudyDocx(data: VaultData, fw: ActiveFramework) 
         ),
       );
     }
+    const cActs = (ws.actions?.[fw.slug] ?? []).filter((a) => a.criterionId === c.id);
+    if (cActs.length) {
+      blocks.push(para("İyileştirme eylemleri (PUKÖ):", { size: 9.5, bold: true, spacingBefore: 120, keepNext: true }));
+      blocks.push(
+        simpleTable(
+          ["Eylem", "Sorumlu", "Son tarih", "Durum"],
+          cActs.map((a) => [a.title, a.owner ?? "—", a.due ? formatTrDate(a.due) : "—", a.status === "done" ? `Tamamlandı${a.doneAt ? ` (${formatTrDate(a.doneAt.slice(0, 10))})` : ""}` : "Açık"]),
+          [56, 18, 12, 14],
+          PORTRAIT_WIDTH,
+          { size: 8.5 },
+        ),
+      );
+    }
     blocks.push(para("Değerlendirme (kurum tarafından doldurulacak):", { size: 9.5, bold: true, spacingBefore: 120 }));
     const notes = ev.map((e) => ws.records[recKey(fw.slug, e.id)]?.note).filter(Boolean) as string[];
     blocks.push(
@@ -334,7 +415,7 @@ export async function exportEvidencePackage(data: VaultData, fw: ActiveFramework
     `${data.institution.university} — ${data.institution.unitName}`,
     `AKREDİTASYON KANIT PAKETİ: ${fw.snapshot.code} — ${fw.snapshot.name ?? ""}`,
     `Kapsam: ${fw.scopeLabel}`,
-    `Oluşturulma: ${new Date().toLocaleString("tr-TR")} (AkrediteSınav, tarayıcı içi)`,
+    `Oluşturulma: ${new Date().toLocaleString("tr-TR")} (${BRAND.name}, tarayıcı içi)`,
     "",
     "Doğrulama: shasum -a 256 <dosya> (macOS/Linux) veya certutil -hashfile <dosya> SHA256 (Windows)",
     "",
@@ -363,7 +444,8 @@ export async function exportEvidencePackage(data: VaultData, fw: ActiveFramework
         for (let n = 2; folder.file(`${eDir}/${name}`); n++) name = `${base}_${n}${ext}`;
         folder.file(`${eDir}/${name}`, plain);
         files++;
-        lines.push(`   [${st}] ${a.sha256}  ${eDir}/${name}`);
+        const meta = [st, a.period, a.submittedBy && `teslim: ${a.submittedBy}`].filter(Boolean).join(" · ");
+        lines.push(`   [${meta}] ${a.sha256}  ${eDir}/${name}`);
       }
     }
   }

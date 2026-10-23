@@ -14,9 +14,21 @@ npm start          # out/ klasörünü http://127.0.0.1:4173 adresinde servis ed
 `out/` klasörü herhangi bir statik sunucudan (veya kurum intranetinden) yayımlanabilir; sunucu tarafı kod yoktur.
 İlk açılışta kasa, demo veri setiyle (VTYS dersi, 5 ÖÇ, 6 soru, 8 derslik program, 6 gözetmen, 4 derslik, 75 öğrenci, 40 öğrencilik not simülasyonu, 2 rubrik) otomatik doldurulur.
 
+## Test
+
+```bash
+npm test        # Vitest: ECDH alışverişi ve kötü niyetli dosyalar, eşleştirme kuralları (32 çerçeve), ekip veri dönüşümleri
+npm run typecheck && npm run lint && npm run build
+npm start & npm run test:e2e   # tarayıcıda uçtan uca (tests/e2e/README.md)
+```
+
 ## Öne çıkan özellikler
 
 - **Akreditasyon Kanıt Merkezi:** YÖKAK tescilli 29 kuruluşun tamamı ve YÖKAK KAP/UKAP için 32 ölçüt seti (ölçüt, alt ölçüt, kuruluşun örnek kanıt listesi; her kalem kaynak belge ve sayfa atfıyla). Kanıt başına durum, sorumlu, son tarih, not ve tarayıcıda AES-256-GCM ile şifrelenen dosya ekleri; uygulamanın ürettiği belgeleri tek tıkla kanıta ekleme; MEDEK Rehberi 1–5 düzeyli öz değerlendirme ve YÖKAK olgunluk düzeyleriyle tahmini puan (resmi değil); görev takibi; kanıt matrisi (.xlsx), öz değerlendirme çalışma raporu (.docx) ve SHA-256 içindekili kanıt paketi (.zip). Katalogda olmayan çerçeveler için kurum tanımlı ölçüt seti. Kaynak ve yeniden üretim: `scripts/frameworks/README.md`.
+- **Ekipten şifreli kanıt toplama (sunucusuz):** Koordinatör, sorumlu öğretim elemanına kalem kalem `.akredite-talep` dosyası gönderir; öğretim elemanı belgelerini kendi tarayıcısında ekleyip `.akredite-teslim` paketi döndürür. Paket talebe özel ECDH P-256 anahtarına HKDF-SHA256 + AES-256-GCM ile şifrelenir, yalnızca talebi oluşturan kasa açabilir; iki tarafta aynı doğrulama kodu görünür. İçe aktarmada SHA-256 doğrulaması, tekrar gönderim engeli ve yalnızca talep edilen kalemlere ekleme.
+- **Kanıt üreticileri:** Uygulamanın ürettiği belgeler (sınav kağıdı, cevap anahtarı/belirtke, kağıt kapakları, rubrik, PUKÖ, not çizelgesi, ders dosyası, MEDEK ÖDR tabloları…) kuruluş belgesinde adıyla geçen kanıt kalemlerine dar kurallarla önerilir; her öneri dayandığı ifadeyi gösterir. Bir belge tek kopya olarak birden çok kanıta bağlanır (referans sayımlı silme).
+- **Ders dosyası ve ÖDR tabloları:** Ders bilgi formu (ÖÇ, ÖÇ–PÇ matrisi, ölçme araçlarının ÖÇ kapsamı) + dersin bütün ölçme araçlarının belgeleri tek ZIP'te; MEDEK ÖDR Tablo 5.1, 5.2, 6.1, 6.2 şablon sütunlarıyla, verisi olan hücreler doldurulmuş.
+- **İyileştirme eylemleri ve dönem:** Düşük öz değerlendirme düzeyinden eylem (sorumlu, tarih, durum) — rapor ve matrise aktarılır. Her dosyada akademik yıl; "bu yılın dosyası olmayan" filtresi.
 - **Genel Bakış ve kurulum sihirbazı:** dönem iş akışı ilerlemesi, yaklaşan sınavlar, akreditasyon durumu; ilk açılışta demo veya kendi kurumunuzla 2 dakikada kurulum.
 - **Soru bankası ve metinden soru aktarma:** Word'deki sınavı yapıştırın; numara, puan, şık, doğru cevap, kod bloğu ve Bloom düzeyi otomatik algılanır.
 - **Madde analizi:** güçlük (p), ayırt edicilik (D, %27), düzeltilmiş madde-toplam korelasyonu, Cronbach α, SEM ve Ebel kararları.

@@ -8,6 +8,7 @@ import { toast } from "@/components/ui/toast";
 import { confirmDialog } from "@/components/ui/confirm";
 import { navigateTo } from "@/hooks/useHashRoute";
 import { AI_PROVIDERS } from "@/lib/aiDefaults";
+import { BRAND } from "@/lib/brand";
 
 /** Modül içi tek tık AI aksiyonlarını yapılandırma, onay ve hata yönetimiyle çalıştırır. */
 export function useAiRunner() {
@@ -26,7 +27,7 @@ export function useAiRunner() {
         const provider = AI_PROVIDERS.find((p) => p.value === settings.provider)?.label;
         const ok = await confirmDialog({
           title: "BYOK AI veri aktarım onayı",
-          message: `Bu işlem, ilgili soru/ÖÇ metnini tarayıcınızdan doğrudan ${provider} API'sine gönderir (AkrediteSınav sunucusu yoktur). Öğrenci kimlik bilgileri hiçbir zaman gönderilmez. Sınav soruları için tamamen yerel çalışmak isterseniz Ollama seçin. Onaylıyor musunuz?`,
+          message: `Bu işlem, ilgili soru/ÖÇ metnini tarayıcınızdan doğrudan ${provider} API'sine gönderir (${BRAND.name} sunucusu yoktur). Öğrenci kimlik bilgileri hiçbir zaman gönderilmez. Sınav soruları için tamamen yerel çalışmak isterseniz Ollama seçin. Onaylıyor musunuz?`,
           confirmLabel: "Onaylıyorum",
         });
         if (!ok) return null;

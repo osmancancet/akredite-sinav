@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { KeyRound, Loader2, ShieldAlert } from "lucide-react";
-import { useVault } from "@/lib/store";
+import { hasPendingWrites, useVault } from "@/lib/store";
 import { installNetworkAudit } from "@/lib/networkAudit";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/form";
@@ -12,12 +12,32 @@ import { PrintHost } from "@/components/print/PrintHost";
 import { AppShell } from "./AppShell";
 import { BrandMark } from "./BrandMark";
 import { CryptoLattice } from "@/components/three/CryptoLattice";
+import { BRAND } from "@/lib/brand";
 
 if (typeof window !== "undefined") installNetworkAudit();
 
 export function AppRoot() {
   const status = useVault((s) => s.status);
   const boot = useVault((s) => s.boot);
+
+  // Gecikmeli yazma (350 ms) sayfa kapanırken kaybolmasın: gizlenince hemen yaz, bekleyen varken çıkışta uyar
+  React.useEffect(() => {
+    const flushNow = () => void useVault.getState().flush();
+    const onVisibility = () => document.visibilityState === "hidden" && flushNow();
+    const onBeforeUnload = (e: BeforeUnloadEvent) => {
+      if (!hasPendingWrites()) return;
+      flushNow();
+      e.preventDefault();
+    };
+    document.addEventListener("visibilitychange", onVisibility);
+    window.addEventListener("pagehide", flushNow);
+    window.addEventListener("beforeunload", onBeforeUnload);
+    return () => {
+      document.removeEventListener("visibilitychange", onVisibility);
+      window.removeEventListener("pagehide", flushNow);
+      window.removeEventListener("beforeunload", onBeforeUnload);
+    };
+  }, []);
 
   React.useEffect(() => {
     void boot();
@@ -66,7 +86,7 @@ function BootScreen() {
     <Frame>
       <div className="flex flex-col items-center text-center">
         <BrandMark inverted className="h-11 w-11" />
-        <h1 className="font-display mt-4 text-2xl font-medium text-white">AkrediteSınav</h1>
+        <h1 className="font-display mt-4 text-2xl font-medium text-white">{BRAND.name}</h1>
         <p className="mt-1 text-sm text-zinc-400">Şifreli yerel kasa açılıyor…</p>
         <div className="mt-5 flex items-center gap-2 font-mono text-[11px] text-zinc-500">
           <Loader2 className="h-3.5 w-3.5 animate-spin text-brand-400" /> AES-256-GCM · IndexedDB · PBKDF2

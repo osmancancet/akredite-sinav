@@ -77,5 +77,15 @@ export function selfAssessment(ws: AccreditationWorkspace, fw: ActiveFramework):
 export function referencedBlobIds(data: { accreditation: AccreditationWorkspace }): Set<string> {
   const ids = new Set<string>();
   Object.values(data.accreditation?.records ?? {}).forEach((r) => r.attachments.forEach((a) => ids.add(a.id)));
+  (data.accreditation?.inbox ?? []).forEach((req) => Object.values(req.answers).forEach((ans) => ans.attachments.forEach((a) => ids.add(a.id))));
   return ids;
+}
+
+/** Bir dosya kimliğinin çalışma alanında (hariç tutulan anahtarlar dışında) hâlâ kullanılıp kullanılmadığı */
+export function blobStillReferenced(ws: AccreditationWorkspace, blobId: string, exceptRecordKeys: Set<string> = new Set()): boolean {
+  for (const [k, r] of Object.entries(ws.records)) {
+    if (exceptRecordKeys.has(k)) continue;
+    if (r.attachments.some((a) => a.id === blobId)) return true;
+  }
+  return ws.inbox.some((req) => Object.values(req.answers).some((ans) => ans.attachments.some((a) => a.id === blobId)));
 }

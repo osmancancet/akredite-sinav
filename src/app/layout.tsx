@@ -6,6 +6,7 @@ import "katex/dist/katex.min.css";
 import "./globals.css";
 import { CSP } from "@/lib/csp";
 import { THEME_BOOT_SCRIPT } from "@/lib/themeScript";
+import { BRAND } from "@/lib/brand";
 
 // Fraunces derleme sırasında indirilip _next/static altına gömülür; çalışma anında harici istek yoktur.
 const fraunces = Fraunces({
@@ -16,10 +17,10 @@ const fraunces = Fraunces({
 });
 
 export const metadata: Metadata = {
-  title: "AkrediteSınav — Zero-Knowledge Akademik Sınav & MEDEK Stüdyosu",
+  title: `${BRAND.name} — ${BRAND.tagline}`,
   description:
     "Tarayıcı içi şifreli (AES-256-GCM) sınav kağıdı hazırlama, sınav programı, kapı listesi, rubrik ve MEDEK/YÖKAK PUKÖ akreditasyon platformu.",
-  applicationName: "AkrediteSınav",
+  applicationName: BRAND.name,
   manifest: "/manifest.webmanifest",
 };
 

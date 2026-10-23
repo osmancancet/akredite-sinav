@@ -13,6 +13,7 @@ import {
   FileArchive,
   FilePlus2,
   FolderCheck,
+  Inbox,
   Library,
   LineChart,
   Upload,
@@ -41,6 +42,7 @@ export function OverviewModule() {
 
   return (
     <div className="space-y-6">
+      <EvidenceSnapshot />
       <Card className="overflow-hidden">
         <div className="flex flex-wrap items-end justify-between gap-4 border-b border-zinc-100 px-6 py-5">
           <div>
@@ -71,7 +73,6 @@ export function OverviewModule() {
         <QuickActions />
       </div>
       <QualitySnapshot />
-      <EvidenceSnapshot />
     </div>
   );
 }
@@ -344,54 +345,94 @@ function QualitySnapshot() {
 function EvidenceSnapshot() {
   const data = useData();
   const ws = data.accreditation;
+  const today = todayIso();
+  const inboxOpen = ws.inbox.filter((r) => !r.submissions.length);
+  const go = (slug?: string, tab?: string) => {
+    if (slug) useVault.getState().update("accreditation", (w) => ({ ...w, current: slug }));
+    if (tab) useShellUi.getState().requestTab("akreditasyon", tab);
+    navigateTo("akreditasyon");
+  };
+
+  if (!ws.active.length && !ws.inbox.length) {
+    return (
+      <Card className="overflow-hidden">
+        <div className="flex flex-wrap items-center justify-between gap-4 px-6 py-5">
+          <div className="max-w-2xl">
+            <div className="text-[12px] font-medium text-zinc-500">Akreditasyon hazırlığı</div>
+            <div className="font-display mt-1 text-[22px] font-medium text-zinc-950">Akreditasyon kuruluşunuzu seçin</div>
+            <p className="mt-1 text-[13px] leading-relaxed text-zinc-500">
+              YÖKAK tescilli 29 kuruluşun ve YÖKAK KAP&apos;ın ölçütleri, kuruluşun kendi örnek kanıt listesiyle hazır gelir. Uygulamanın ürettiği belgeler ilgili kanıtlara önerilir.
+            </p>
+          </div>
+          <Button onClick={() => go()}>
+            Kanıt merkezini başlat <ArrowRight className="h-4 w-4" />
+          </Button>
+        </div>
+      </Card>
+    );
+  }
+
   return (
     <Card>
       <CardHeader
         icon={<FolderCheck />}
-        title="Akreditasyon kanıtları"
-        description={ws.active.length ? "Etkin akreditasyon çerçevelerinde kanıt hazırlık durumu" : "Akreditasyon kuruluşunuzu seçin; ölçütler ve kuruluşun örnek kanıt listesi hazır gelsin."}
+        title="Akreditasyon hazırlığı"
+        description="Etkin akreditasyon çerçeveleri, gecikmeler ve ekip talepleri"
         actions={
-          <Button size="sm" variant="ghost" onClick={() => navigateTo("akreditasyon")}>
-            {ws.active.length ? "Kanıt merkezi" : "Başlat"} <ArrowRight className="h-3.5 w-3.5" />
+          <Button size="sm" variant="ghost" onClick={() => go()}>
+            Kanıt merkezi <ArrowRight className="h-3.5 w-3.5" />
           </Button>
         }
       />
-      {ws.active.length > 0 && (
-        <ul className="divide-y divide-zinc-100">
-          {ws.active.map((fw) => {
-            const p = progressOf(ws, fw);
-            const today = todayIso();
-            const late = Object.entries(ws.records).filter(([k, r]) => k.startsWith(`${fw.slug}::`) && r.due && r.due < today && r.status !== "ready" && r.status !== "na").length;
-            return (
-              <li key={fw.slug}>
-                <button
-                  className="flex w-full items-center gap-4 px-5 py-3 text-left hover:bg-zinc-50"
-                  onClick={() => {
-                    useVault.getState().update("accreditation", (w) => ({ ...w, current: fw.slug }));
-                    navigateTo("akreditasyon");
-                  }}
-                >
-                  <div className="min-w-0 flex-1">
-                    <div className="text-[13px] font-medium text-zinc-900">
-                      {fw.snapshot.code} <span className="font-normal text-zinc-500">· {fw.scopeLabel}</span>
-                    </div>
-                    <div className="mt-1.5 flex h-1.5 overflow-hidden rounded-full bg-zinc-100">
-                      <div className="bg-emerald-600" style={{ width: `${p.total ? (p.ready / p.total) * 100 : 0}%` }} />
-                      <div className="bg-amber-400" style={{ width: `${p.total ? (p.inProgress / p.total) * 100 : 0}%` }} />
-                    </div>
-                  </div>
-                  <div className="text-right">
-                    <div className="font-mono text-[15px] tabular-nums text-zinc-900">%{num(p.pct, 0)}</div>
-                    <div className="text-[11px] text-zinc-500">
-                      {p.ready}/{p.total - p.na} hazır{late ? <span className="text-red-700"> · {late} gecikmiş</span> : null}
-                    </div>
-                  </div>
-                </button>
-              </li>
-            );
-          })}
-        </ul>
+      {inboxOpen.length > 0 && (
+        <button className="flex w-full items-center gap-3 border-b border-zinc-100 bg-amber-50/60 px-5 py-3 text-left hover:bg-amber-50" onClick={() => go(undefined, "inbox")}>
+          <Inbox className="h-4 w-4 text-amber-700" />
+          <span className="text-[13px] text-amber-900">
+            Size gelen <b>{inboxOpen.length}</b> kanıt talebi teslim bekliyor{inboxOpen[0]?.due ? ` · en yakın son tarih ${formatTrDate(inboxOpen.map((r) => r.due).filter(Boolean).sort()[0] ?? inboxOpen[0].due!)}` : ""}
+          </span>
+          <ArrowRight className="ml-auto h-3.5 w-3.5 text-amber-700" />
+        </button>
       )}
+      <ul className="divide-y divide-zinc-100">
+        {ws.active.map((fw) => {
+          const p = progressOf(ws, fw);
+          const late = Object.entries(ws.records).filter(([k, r]) => k.startsWith(`${fw.slug}::`) && r.due && r.due < today && r.status !== "ready" && r.status !== "na").length;
+          const critical = progressOf(ws, fw, fw.snapshot.criteria.filter((c) => c.critical || c.sub?.some((x) => x.critical)));
+          const actions = (ws.actions[fw.slug] ?? []).filter((a) => a.status === "open");
+          const lateActions = actions.filter((a) => a.due && a.due < today).length;
+          const waiting = ws.requests.filter((r) => r.slug === fw.slug && !r.submissions.length).length;
+          const stats: [string, string | number, boolean][] = [
+            ["hazır", `${p.ready}/${p.total - p.na}`, false],
+            ["gecikmiş kanıt", late, late > 0],
+            ["açık eylem", actions.length, lateActions > 0],
+            ["yanıt bekleyen talep", waiting, false],
+            ...(critical.total ? ([["kritik ölçütte eksik", critical.missing + critical.inProgress, critical.missing > 0]] as [string, number, boolean][]) : []),
+          ];
+          return (
+            <li key={fw.slug}>
+              <button className="w-full px-5 py-4 text-left hover:bg-zinc-50" onClick={() => go(fw.slug)}>
+                <div className="flex flex-wrap items-baseline justify-between gap-3">
+                  <div className="text-[13.5px] font-medium text-zinc-900">
+                    {fw.snapshot.code} <span className="font-normal text-zinc-500">· {fw.scopeLabel}</span>
+                  </div>
+                  <div className="font-mono text-[18px] tabular-nums text-zinc-950">%{num(p.pct, 0)}</div>
+                </div>
+                <div className="mt-2 flex h-1.5 overflow-hidden rounded-full bg-zinc-100">
+                  <div className="bg-emerald-600" style={{ width: `${p.total ? (p.ready / p.total) * 100 : 0}%` }} />
+                  <div className="bg-amber-400" style={{ width: `${p.total ? (p.inProgress / p.total) * 100 : 0}%` }} />
+                </div>
+                <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-[11.5px] text-zinc-500">
+                  {stats.map(([label, v, warn]) => (
+                    <span key={label} className={cn(warn && "text-red-700")}>
+                      <b className="font-mono font-medium">{v}</b> {label}
+                    </span>
+                  ))}
+                </div>
+              </button>
+            </li>
+          );
+        })}
+      </ul>
     </Card>
   );
 }

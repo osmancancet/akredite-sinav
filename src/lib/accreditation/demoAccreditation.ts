@@ -1,5 +1,5 @@
 import type { VaultData } from "@/lib/types";
-import type { EvidenceRecord, Framework } from "./types";
+import { emptyWorkspace, type EvidenceRecord, type Framework } from "./types";
 import { recKey, matKey } from "./progress";
 import { toIsoDate } from "@/lib/utils";
 
@@ -32,7 +32,7 @@ export async function withDemoAccreditation(data: VaultData): Promise<VaultData>
   set(0, 4, { status: "in-progress", owner: "Program Koordinatörü", due: day(-3) });
   set(2, 0, { status: "ready", owner: "Kalite Temsilcisi", note: "Program çıktıları MEDEK PÇ bileşenleriyle eşleştirildi." });
   set(2, 2, { status: "in-progress", owner: "Program Koordinatörü", due: day(21) });
-  set(3, 3, { status: "ready", owner: "Kalite Temsilcisi", note: "ÖÇ–PÇ matrisi AkrediteSınav ders kataloğundan üretildi." });
+  set(3, 3, { status: "ready", owner: "Kalite Temsilcisi", note: "ÖÇ–PÇ matrisi uygulamadaki ders kataloğundan üretildi." });
   set(4, 0, { status: "in-progress", owner: "Program Koordinatörü", due: day(14) });
 
   const maturity: Record<string, number> = {};
@@ -48,6 +48,7 @@ export async function withDemoAccreditation(data: VaultData): Promise<VaultData>
   return {
     ...data,
     accreditation: {
+      ...emptyWorkspace(),
       active: [{ slug, activatedAt: stamp, scopeLabel: data.institution.program || "Önlisans programı", snapshot: fw }],
       current: slug,
       records,

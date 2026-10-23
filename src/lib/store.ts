@@ -199,6 +199,11 @@ export const useVault = create<VaultState>((set, get) => {
   };
 });
 
+/** Kaydedilmeyi bekleyen değişiklik var mı (sayfadan çıkış uyarısı için) */
+export function hasPendingWrites(): boolean {
+  return pending.size > 0;
+}
+
 export function useData(): VaultData {
   const data = useVault((s) => s.data);
   if (!data) throw new Error("Kasa henüz açılmadı.");

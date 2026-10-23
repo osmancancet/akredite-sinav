@@ -13,9 +13,9 @@ import {
 
 export type ModuleId = "genel" | "kasa" | "sinav" | "program" | "oturma" | "rubrik" | "medek" | "akreditasyon" | "ai";
 
-export type ModuleGroup = "Genel" | "Hazırlık" | "Operasyon" | "Kalite" | "Sistem";
+export type ModuleGroup = "Akreditasyon" | "Kanıt üreticileri" | "Sistem";
 
-export const MODULE_GROUPS: ModuleGroup[] = ["Genel", "Hazırlık", "Operasyon", "Kalite", "Sistem"];
+export const MODULE_GROUPS: ModuleGroup[] = ["Akreditasyon", "Kanıt üreticileri", "Sistem"];
 
 export const MODULES: {
   id: ModuleId;
@@ -31,17 +31,25 @@ export const MODULES: {
     no: 0,
     label: "Genel Bakış",
     short: "Genel bakış",
-    description: "Dönem iş akışınız, yaklaşan sınavlar, akreditasyon durumu ve tek tık eylemler.",
-    group: "Genel",
+    description: "Akreditasyon hazırlığınız, ekip talepleri, dönem iş akışı ve yaklaşan sınavlar tek ekranda.",
+    group: "Akreditasyon",
     icon: Compass,
   },
   {
+    id: "akreditasyon",
+    no: 8,
+    label: "Akreditasyon Kanıt Merkezi",
+    short: "Kanıt merkezi",
+    description: "Seçtiğiniz akreditasyonun ölçütleri ve kuruluşun örnek kanıtları; şifreli dosyalar, ekipten kanıt toplama, iyileştirme eylemleri ve tek tıkla kanıt paketi.",
+    group: "Akreditasyon",
+    icon: FolderCheck,
+  },  {
     id: "sinav",
     no: 2,
     label: "Sınav Kağıdı & Belirtke",
     short: "Sınav kağıdı & belirtke",
     description: "Öğrenme çıktısı ve Bloom düzeyiyle etiketlenmiş sorular, A/B kitapçık, belirtke tablosu ve resmi çıktılar.",
-    group: "Hazırlık",
+    group: "Kanıt üreticileri",
     icon: FileText,
   },
   {
@@ -50,7 +58,7 @@ export const MODULES: {
     label: "Analitik Rubrik Stüdyosu",
     short: "Rubrikler",
     description: "Proje, laboratuvar, sunum ve 3+1 iş yeri eğitimi için ÖÇ eşleşmeli dört düzeyli dereceli puanlama anahtarları.",
-    group: "Hazırlık",
+    group: "Kanıt üreticileri",
     icon: ClipboardList,
   },
   {
@@ -59,7 +67,7 @@ export const MODULES: {
     label: "Sınav Programı & Gözetmen",
     short: "Sınav programı",
     description: "Çakışmasız takvim, kalabalık derslerin otomatik bölünmesi ve standart sapması en düşük gözetmen dağılımı.",
-    group: "Operasyon",
+    group: "Kanıt üreticileri",
     icon: CalendarClock,
   },
   {
@@ -68,7 +76,7 @@ export const MODULES: {
     label: "Kapı Listesi & Yoklama",
     short: "Kapı listesi & yoklama",
     description: "OBS listesi, kelebek oturma düzeni, KVKK maskeli kapı listesi, imzalı yoklama tutanağı ve kanıt klasörü kapakları.",
-    group: "Operasyon",
+    group: "Kanıt üreticileri",
     icon: LayoutGrid,
   },
   {
@@ -77,18 +85,10 @@ export const MODULES: {
     label: "ÖÇ/PÇ Analizi & PUKÖ",
     short: "ÖÇ/PÇ & PUKÖ",
     description: "Soru bazlı notlardan öğrenme ve program çıktısı başarı yüzdeleri, eşik altı çıktılar için sürekli iyileştirme raporu.",
-    group: "Kalite",
+    group: "Kanıt üreticileri",
     icon: LineChart,
   },
-  {
-    id: "akreditasyon",
-    no: 8,
-    label: "Akreditasyon Kanıt Merkezi",
-    short: "Kanıt merkezi",
-    description: "Seçtiğiniz akreditasyonun ölçütleri, kuruluş belgesinden alınmış örnek kanıtlar, şifreli kanıt dosyaları, görev takibi ve tek tıkla kanıt paketi.",
-    group: "Kalite",
-    icon: FolderCheck,
-  },
+
   {
     id: "kasa",
     no: 1,
