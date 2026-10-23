@@ -3,6 +3,7 @@
 import * as React from "react";
 import {
   AlertTriangle,
+  CalendarPlus,
   CalendarRange,
   CheckCircle2,
   DoorOpen,
@@ -32,6 +33,7 @@ import { HBarChart } from "@/components/charts/BarChart";
 import { printDocument } from "@/components/print/PrintHost";
 import { exportBoardDocx, exportNoticesDocx, exportScheduleXlsx, importScheduleTables, type ScheduleCtx } from "@/services/scheduleExportService";
 import { ScheduleGrid } from "./ScheduleGrid";
+import { downloadIcs, invigilatorIcs, scheduleIcs } from "@/lib/ics";
 import { CoursesTable, InvigilatorsTable, RoomsTable, SettingsPanel } from "./ScheduleTables";
 import { BoardDocument, NoticeDocument } from "./ScheduleDocuments";
 
@@ -229,6 +231,9 @@ function OutputsPanel({ ctx }: { ctx: ScheduleCtx }) {
           <Button variant="outline" onClick={() => printDocument(<BoardDocument ctx={ctx} />, { orientation: "landscape", title: `${ctx.schedule.settings.periodName} Ilan Panosu` })}>
             <Printer className="h-4 w-4" /> A4 PDF / Yazdır
           </Button>
+          <Button variant="outline" onClick={() => downloadIcs(scheduleIcs(ctx))}>
+            <CalendarPlus className="h-4 w-4" /> Takvim (.ics)
+          </Button>
         </CardBody>
       </Card>
       <Card>
@@ -247,6 +252,17 @@ function OutputsPanel({ ctx }: { ctx: ScheduleCtx }) {
             </Button>
             <Button variant="outline" onClick={() => inv && printDocument(<NoticeDocument ctx={ctx} inv={inv} />, { title: `Gorev Tebligi ${inv.name}` })} disabled={!inv}>
               <Printer className="h-4 w-4" /> Seçili Hoca PDF
+            </Button>
+            <Button
+              variant="outline"
+              disabled={!inv}
+              onClick={() => {
+                if (!inv) return;
+                downloadIcs(invigilatorIcs(ctx, inv));
+                toast.success("Takvim dosyası indirildi", `${inv.name} görevleri Google/Outlook/Apple Takvim'e eklenebilir (30 dk önce hatırlatma).`);
+              }}
+            >
+              <CalendarPlus className="h-4 w-4" /> Seçili Hoca Takvimi (.ics)
             </Button>
             <Button variant="secondary" onClick={() => run("all", () => exportNoticesDocx(ctx, ctx.invigilators.map((i) => i.id)), "Tüm tebliğler tek Word belgesinde indirildi")} loading={busy === "all"}>
               <FileDown className="h-4 w-4" /> Tüm Gözetmenler (.docx)

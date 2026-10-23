@@ -178,6 +178,7 @@ function QuickActions() {
   const data = useData();
   const setImport = useShellUi((s) => s.setCourseImport);
   const setBackup = useShellUi((s) => s.setBackup);
+  const requestTab = useShellUi((s) => s.requestTab);
   const [examId, setExamId] = React.useState(data.ui.activeExamId ?? data.exams[0]?.id ?? "");
   const [busy, setBusy] = React.useState(false);
 
@@ -196,9 +197,9 @@ function QuickActions() {
 
   const tiles: { icon: React.ReactNode; title: string; desc: string; onClick: () => void }[] = [
     { icon: <FilePlus2 />, title: "Sınav hazırla", desc: "Soru editörü ve canlı A4 önizleme", onClick: () => navigateTo("sinav") },
-    { icon: <Library />, title: "Soru bankası", desc: `${data.questionBank.length} kayıtlı soru`, onClick: () => navigateTo("sinav") },
+    { icon: <Library />, title: "Soru bankası", desc: `${data.questionBank.length} kayıtlı soru`, onClick: () => { requestTab("sinav", "bank"); navigateTo("sinav"); } },
     { icon: <Upload />, title: "Ders içe aktar", desc: "Bologna'dan yapıştır veya Excel", onClick: () => setImport(true) },
-    { icon: <LineChart />, title: "Program çıktıları panosu", desc: "Dersler × PÇ başarı haritası", onClick: () => navigateTo("medek") },
+    { icon: <LineChart />, title: "Program çıktıları panosu", desc: "Dersler × PÇ başarı haritası", onClick: () => { requestTab("medek", "program"); navigateTo("medek"); } },
     { icon: <Download />, title: "Yedek al", desc: data.ui.lastBackupAt ? `Son yedek ${formatTrDate(data.ui.lastBackupAt.slice(0, 10))}` : "Henüz yedek alınmadı", onClick: () => setBackup("export") },
   ];
 

@@ -2,6 +2,8 @@
 
 import * as React from "react";
 import {
+  BookmarkPlus,
+  FileInput,
   ArrowDown,
   ArrowUp,
   Check,
@@ -25,11 +27,14 @@ import { Latex } from "@/components/print/DocParts";
 import { useAiRunner } from "@/modules/ai/useAi";
 import { aiAdaptToMedek, aiGenerateQuestion, aiTwinQuestion } from "@/services/aiCopilotService";
 import { blankQuestion, useActiveExam } from "./useExam";
+import { saveQuestionsToBank } from "./questionBank";
+import { TextImportDialog } from "./TextImportDialog";
 
 export function QuestionEditor() {
-  const { exam, course, updateExam, updateQuestion } = useActiveExam();
+  const { exam, course, updateExam, updateQuestion, update } = useActiveExam();
   const [open, setOpen] = React.useState<string | null>(exam?.questions[0]?.id ?? null);
   const [genOpen, setGenOpen] = React.useState(false);
+  const [textOpen, setTextOpen] = React.useState(false);
   if (!exam || !course) return null;
 
   const add = (type: QuestionType) => {
@@ -63,6 +68,9 @@ export function QuestionEditor() {
             <Plus className="h-3 w-3" /> {t.label}
           </Button>
         ))}
+        <Button size="sm" variant="outline" onClick={() => setTextOpen(true)}>
+          <FileInput className="h-3.5 w-3.5" /> Metinden aktar
+        </Button>
         <Button size="sm" variant="ai" onClick={() => setGenOpen(true)}>
           <Sparkles className="h-3.5 w-3.5" /> AI ile Soru + Rubrik Üret
         </Button>
@@ -88,6 +96,10 @@ export function QuestionEditor() {
             setOpen(nq.id);
           }}
           onDelete={() => updateExam((e) => ({ questions: e.questions.filter((x) => x.id !== q.id) }))}
+          onSaveToBank={() => {
+            const res = saveQuestionsToBank(update, course.id, [q], exam.title);
+            toast.success(res.added ? "Soru bankaya kaydedildi" : "Bankadaki soru güncellendi", "Soru Bankası sekmesinden diğer sınavlarda kullanabilirsiniz.");
+          }}
         />
       ))}
       {exam.questions.length === 0 && (
@@ -95,6 +107,16 @@ export function QuestionEditor() {
           Bu sınavda henüz soru yok. Yukarıdan bir soru tipi seçin veya AI ile üretin.
         </div>
       )}
+      <TextImportDialog
+        open={textOpen}
+        onClose={() => setTextOpen(false)}
+        course={course}
+        existingPoints={total}
+        onImport={(qs) => {
+          updateExam((e) => ({ questions: [...e.questions, ...qs] }));
+          setOpen(qs[0]?.id ?? null);
+        }}
+      />
       <AiGenerateDialog
         open={genOpen}
         onClose={() => setGenOpen(false)}
@@ -146,6 +168,7 @@ function QuestionCard({
   onDuplicate,
   onInsert,
   onDelete,
+  onSaveToBank,
 }: {
   q: Question;
   index: number;
@@ -158,6 +181,7 @@ function QuestionCard({
   onDuplicate: () => void;
   onInsert: (q: Question) => void;
   onDelete: () => void;
+  onSaveToBank: () => void;
 }) {
   const { run, busy } = useAiRunner();
   const rubricSum = q.rubric.reduce((s, r) => s + (Number(r.points) || 0), 0);
@@ -209,6 +233,9 @@ function QuestionCard({
           </Button>
           <Button size="icon" variant="ghost" onClick={() => onMove(1)} disabled={index === count - 1} aria-label="Aşağı taşı">
             <ArrowDown className="h-3.5 w-3.5" />
+          </Button>
+          <Button size="icon" variant="ghost" onClick={onSaveToBank} aria-label="Soru bankasına kaydet" title="Soru bankasına kaydet">
+            <BookmarkPlus className="h-3.5 w-3.5" />
           </Button>
           <Button size="icon" variant="ghost" onClick={onDuplicate} aria-label="Kopyala">
             <Copy className="h-3.5 w-3.5" />

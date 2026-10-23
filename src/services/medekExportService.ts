@@ -4,8 +4,11 @@
 import * as XLSX from "xlsx";
 import type { Course, Exam, GradeRow, GradeSheet, Institution, ProgramOutcome, PukoEntry } from "@/lib/types";
 import { scaleLabel, suggestPuko, type Analysis } from "@/lib/medekMath";
+import { analyzeItems, decisionLabel } from "@/lib/itemAnalysis";
+import { computeProgramPanel } from "@/lib/programPanel";
+import type { VaultData } from "@/lib/types";
 import { bloomLabel, clamp, formatTrDate, round, safeFileName, uid } from "@/lib/utils";
-import { buildDocument, infoTable, letterhead, para, PORTRAIT_WIDTH, saveDocx, saveWorkbook, sectionTitle, signatureTable, simpleTable, type Block } from "./docxCommon";
+import { buildDocument, infoTable, LANDSCAPE_WIDTH, letterhead, para, PORTRAIT_WIDTH, saveDocx, saveWorkbook, sectionTitle, signatureTable, simpleTable, type Block } from "./docxCommon";
 
 export interface PukoCtx {
   inst: Institution;
@@ -99,8 +102,29 @@ export function pukoBlocks(ctx: PukoCtx): Block[] {
     ),
   ];
 
+  const ia = analyzeItems(exam, ctx.sheet);
+  if (ia.test.n >= 5) {
+    blocks.push(sectionTitle("7. Madde (Soru) Analizi"));
+    blocks.push(
+      para(
+        `Cronbach α = ${ia.test.alpha === null ? "—" : ia.test.alpha.toFixed(2)} (${ia.test.reliability}) · Ölçmenin standart hatası = ${ia.test.sem === null ? "—" : `±${round(ia.test.sem, 1)}`} puan · Ortalama güçlük p = ${ia.test.meanP.toFixed(2)} · Ortalama ayırt edicilik D = ${ia.test.meanD.toFixed(2)} (üst/alt %27 = ${ia.test.groupSize} öğrenci).`,
+        { size: 9.5 },
+      ),
+    );
+    blocks.push(
+      simpleTable(
+        ["Soru", "p", "Güçlük", "D", "Ayırt edicilik", "r", "α (çıkarılırsa)", "Karar"],
+        ia.items.map((i) => [i.label, i.p.toFixed(2), i.difficulty, i.D.toFixed(2), i.discrimination, i.r === null ? "—" : i.r.toFixed(2), i.alphaIfDeleted === null ? "—" : i.alphaIfDeleted.toFixed(2), decisionLabel(i.decision)]),
+        [8, 8, 13, 8, 16, 8, 16, 23],
+        PORTRAIT_WIDTH,
+        { size: 9, alignCols: ["center", "center", "left", "center", "left", "center", "center", "left"] },
+      ),
+    );
+    blocks.push(para("Ebel ölçütleri: D ≥ 0,40 çok iyi; 0,30–0,39 iyi; 0,20–0,29 düzeltilmeli; < 0,20 zayıf. r: düzeltilmiş madde-toplam korelasyonu.", { size: 8.5, italics: true }));
+  }
+
   const entries = resolvePuko(ctx);
-  blocks.push(sectionTitle(`7. Sürekli İyileştirme (PUKÖ) Eylem Planı — Eşik: %${threshold}`));
+  blocks.push(sectionTitle(`8. Sürekli İyileştirme (PUKÖ) Eylem Planı — Eşik: %${threshold}`));
   if (!entries.length) {
     blocks.push(para(`Tüm öğrenme çıktıları hedef eşik değerin (%${threshold}) üzerinde gerçekleşmiştir. Mevcut öğretim stratejilerinin sürdürülmesi önerilmektedir.`, { size: 10 }));
   }
@@ -123,7 +147,7 @@ export function pukoBlocks(ctx: PukoCtx): Block[] {
       ),
     );
   });
-  blocks.push(sectionTitle("8. Genel Değerlendirme"));
+  blocks.push(sectionTitle("9. Genel Değerlendirme"));
   blocks.push(para(ctx.sheet.generalEvaluation || "—", { size: 10, align: "justify" }));
   blocks.push(
     signatureTable([
@@ -195,4 +219,56 @@ export async function readGradeFile(file: File, exam: Exam): Promise<GradeRow[]>
   });
   if (!out.length) throw new Error("Dosyada not satırı bulunamadı.");
   return out;
+}
+
+// ---------------------------------------------------------------------------
+// Program Çıktıları Sağlanma Raporu (öz değerlendirme eki)
+// ---------------------------------------------------------------------------
+
+export async function exportProgramPanelDocx(data: VaultData) {
+  const { rows, summary, threshold } = computeProgramPanel(data);
+  const inst = data.institution;
+  const pos = data.programOutcomes;
+  const W = LANDSCAPE_WIDTH;
+  const poW = (100 - 26) / Math.max(1, pos.length);
+  const fmt = (v: number | null, planned: number) => (v === null ? (planned ? "?" : "—") : `${v < threshold ? "▼" : ""}${Math.round(v)}`);
+  const children: Block[] = [
+    ...letterhead(inst, "Program Çıktıları Sağlanma Raporu", `${inst.department} — ${inst.program} · ${inst.academicYear} ${inst.semester} Yarıyılı`, [`${inst.accreditationBody} öz değerlendirme eki`], W),
+    sectionTitle("1. Program Düzeyi Özet"),
+    simpleTable(
+      ["PÇ", "Program Çıktısı", "Destekleyen Ders", "Ölçülen Ders", "Sağlanma %", "Durum"],
+      summary.map((s) => [
+        s.po.code,
+        s.po.text,
+        s.supportingCourses,
+        s.measuredCourses,
+        s.pct === null ? "—" : `%${round(s.pct, 1)}`,
+        s.uncovered ? "DESTEKLENMİYOR" : s.pct === null ? "Ölçülmedi" : s.flagged ? "EŞİK ALTI" : "Hedefte",
+      ]),
+      [6, 52, 10, 10, 10, 12],
+      W,
+      { size: 9, alignCols: ["center", "left", "center", "center", "center", "center"] },
+    ),
+    para(`Program düzeyi sağlanma = Σ (ders PÇ% × dersin PÇ'ye toplam matris ağırlığı) / Σ ağırlık. Hedef eşik %${threshold}.`, { size: 8.5, italics: true }),
+    sectionTitle("2. Dersler × PÇ — Gerçekleşen Başarı (%)"),
+    simpleTable(
+      ["Ders", ...pos.map((p) => p.code.replace("PÇ-", "P"))],
+      rows.map((r) => [`${r.course.code} ${r.course.name}`, ...pos.map((_, j) => fmt(r.achieved[j], r.planned[j]))]),
+      [26, ...pos.map(() => poW)],
+      W,
+      { size: 8.5, alignCols: ["left", ...pos.map(() => "center" as const)] },
+    ),
+    para("▼: hedef eşik altı · ?: katkı planlı, henüz ölçülmedi · —: katkı yok", { size: 8.5, italics: true }),
+    sectionTitle("3. Dersler × PÇ — Planlanan Katkı (Σ ÖÇ-PÇ ağırlığı)"),
+    simpleTable(
+      ["Ders", ...pos.map((p) => p.code.replace("PÇ-", "P"))],
+      rows.map((r) => [`${r.course.code} ${r.course.name}`, ...r.planned.map((v) => (v ? String(v) : "—"))]),
+      [26, ...pos.map(() => poW)],
+      W,
+      { size: 8.5, alignCols: ["left", ...pos.map(() => "center" as const)] },
+    ),
+    signatureTable([{ title: inst.headTitle || "Bölüm Başkanı", name: inst.headOfDepartment }, { title: "Bölüm Kalite Komisyonu Başkanı" }], W),
+  ];
+  const doc = buildDocument("Program Çıktıları Sağlanma Raporu", [{ children, landscape: true, footer: `${inst.department} — Program Çıktıları Sağlanma Raporu` }]);
+  await saveDocx(doc, `${safeFileName(`${inst.department}_PC_Saglanma_Raporu`)}.docx`);
 }

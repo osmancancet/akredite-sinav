@@ -4,6 +4,7 @@ import { A4Page, OfficialHeader, SignatureRow } from "@/components/print/DocPart
 import { scaleLabel } from "@/lib/medekMath";
 import { bloomLabel, formatTrDate, round } from "@/lib/utils";
 import { resolvePuko, type PukoCtx } from "@/services/medekExportService";
+import { analyzeItems, decisionLabel } from "@/lib/itemAnalysis";
 
 const pct = (v: number | null) => (v === null ? "—" : `%${round(v, 1)}`);
 
@@ -21,6 +22,7 @@ export function PukoDocument({ ctx }: { ctx: PukoCtx }) {
   const { inst, course, exam, analysis, threshold, programOutcomes, sheet } = ctx;
   const st = analysis.stats;
   const entries = resolvePuko(ctx);
+  const ia = analyzeItems(exam, sheet);
   return (
     <A4Page>
       <OfficialHeader inst={inst} title="Dönem Sonu Ders Değerlendirme ve PUKÖ Raporu" subtitle={`${inst.accreditationBody} / YÖKAK Sürekli İyileştirme Kanıtı — ${inst.academicYear} ${inst.semester} Yarıyılı`} />
@@ -165,7 +167,43 @@ export function PukoDocument({ ctx }: { ctx: PukoCtx }) {
           ))}
         </tbody>
       </table>
-      <div className="doc-section-title">7. Sürekli İyileştirme (PUKÖ) Eylem Planı</div>
+      {ia.test.n >= 5 && (
+        <>
+          <div className="doc-section-title">7. Madde (Soru) Analizi</div>
+          <p className="text-[9.5pt]">
+            Cronbach α = {ia.test.alpha === null ? "—" : ia.test.alpha.toFixed(2)} ({ia.test.reliability}) · SEM = {ia.test.sem === null ? "—" : `±${round(ia.test.sem, 1)}`} puan · ort. p = {ia.test.meanP.toFixed(2)} · ort. D = {ia.test.meanD.toFixed(2)}
+          </p>
+          <table className="doc-table compact">
+            <thead>
+              <tr>
+                <th>Soru</th>
+                <th>p</th>
+                <th>Güçlük</th>
+                <th>D</th>
+                <th>Ayırt edicilik</th>
+                <th>r</th>
+                <th>α (çıkarılırsa)</th>
+                <th>Karar</th>
+              </tr>
+            </thead>
+            <tbody>
+              {ia.items.map((i) => (
+                <tr key={i.questionId}>
+                  <td className="text-center">{i.label}</td>
+                  <td className="text-center">{i.p.toFixed(2)}</td>
+                  <td>{i.difficulty}</td>
+                  <td className="text-center">{i.D.toFixed(2)}</td>
+                  <td>{i.discrimination}</td>
+                  <td className="text-center">{i.r === null ? "—" : i.r.toFixed(2)}</td>
+                  <td className="text-center">{i.alphaIfDeleted === null ? "—" : i.alphaIfDeleted.toFixed(2)}</td>
+                  <td className="font-semibold">{decisionLabel(i.decision)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </>
+      )}
+      <div className="doc-section-title">8. Sürekli İyileştirme (PUKÖ) Eylem Planı</div>
       {entries.length === 0 && <p>Tüm öğrenme çıktıları hedef eşik değerin üzerinde gerçekleşmiştir.</p>}
       {entries.map((e) => {
         const o = analysis.outcomeStats.find((x) => x.outcomeId === e.outcomeId)!;
@@ -195,7 +233,7 @@ export function PukoDocument({ ctx }: { ctx: PukoCtx }) {
           </div>
         );
       })}
-      <div className="doc-section-title">8. Genel Değerlendirme</div>
+      <div className="doc-section-title">9. Genel Değerlendirme</div>
       <p className="text-justify">{sheet.generalEvaluation || "—"}</p>
       <SignatureRow
         items={[

@@ -9,7 +9,11 @@ import {
   FileDown,
   FilePlus2,
   KeyRound,
+  Library,
   ListChecks,
+  MoreHorizontal,
+  FileArchive,
+  ScanLine,
   Printer,
   Settings2,
   Table2,
@@ -28,15 +32,19 @@ import { printDocument } from "@/components/print/PrintHost";
 import { auditExam, buildBlueprint } from "@/lib/medekMath";
 import { BLOOM_LEVELS, cn, round, uid } from "@/lib/utils";
 import type { BookletType } from "@/lib/booklet";
-import { exportAnswerKeyDocx, exportExamDocx } from "@/services/examExportService";
+import { exportAnswerKeyDocx, exportExamDocx, exportOpticKeyTxt, exportOpticKeyXlsx } from "@/services/examExportService";
+import { exportEvidencePack } from "@/services/evidencePackService";
+import { useData } from "@/lib/store";
 import { AnswerKeyDocument, BlueprintTable, ExamPaper } from "./ExamDocuments";
 import { QuestionEditor } from "./QuestionEditor";
+import { QuestionBankPanel } from "./QuestionBankPanel";
+import { takePendingTab } from "@/components/shell/shellStore";
 import { ExamSettings } from "./ExamSettings";
 import { blankExam, useActiveExam } from "./useExam";
 
 export function ExamStudio() {
   const { data, exam, course, update } = useActiveExam();
-  const [leftTab, setLeftTab] = React.useState<"questions" | "settings">("questions");
+  const [leftTab, setLeftTab] = React.useState<"questions" | "bank" | "settings">(() => takePendingTab<"questions" | "bank" | "settings">("sinav", "questions"));
   const [rightTab, setRightTab] = React.useState<"preview" | "blueprint" | "audit">("preview");
   const [booklet, setBooklet] = React.useState<BookletType | "key">("A");
   const [newOpen, setNewOpen] = React.useState(false);
@@ -146,6 +154,7 @@ export function ExamStudio() {
               <KeyRound className="h-4 w-4" /> Cevap Anahtarı & Rubrik (.docx)
             </Button>
             <PrintMenu onPrint={doPrint} />
+            <MoreMenu />
           </div>
         </CardBody>
       </Card>
@@ -157,10 +166,13 @@ export function ExamStudio() {
             onChange={setLeftTab}
             items={[
               { value: "questions", label: `Soru Editörü (${exam.questions.length})`, icon: <ListChecks className="h-3.5 w-3.5" /> },
+              { value: "bank", label: `Soru Bankası (${data.questionBank.length})`, icon: <Library className="h-3.5 w-3.5" /> },
               { value: "settings", label: "Antet, Sınav & ÖÇ Ayarları", icon: <Settings2 className="h-3.5 w-3.5" /> },
             ]}
           />
-          {leftTab === "questions" ? <QuestionEditor /> : <ExamSettings />}
+          {leftTab === "questions" && <QuestionEditor />}
+          {leftTab === "bank" && <QuestionBankPanel />}
+          {leftTab === "settings" && <ExamSettings />}
         </div>
 
         <div className="min-w-0">
@@ -354,5 +366,58 @@ function NewExamDialog({ open, onClose }: { open: boolean; onClose: () => void }
         <Badge tone="brand">{data.courses.find((c) => c.id === courseId)?.outcomes.length ?? 0} ÖÇ</Badge> ile eşleştirilebilir.
       </p>
     </Dialog>
+  );
+}
+
+function MoreMenu() {
+  const { exam, course } = useActiveExam();
+  const data = useData();
+  const [open, setOpen] = React.useState(false);
+  const [busy, setBusy] = React.useState(false);
+  if (!exam || !course) return null;
+  const objective = exam.questions.some((q) => q.type === "mcq" || q.type === "truefalse");
+  const item = (icon: React.ReactNode, label: string, desc: string, fn: () => void | Promise<void>, disabled = false) => (
+    <button
+      disabled={disabled}
+      className="flex w-full cursor-pointer items-start gap-3 rounded-lg px-3 py-2 text-left hover:bg-zinc-50 disabled:cursor-not-allowed disabled:opacity-40"
+      onClick={async () => {
+        setOpen(false);
+        await fn();
+      }}
+    >
+      <span className="mt-0.5 text-zinc-500 [&_svg]:h-4 [&_svg]:w-4">{icon}</span>
+      <span>
+        <span className="block text-[13px] font-medium text-zinc-900">{label}</span>
+        <span className="block text-[11.5px] text-zinc-500">{desc}</span>
+      </span>
+    </button>
+  );
+  return (
+    <div className="relative">
+      <Button variant="outline" onClick={() => setOpen((v) => !v)} loading={busy} aria-label="Diğer çıktılar">
+        <MoreHorizontal className="h-4 w-4" />
+      </Button>
+      {open && (
+        <>
+          <div className="fixed inset-0 z-10" onClick={() => setOpen(false)} />
+          <div className="absolute right-0 z-20 mt-2 w-80 rounded-xl border border-zinc-200 bg-white p-1.5 shadow-[var(--shadow-pop)]">
+            {item(<ScanLine />, "Optik cevap anahtarı (.xlsx)", objective ? "A/B kitapçık anahtarları, optik okuyucu için" : "Sınavda nesnel soru yok", () => exportOpticKeyXlsx(course, exam), !objective)}
+            {item(<ScanLine />, "Optik anahtar dizisi (.txt)", "A,CBDA… biçiminde düz metin", () => exportOpticKeyTxt(course, exam), !objective)}
+            <div className="my-1 border-t border-zinc-100" />
+            {item(<FileArchive />, "Ders kanıt klasörü (.zip)", "Tüm resmi belgeler + SHA-256 içindekiler", async () => {
+              setBusy(true);
+              try {
+                const res = await exportEvidencePack(data, exam.id);
+                toast.success(`Kanıt klasörü hazır — ${res.files} belge`, res.skipped.length ? `${res.skipped.length} belge eksik; ayrıntı ZIP içindeki İÇİNDEKİLER dosyasında.` : undefined);
+              } catch (e) {
+                toast.error("Kanıt klasörü oluşturulamadı", e instanceof Error ? e.message : String(e));
+              } finally {
+                setBusy(false);
+              }
+            })}
+          </div>
+        </>
+      )}
+    </div>
   );
 }

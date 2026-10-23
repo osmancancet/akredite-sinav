@@ -8,6 +8,8 @@ import {
   Eraser,
   FileDown,
   Grid3x3,
+  Microscope,
+  Network,
   ListPlus,
   Plus,
   Printer,
@@ -36,13 +38,16 @@ import { downloadGradeTemplate, exportPukoDocx, readGradeFile, resolvePuko, type
 import { aiWritePuko } from "@/services/aiCopilotService";
 import { useAiRunner } from "@/modules/ai/useAi";
 import { PukoDocument } from "./PukoDocument";
+import { takePendingTab } from "@/components/shell/shellStore";
+import { ItemAnalysisView } from "./ItemAnalysisView";
+import { ProgramPanelView } from "./ProgramPanelView";
 
-type TabId = "grades" | "matrix" | "analysis" | "puko";
+type TabId = "grades" | "matrix" | "analysis" | "items" | "program" | "puko";
 
 export function MedekModule() {
   const data = useData();
   const update = useVault((s) => s.update);
-  const [tab, setTab] = React.useState<TabId>("analysis");
+  const [tab, setTab] = React.useState<TabId>(() => takePendingTab<TabId>("medek", "analysis"));
   const exam = data.exams.find((e) => e.id === data.ui.activeExamId) ?? data.exams[0];
   const course = exam ? data.courses.find((c) => c.id === exam.courseId) : undefined;
 
@@ -92,6 +97,8 @@ export function MedekModule() {
           { value: "grades", label: "Soru Bazlı Not Girişi", icon: <Calculator className="h-3.5 w-3.5" /> },
           { value: "matrix", label: "ÖÇ × PÇ Matrisi", icon: <Grid3x3 className="h-3.5 w-3.5" /> },
           { value: "analysis", label: "Analiz & Grafikler", icon: <BarChart3 className="h-3.5 w-3.5" /> },
+          { value: "items", label: "Madde Analizi", icon: <Microscope className="h-3.5 w-3.5" /> },
+          { value: "program", label: "Program Panosu", icon: <Network className="h-3.5 w-3.5" /> },
           { value: "puko", label: "PUKÖ Raporu", icon: <FileDown className="h-3.5 w-3.5" />, badge: flagged.length ? <Badge tone="red">{flagged.length}</Badge> : undefined },
         ]}
       />
@@ -99,6 +106,8 @@ export function MedekModule() {
       {tab === "grades" && <GradeEntry exam={exam} course={course} sheet={sheet} setSheet={setSheet} />}
       {tab === "matrix" && <MatrixEditor course={course} />}
       {tab === "analysis" && <AnalysisView ctx={ctx} />}
+      {tab === "items" && <ItemAnalysisView exam={exam} sheet={sheet} />}
+      {tab === "program" && <ProgramPanelView />}
       {tab === "puko" && <PukoPanel ctx={ctx} setSheet={setSheet} />}
     </div>
   );
