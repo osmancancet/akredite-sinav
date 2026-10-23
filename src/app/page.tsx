@@ -23,6 +23,7 @@ import frameworkIndex from "../../public/frameworks/index.json";
 import type { FrameworkIndexEntry } from "@/lib/accreditation/types";
 import { HashRedirect, HeroLattice, LandingNav } from "@/components/landing/LandingClient";
 import { BrandMark } from "@/components/shell/BrandMark";
+import { LegacyHostBanner } from "@/components/shell/LegacyHostBanner";
 import { BRAND } from "@/lib/brand";
 
 const FEATURES = [
@@ -64,6 +65,7 @@ export default function Landing() {
   return (
     <div className="min-h-screen bg-[var(--color-canvas)]">
       <HashRedirect />
+      <LegacyHostBanner />
       <LandingNav />
 
       {/* Hero */}

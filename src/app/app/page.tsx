@@ -4,6 +4,7 @@ import { BRAND } from "@/lib/brand";
 
 export const metadata: Metadata = {
   title: `Uygulama — ${BRAND.name}`,
+  alternates: { canonical: "/app" },
 };
 
 export default function AppPage() {

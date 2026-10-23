@@ -3,6 +3,15 @@
 # dosyası (scripts/gen-headers.mjs) güvenlik ve önbellek başlıklarını uygular.
 name = "akredite-sinav"
 compatibility_date = "2026-10-22"
+# Eski adres açık kalır: kullanıcılar verilerini oradan yedekleyip yeni adrese taşır (LegacyHostBanner)
+workers_dev = true
+
+# Özel alan adları (Cloudflare Registrar, aynı hesap): DNS kaydı ve SSL otomatik.
+# www, ilk boyamadan önce kanonik adrese yönlendirilir (src/lib/themeScript.ts).
+routes = [
+  { pattern = "kanithane.com", custom_domain = true },
+  { pattern = "www.kanithane.com", custom_domain = true },
+]
 
 [assets]
 directory = "./out"

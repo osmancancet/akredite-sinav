@@ -17,10 +17,13 @@ const fraunces = Fraunces({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(BRAND.url),
   title: `${BRAND.name} — ${BRAND.tagline}`,
   description:
-    "Tarayıcı içi şifreli (AES-256-GCM) sınav kağıdı hazırlama, sınav programı, kapı listesi, rubrik ve MEDEK/YÖKAK PUKÖ akreditasyon platformu.",
+    "YÖKAK tescilli 29 kuruluşun ölçütleri ve örnek kanıtları hazır; ekipten şifreli kanıt toplama, sınav ve ölçme belgeleri, öz değerlendirme ve kanıt paketi. Veriler tarayıcıda AES-256-GCM ile şifreli kalır.",
   applicationName: BRAND.name,
+  alternates: { canonical: "/" },
+  openGraph: { title: `${BRAND.name} — ${BRAND.tagline}`, url: BRAND.url, siteName: BRAND.name, locale: "tr_TR", type: "website" },
   manifest: "/manifest.webmanifest",
 };
 

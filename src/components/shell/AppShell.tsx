@@ -46,6 +46,7 @@ import { VaultModule } from "@/modules/vault/VaultModule";
 import { OverviewModule } from "@/modules/overview/OverviewModule";
 import { CourseImportDialog } from "@/modules/vault/CourseImportDialog";
 import { BackupReminder } from "./BackupReminder";
+import { LegacyHostBanner } from "./LegacyHostBanner";
 import { OnboardingWizard } from "./OnboardingWizard";
 import { requestPersistentStorage } from "@/hooks/useStoragePersist";
 import { ExamStudio } from "@/modules/exam/ExamStudio";
@@ -275,6 +276,7 @@ export function AppShell() {
           onBackup={(m) => setBackupOpen(m)}
           onAi={() => navigate("ai")}
         />
+        <LegacyHostBanner onBackup={() => setBackupOpen("export")} />
         <BackupReminder />
         <main className="mx-auto w-full max-w-[1600px] flex-1 px-4 pb-16 pt-8 sm:px-6 lg:px-10">
           <AnimatePresence mode="wait">
