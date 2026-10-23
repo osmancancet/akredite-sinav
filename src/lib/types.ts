@@ -299,6 +299,7 @@ export interface VaultData {
   rubrics: Rubric[];
   grades: Record<string, GradeSheet>; // examId -> not çizelgesi
   questionBank: BankQuestion[];
+  accreditation: import("./accreditation/types").AccreditationWorkspace;
   ai: AiSettings;
   ui: UiState;
 }
@@ -318,6 +319,7 @@ export const COLLECTION_KEYS: CollectionKey[] = [
   "rubrics",
   "grades",
   "questionBank",
+  "accreditation",
   "ai",
   "ui",
 ];

@@ -3,6 +3,7 @@
 import { create } from "zustand";
 import {
   openVault,
+  pruneBlobs,
   readAllCollections,
   removeMasterPassword,
   setMasterPassword,
@@ -14,6 +15,8 @@ import {
 } from "./cryptoVault";
 import { createDemoVault, createEmptyVault } from "./demoSeeder";
 import { COLLECTION_KEYS, type CollectionKey, type VaultData } from "./types";
+import { referencedBlobIds } from "./accreditation/progress";
+import { withDemoAccreditation } from "./accreditation/demoAccreditation";
 
 type Updater<T> = T | ((prev: T) => T);
 
@@ -50,6 +53,7 @@ function normalize(loaded: Partial<VaultData>): VaultData {
   merged.ui = { ...base.ui, ...(loaded.ui ?? {}) };
   if (loaded.ui && loaded.ui.onboarded === undefined) merged.ui.onboarded = true;
   merged.questionBank = loaded.questionBank ?? [];
+  merged.accreditation = { ...base.accreditation, ...(loaded.accreditation ?? {}) };
   merged.institution = { ...base.institution, ...(loaded.institution ?? {}) };
   return merged;
 }
@@ -84,7 +88,7 @@ export const useVault = create<VaultState>((set, get) => {
         }
         let data: VaultData;
         if (res.isNew) {
-          data = createDemoVault();
+          data = await withDemoAccreditation(createDemoVault());
           await writeAllCollections(res.key, data);
         } else {
           data = normalize(await readAllCollections(res.key));
@@ -139,22 +143,23 @@ export const useVault = create<VaultState>((set, get) => {
       const data = normalize(incoming);
       pending.clear();
       await writeAllCollections(key, data);
+      await pruneBlobs(referencedBlobIds(data));
       set({ data, lastSavedAt: new Date().toISOString() });
     },
 
     setPassword: async (password) => {
       await get().flush();
-      const { data } = get();
+      const { data, key: oldKey } = get();
       if (!data) return;
-      const key = await setMasterPassword(password, data);
+      const key = await setMasterPassword(password, data, oldKey ?? undefined);
       set({ key, mode: "password" });
     },
 
     removePassword: async () => {
       await get().flush();
-      const { data } = get();
+      const { data, key: oldKey } = get();
       if (!data) return;
-      const key = await removeMasterPassword(data);
+      const key = await removeMasterPassword(data, oldKey ?? undefined);
       set({ key, mode: "device" });
     },
 
@@ -167,7 +172,7 @@ export const useVault = create<VaultState>((set, get) => {
 
     loadDemo: async () => {
       const prev = get().data;
-      const demo = createDemoVault();
+      const demo = await withDemoAccreditation(createDemoVault());
       if (prev) {
         demo.ai = prev.ai; // kullanıcının AI anahtarlarını koru
         demo.ui = { ...demo.ui, onboarded: true, firstUseAt: prev.ui.firstUseAt ?? demo.ui.firstUseAt, lastBackupAt: prev.ui.lastBackupAt };

@@ -16,6 +16,7 @@ npm start          # out/ klasörünü http://127.0.0.1:4173 adresinde servis ed
 
 ## Öne çıkan özellikler
 
+- **Akreditasyon Kanıt Merkezi:** YÖKAK tescilli 29 kuruluşun tamamı ve YÖKAK KAP/UKAP için 32 ölçüt seti (ölçüt, alt ölçüt, kuruluşun örnek kanıt listesi; her kalem kaynak belge ve sayfa atfıyla). Kanıt başına durum, sorumlu, son tarih, not ve tarayıcıda AES-256-GCM ile şifrelenen dosya ekleri; uygulamanın ürettiği belgeleri tek tıkla kanıta ekleme; MEDEK Rehberi 1–5 düzeyli öz değerlendirme ve YÖKAK olgunluk düzeyleriyle tahmini puan (resmi değil); görev takibi; kanıt matrisi (.xlsx), öz değerlendirme çalışma raporu (.docx) ve SHA-256 içindekili kanıt paketi (.zip). Katalogda olmayan çerçeveler için kurum tanımlı ölçüt seti. Kaynak ve yeniden üretim: `scripts/frameworks/README.md`.
 - **Genel Bakış ve kurulum sihirbazı:** dönem iş akışı ilerlemesi, yaklaşan sınavlar, akreditasyon durumu; ilk açılışta demo veya kendi kurumunuzla 2 dakikada kurulum.
 - **Soru bankası ve metinden soru aktarma:** Word'deki sınavı yapıştırın; numara, puan, şık, doğru cevap, kod bloğu ve Bloom düzeyi otomatik algılanır.
 - **Madde analizi:** güçlük (p), ayırt edicilik (D, %27), düzeltilmiş madde-toplam korelasyonu, Cronbach α, SEM ve Ebel kararları.
@@ -33,7 +34,8 @@ Liste kaynağı tr.wikipedia "Türkiye'deki üniversiteler listesi"; logolar Wik
 
 - **Şifreleme:** Her koleksiyon IndexedDB'ye AES-256-GCM (yazım başına yeni 12 byte IV, koleksiyon adı AAD) ile yazılır.
 - **Anahtar:** Varsayılan olarak dışa aktarılamaz (non-extractable) cihaz anahtarı; isteğe bağlı master parola (PBKDF2-SHA256, 100.000 iterasyon, 16 byte salt). Parola modunda anahtar yalnızca bellekte tutulur.
-- **Yedek:** `.akredite` paketi = PBKDF2 + AES-256-GCM ile şifrelenmiş tam kasa (JSON zarf + Base64 şifreli yük).
+- **Kanıt dosyaları:** Ayrı bir IndexedDB tablosunda dosya başına AES-256-GCM (AAD `blob:<kimlik>`) ile saklanır; master parola değişiminde yeniden şifrelenir, hiçbir kayda bağlı olmayan dosyalar sıfırlama/geri yükleme sonrası silinir.
+- **Yedek:** `.akredite` paketi (sürüm 2) = PBKDF2 + AES-256-GCM ile şifrelenmiş tam kasa ve kanıt dosyaları (JSON zarf + Base64 şifreli yük). Sürüm 1 yedekleri okunmaya devam eder.
 - **Ağ:** CSP `connect-src` yalnızca uygulamanın kendisine ve kullanıcının seçtiği BYOK AI uç noktalarına izin verir. "Güvenliği Kanıtla" modalı tüm ağ olaylarını canlı listeler.
 - **Çevrimdışı:** Tüm modüller tek pakette yüklenir; Service Worker statik dosyaları önbelleğe alır. Word (`docx`), Excel (`xlsx`) ve A4 PDF (tarayıcı yazdırma motoru) çıktıları internetsiz üretilir.
 
@@ -48,6 +50,7 @@ Liste kaynağı tr.wikipedia "Türkiye'deki üniversiteler listesi"; logolar Wik
 | 5 Analitik Rubrik | `src/modules/rubric` | `src/lib/rubricTemplates.ts`, `src/services/rubricExportService.ts` |
 | 6 ÖÇ/PÇ & PUKÖ | `src/modules/medek` | `src/lib/medekMath.ts`, `src/services/medekExportService.ts` |
 | 7 BYOK AI Asistanı | `src/modules/ai` | `src/services/aiCopilotService.ts` |
+| 8 Akreditasyon Kanıt Merkezi | `src/modules/accreditation` | `src/lib/accreditation/*`, `src/services/accreditationService.ts`, `public/frameworks/*.json` |
 
 ## BYOK AI
 

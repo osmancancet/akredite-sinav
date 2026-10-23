@@ -12,6 +12,7 @@ import {
   Download,
   FileArchive,
   FilePlus2,
+  FolderCheck,
   Library,
   LineChart,
   Upload,
@@ -19,6 +20,7 @@ import {
 import { useData, useVault } from "@/lib/store";
 import { workflowProgress, workflowSteps, type WorkflowStep } from "@/lib/workflow";
 import { computeAnalysis } from "@/lib/medekMath";
+import { progressOf } from "@/lib/accreditation/progress";
 import { scheduleDates } from "@/lib/scheduler";
 import { downloadIcs, scheduleIcs } from "@/lib/ics";
 import { cn, formatTrDate, todayIso, trDayName, num } from "@/lib/utils";
@@ -69,6 +71,7 @@ export function OverviewModule() {
         <QuickActions />
       </div>
       <QualitySnapshot />
+      <EvidenceSnapshot />
     </div>
   );
 }
@@ -333,6 +336,61 @@ function QualitySnapshot() {
         </div>
       ) : (
         <CardBody className="text-center text-sm text-zinc-500">Henüz not girilmiş sınav yok. Modül 6&apos;da notları girince burada ÖÇ durumu görünür.</CardBody>
+      )}
+    </Card>
+  );
+}
+
+function EvidenceSnapshot() {
+  const data = useData();
+  const ws = data.accreditation;
+  return (
+    <Card>
+      <CardHeader
+        icon={<FolderCheck />}
+        title="Akreditasyon kanıtları"
+        description={ws.active.length ? "Etkin akreditasyon çerçevelerinde kanıt hazırlık durumu" : "Akreditasyon kuruluşunuzu seçin; ölçütler ve kuruluşun örnek kanıt listesi hazır gelsin."}
+        actions={
+          <Button size="sm" variant="ghost" onClick={() => navigateTo("akreditasyon")}>
+            {ws.active.length ? "Kanıt merkezi" : "Başlat"} <ArrowRight className="h-3.5 w-3.5" />
+          </Button>
+        }
+      />
+      {ws.active.length > 0 && (
+        <ul className="divide-y divide-zinc-100">
+          {ws.active.map((fw) => {
+            const p = progressOf(ws, fw);
+            const today = todayIso();
+            const late = Object.entries(ws.records).filter(([k, r]) => k.startsWith(`${fw.slug}::`) && r.due && r.due < today && r.status !== "ready" && r.status !== "na").length;
+            return (
+              <li key={fw.slug}>
+                <button
+                  className="flex w-full items-center gap-4 px-5 py-3 text-left hover:bg-zinc-50"
+                  onClick={() => {
+                    useVault.getState().update("accreditation", (w) => ({ ...w, current: fw.slug }));
+                    navigateTo("akreditasyon");
+                  }}
+                >
+                  <div className="min-w-0 flex-1">
+                    <div className="text-[13px] font-medium text-zinc-900">
+                      {fw.snapshot.code} <span className="font-normal text-zinc-500">· {fw.scopeLabel}</span>
+                    </div>
+                    <div className="mt-1.5 flex h-1.5 overflow-hidden rounded-full bg-zinc-100">
+                      <div className="bg-emerald-600" style={{ width: `${p.total ? (p.ready / p.total) * 100 : 0}%` }} />
+                      <div className="bg-amber-400" style={{ width: `${p.total ? (p.inProgress / p.total) * 100 : 0}%` }} />
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <div className="font-mono text-[15px] tabular-nums text-zinc-900">%{num(p.pct, 0)}</div>
+                    <div className="text-[11px] text-zinc-500">
+                      {p.ready}/{p.total - p.na} hazır{late ? <span className="text-red-700"> · {late} gecikmiş</span> : null}
+                    </div>
+                  </div>
+                </button>
+              </li>
+            );
+          })}
+        </ul>
       )}
     </Card>
   );

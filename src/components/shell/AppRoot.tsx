@@ -23,6 +23,14 @@ export function AppRoot() {
     void boot();
     if (process.env.NODE_ENV === "production" && "serviceWorker" in navigator) {
       navigator.serviceWorker.register("/sw.js").catch(() => undefined);
+      // İlk ziyarette servis çalışanı devreye girmeden yüklenen uygulama parçalarını da önbelleğe aldır (çevrimdışı ilk yeniden yükleme)
+      void navigator.serviceWorker.ready.then((reg) => {
+        const urls = performance
+          .getEntriesByType("resource")
+          .map((e) => e.name)
+          .filter((u) => u.startsWith(`${location.origin}/_next/static/`));
+        reg.active?.postMessage({ type: "precache", urls });
+      });
     }
   }, [boot]);
 

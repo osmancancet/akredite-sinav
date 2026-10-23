@@ -82,3 +82,19 @@ Tarih: 23 Ekim 2026 · Durum: kullanıcı tarafından önceden onaylandı ("plan
 | Dönem içi ağırlıklı çoklu ölçme aracı | ⏭ | Kapsam dışı bırakıldı (sonraki faz) |
 
 Bağımsız kod incelemesi 10 bulgu getirdi; tamamı düzeltildi ve test edildi.
+
+## 5. Akreditasyon Kanıt Merkezi (23 Ekim 2026)
+
+İstek: bütün akreditasyonların taranması, seçilen akreditasyona göre gerekli kanıtların ve kanıt ekleme yerinin kurulması, uydurma veri olmaması.
+
+| Madde | Durum | Not |
+|---|---|---|
+| Kuruluş taraması | ✅ | YÖKAK tescil listesindeki 29 kuruluşun tamamı + YÖKAK KAP/UKAP = 32 çerçeve; yalnızca kuruluşların resmi belgeleri |
+| Kaynak zorunluluğu | ✅ | Kaynağı olmayan kalem normalize edilirken reddedilir (2 SBD ölçütü reddedildi); 446 ölçüt, 3.384 alt ölçüt, 5.216 kanıt kalemi; 5.118'i belgede birebir |
+| MEDEK Rehberi rubriği | ✅ | 59 alt ölçüt satırı × 5 düzey, PDF'ten tablo çıkarımıyla; 5.5 metniyle birebir karşılaştırıldı |
+| Kanıt çalışma alanı | ✅ | Durum, sorumlu, son tarih, not, şifreli dosya, uygulama belgesi ekleme, özel kanıt, görevler |
+| Öz değerlendirme | ✅ | MEDEK 1–5 (Eksik … Çok İyi), YÖKAK olgunluk düzeyi ve tahmini puan (resmi değil) |
+| Çıktılar | ✅ | Kanıt matrisi (.xlsx), öz değerlendirme çalışma raporu (.docx), SHA-256 içindekili kanıt paketi (.zip; YÖKAK adlandırma kuralı) |
+| Yedek ve parola | ✅ | `.akredite` v2 dosyaları içerir; parola değişiminde dosyalar yeniden şifrelenir |
+| Çevrimdışı | ✅ | Katalog Service Worker kurulumunda önbelleğe alınır; ilk ziyarette de çevrimdışı yeniden yükleme |
+| Test | ✅ | 30 uçtan uca kontrol + çevrimdışı katalog testi + mevcut gerileme paketleri; harici istek 0 |

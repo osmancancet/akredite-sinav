@@ -44,15 +44,30 @@ export interface KeyringMeta {
   updatedAt: string;
 }
 
+/** Kanıt dosyası eki: içerik AES-256-GCM ile şifreli, AAD = "blob:<id>" */
+export interface EncryptedBlob {
+  id: string;
+  iv: Uint8Array;
+  ciphertext: ArrayBuffer;
+  byteLength: number;
+  createdAt: string;
+}
+
 class VaultDatabase extends Dexie {
   records!: Table<EncryptedRecord, CollectionKey>;
   meta!: Table<KeyringMeta, string>;
+  blobs!: Table<EncryptedBlob, string>;
 
   constructor() {
     super("AkrediteSinavVault");
     this.version(1).stores({
       records: "key, updatedAt",
       meta: "id",
+    });
+    this.version(2).stores({
+      records: "key, updatedAt",
+      meta: "id",
+      blobs: "id, createdAt",
     });
   }
 }
@@ -249,8 +264,54 @@ export async function writeAllCollections(key: CryptoKey, data: VaultData): Prom
   }
 }
 
+// ---------------------------------------------------------------------------
+// Şifreli dosya ekleri (kanıt dosyaları)
+// ---------------------------------------------------------------------------
+
+export async function writeBlob(key: CryptoKey, id: string, data: ArrayBuffer): Promise<void> {
+  const { iv, ciphertext } = await encryptBytes(key, new Uint8Array(data), `blob:${id}`);
+  await getDb().blobs.put({ id, iv, ciphertext, byteLength: data.byteLength, createdAt: new Date().toISOString() });
+}
+
+export async function readBlob(key: CryptoKey, id: string): Promise<ArrayBuffer | null> {
+  const rec = await getDb().blobs.get(id);
+  if (!rec) return null;
+  return decryptBytes(key, rec.iv, rec.ciphertext, `blob:${id}`);
+}
+
+export async function deleteBlob(id: string): Promise<void> {
+  await getDb().blobs.delete(id);
+}
+
+export async function listBlobIds(): Promise<string[]> {
+  return (await getDb().blobs.toCollection().primaryKeys()) as string[];
+}
+
+export async function blobUsage(): Promise<{ count: number; bytes: number }> {
+  const all = await getDb().blobs.toArray();
+  return { count: all.length, bytes: all.reduce((s, b) => s + b.byteLength, 0) };
+}
+
+/** Kasadaki hiçbir kayda bağlı olmayan şifreli ekleri siler (sıfırlama / geri yükleme sonrası). */
+export async function pruneBlobs(keep: Set<string>): Promise<number> {
+  const orphans = (await listBlobIds()).filter((id) => !keep.has(id));
+  if (orphans.length) await getDb().blobs.bulkDelete(orphans);
+  return orphans.length;
+}
+
+/** Anahtar değişiminde tüm ekleri yeni anahtarla yeniden şifreler. */
+async function reencryptBlobs(oldKey: CryptoKey, newKey: CryptoKey): Promise<void> {
+  const db = getDb();
+  const ids = await listBlobIds();
+  for (const id of ids) {
+    const plain = await readBlob(oldKey, id);
+    if (plain) await writeBlob(newKey, id, plain);
+  }
+  void db;
+}
+
 /** Tüm kasayı yeni master parola ile yeniden şifreler. */
-export async function setMasterPassword(password: string, data: VaultData): Promise<CryptoKey> {
+export async function setMasterPassword(password: string, data: VaultData, oldKey?: CryptoKey): Promise<CryptoKey> {
   if (password.length < 8) throw new Error("Master parola en az 8 karakter olmalıdır.");
   const salt = randomBytes(SALT_BYTES);
   const key = await deriveKeyFromPassword(password, salt, KDF_ITERATIONS);
@@ -261,6 +322,7 @@ export async function setMasterPassword(password: string, data: VaultData): Prom
     await db.records.clear();
   });
   await writeAllCollections(key, data);
+  if (oldKey) await reencryptBlobs(oldKey, key);
   const prev = await db.meta.get("keyring");
   await db.meta.put({
     id: "keyring",
@@ -276,11 +338,12 @@ export async function setMasterPassword(password: string, data: VaultData): Prom
 }
 
 /** Master parolayı kaldırır; kasa yeni bir cihaz anahtarı ile yeniden şifrelenir. */
-export async function removeMasterPassword(data: VaultData): Promise<CryptoKey> {
+export async function removeMasterPassword(data: VaultData, oldKey?: CryptoKey): Promise<CryptoKey> {
   const deviceKey = await generateDeviceKey();
   const db = getDb();
   await db.records.clear();
   await writeAllCollections(deviceKey, data);
+  if (oldKey) await reencryptBlobs(oldKey, deviceKey);
   const prev = await db.meta.get("keyring");
   const now = new Date().toISOString();
   await db.meta.put({
@@ -299,6 +362,7 @@ export async function wipeVault(): Promise<void> {
   const db = getDb();
   await db.records.clear();
   await db.meta.clear();
+  await db.blobs.clear();
 }
 
 export async function listEncryptedRecords(): Promise<EncryptedRecord[]> {
@@ -319,14 +383,20 @@ export interface AkreditePackage {
   payload: string; // base64 ciphertext
 }
 
-export async function exportAkredite(data: VaultData, password: string): Promise<Blob> {
+export interface BackupBlob {
+  id: string;
+  base64: string;
+}
+
+/** Sürüm 2 paketi: kasa verisi + şifreli kanıt dosyaları (ekler) tek pakette. */
+export async function exportAkredite(data: VaultData, password: string, blobs: BackupBlob[] = []): Promise<Blob> {
   if (password.length < 6) throw new Error("Yedek parolası en az 6 karakter olmalıdır.");
   const salt = randomBytes(SALT_BYTES);
   const key = await deriveKeyFromPassword(password, salt, KDF_ITERATIONS);
-  const { iv, ciphertext } = await encryptJson(key, data, AKREDITE_FORMAT);
+  const { iv, ciphertext } = await encryptJson(key, { v: 2, data, blobs }, AKREDITE_FORMAT);
   const pkg: AkreditePackage = {
     format: AKREDITE_FORMAT,
-    version: AKREDITE_VERSION,
+    version: 2,
     createdAt: new Date().toISOString(),
     app: "AkrediteSınav",
     kdf: { name: "PBKDF2", hash: "SHA-256", iterations: KDF_ITERATIONS, salt: bytesToBase64(salt) },
@@ -336,7 +406,7 @@ export async function exportAkredite(data: VaultData, password: string): Promise
   return new Blob([JSON.stringify(pkg, null, 2)], { type: "application/octet-stream" });
 }
 
-export async function importAkredite(file: File, password: string): Promise<VaultData> {
+export async function importAkredite(file: File, password: string): Promise<{ data: VaultData; blobs: BackupBlob[] }> {
   let pkg: AkreditePackage;
   try {
     pkg = JSON.parse(await file.text()) as AkreditePackage;
@@ -348,12 +418,15 @@ export async function importAkredite(file: File, password: string): Promise<Vaul
   }
   const key = await deriveKeyFromPassword(password, base64ToBytes(pkg.kdf.salt), pkg.kdf.iterations);
   try {
-    return await decryptJson<VaultData>(
+    const plain = await decryptJson<VaultData | { v: 2; data: VaultData; blobs: BackupBlob[] }>(
       key,
       base64ToBytes(pkg.cipher.iv),
       base64ToBytes(pkg.payload).buffer,
       AKREDITE_FORMAT,
     );
+    // Sürüm 1 paketler yalnızca kasa verisini içerir
+    if (plain && typeof plain === "object" && "v" in plain && plain.v === 2) return { data: plain.data, blobs: plain.blobs ?? [] };
+    return { data: plain as VaultData, blobs: [] };
   } catch {
     throw new Error("Yedek parolası hatalı veya dosya bozulmuş (GCM doğrulama etiketi tutmadı).");
   }

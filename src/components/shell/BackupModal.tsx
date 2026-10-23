@@ -8,7 +8,7 @@ import { Field, Input } from "@/components/ui/form";
 import { Tabs } from "@/components/ui/tabs";
 import { toast } from "@/components/ui/toast";
 import { confirmDialog } from "@/components/ui/confirm";
-import { exportAkredite, importAkredite, KDF_ITERATIONS } from "@/lib/cryptoVault";
+import { base64ToBytes, bytesToBase64, exportAkredite, importAkredite, KDF_ITERATIONS, listBlobIds, readBlob, writeBlob, type BackupBlob } from "@/lib/cryptoVault";
 import { useVault } from "@/lib/store";
 import { downloadBlob, todayIso } from "@/lib/utils";
 
@@ -38,9 +38,15 @@ export function BackupModal({ mode, onClose }: { mode: false | "export" | "impor
     setBusy(true);
     try {
       await flush();
-      const data = useVault.getState().data;
-      if (!data) return;
-      const blob = await exportAkredite(data, pw);
+      const { data, key } = useVault.getState();
+      if (!data || !key) return;
+      // Kanıt dosyası ekleri de pakete girer (paket içinde yeniden şifrelenir)
+      const blobs: BackupBlob[] = [];
+      for (const id of await listBlobIds()) {
+        const plain = await readBlob(key, id);
+        if (plain) blobs.push({ id, base64: bytesToBase64(plain) });
+      }
+      const blob = await exportAkredite(data, pw, blobs);
       downloadBlob(blob, `AkrediteSinav_Yedek_${todayIso()}.akredite`);
       useVault.getState().update("ui", (u) => ({ ...u, lastBackupAt: new Date().toISOString() }));
       toast.success(".akredite yedeği indirildi", "Paket PBKDF2 + AES-256-GCM ile şifrelendi.");
@@ -56,14 +62,16 @@ export function BackupModal({ mode, onClose }: { mode: false | "export" | "impor
     if (!file) return toast.error("Bir .akredite dosyası seçin.");
     setBusy(true);
     try {
-      const data = await importAkredite(file, pw);
+      const { data, blobs } = await importAkredite(file, pw);
       const ok = await confirmDialog({
         title: "Yedek geri yüklensin mi?",
-        message: `Yedekte ${data.courses?.length ?? 0} ders, ${data.exams?.length ?? 0} sınav ve ${data.rubrics?.length ?? 0} rubrik bulundu. Mevcut kasa içeriğinin yerini alacak.`,
+        message: `Yedekte ${data.courses?.length ?? 0} ders, ${data.exams?.length ?? 0} sınav, ${data.rubrics?.length ?? 0} rubrik ve ${blobs.length} kanıt dosyası bulundu. Mevcut kasa içeriğinin yerini alacak.`,
         confirmLabel: "Geri Yükle",
       });
       if (!ok) return;
       await replaceAll({ ...data, ui: { ...data.ui, onboarded: true, lastBackupAt: new Date().toISOString() } });
+      const key = useVault.getState().key;
+      if (key) for (const b of blobs) await writeBlob(key, b.id, base64ToBytes(b.base64).buffer);
       toast.success("Yedek başarıyla geri yüklendi");
       onClose();
     } catch (e) {

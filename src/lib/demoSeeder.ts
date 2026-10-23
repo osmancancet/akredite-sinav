@@ -20,6 +20,7 @@ import type {
   VaultData,
 } from "./types";
 import { createRng } from "./utils";
+import { emptyWorkspace } from "./accreditation/types";
 
 export const DEMO_INSTITUTION: Institution = {
   university: "Örnek Teknik Üniversitesi",
@@ -406,6 +407,7 @@ export function createDemoVault(): VaultData {
       lastUsedAt: now,
       sourceExamTitle: exam.title,
     })),
+    accreditation: emptyWorkspace(),
     ai: { ...DEFAULT_AI_SETTINGS, keys: { ...DEFAULT_AI_SETTINGS.keys }, models: { ...DEFAULT_AI_SETTINGS.models } },
     ui: { activeExamId: exam.id, activeRubricId: projectRubric.id, activeCourseId: VTYS_ID, onboarded: false, firstUseAt: now },
   };
@@ -427,6 +429,7 @@ export function createEmptyVault(): VaultData {
     rubrics: [],
     grades: {},
     questionBank: [],
+    accreditation: emptyWorkspace(),
     ai: { ...DEFAULT_AI_SETTINGS, keys: { ...DEFAULT_AI_SETTINGS.keys }, models: { ...DEFAULT_AI_SETTINGS.models } },
     ui: { activeExamId: null, activeRubricId: null, activeCourseId: null, onboarded: true, firstUseAt: new Date().toISOString() },
   };

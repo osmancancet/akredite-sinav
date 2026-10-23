@@ -207,3 +207,9 @@ export function num(n: number, digits = 1): string {
 export function fixed(n: number, digits = 2): string {
   return (Number.isFinite(n) ? n : 0).toLocaleString("tr-TR", { minimumFractionDigits: digits, maximumFractionDigits: digits });
 }
+
+export function formatBytes(n: number): string {
+  if (n < 1024) return `${n} B`;
+  if (n < 1024 * 1024) return `${num(n / 1024, 0)} KB`;
+  return `${num(n / (1024 * 1024), 1)} MB`;
+}

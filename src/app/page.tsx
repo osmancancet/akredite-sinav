@@ -17,9 +17,12 @@ import {
   ShieldCheck,
   Sparkles,
   WifiOff,
+  FolderCheck,
 } from "lucide-react";
 import { ACCREDITATION_BODIES, YOKAK_REGISTRY_ACCESSED, YOKAK_REGISTRY_URL } from "@/lib/accreditationBodies";
 import { UNIVERSITIES } from "@/lib/universities";
+import frameworkIndex from "../../public/frameworks/index.json";
+import type { FrameworkIndexEntry } from "@/lib/accreditation/types";
 import { HashRedirect, HeroLattice, LandingNav } from "@/components/landing/LandingClient";
 import { BrandMark } from "@/components/shell/BrandMark";
 
@@ -33,13 +36,14 @@ const FEATURES = [
   { icon: Microscope, title: "Madde analizi", body: "Güçlük, ayırt edicilik (%27), madde-toplam korelasyonu, Cronbach α ve ölçmenin standart hatası — Ebel ölçütleriyle karar önerisi." },
   { icon: Network, title: "Program çıktıları panosu", body: "Dersler × PÇ planlanan katkı ve gerçekleşen başarı; hiçbir dersin desteklemediği çıktılar öz değerlendirme öncesinde görünür olur." },
   { icon: FileArchive, title: "Tek tık kanıt klasörü", body: "Bir sınavın bütün resmi belgeleri klasörlenmiş tek ZIP'te; her dosya SHA-256 bütünlük özetiyle listelenir." },
+  { icon: FolderCheck, title: "Akreditasyon kanıt merkezi", body: "Kuruluşunuzu seçin: ölçütler, alt ölçütler ve kuruluşun kendi örnek kanıt listesi sayfa atfıyla gelir. Dosyalar şifreli eklenir; görev, öz değerlendirme ve kanıt paketi tek yerde." },
 ];
 
 const STEPS = [
   { k: "01", t: "Hazırlık", d: "Ders kataloğu Bologna sayfasından, ÖÇ'ler ve sorular Word'den aktarılır." },
   { k: "02", t: "Operasyon", d: "Program, gözetmen tebliğleri, takvim dosyaları ve kapı listeleri üretilir." },
   { k: "03", t: "Ölçme", d: "Notlar girilir; ÖÇ, PÇ ve madde analizleri anında hesaplanır." },
-  { k: "04", t: "Kalite", d: "PUKÖ raporu, program panosu ve kanıt klasörü akreditasyona hazır olur." },
+  { k: "04", t: "Kalite", d: "PUKÖ raporu ve program panosu, seçtiğiniz akreditasyonun ölçütlerine kanıt olarak tek tıkla eklenir." },
 ];
 
 const FAQ = [
@@ -47,8 +51,14 @@ const FAQ = [
   { q: "İnternet olmadan çalışır mı?", a: "Evet. Uygulama bir kez açıldıktan sonra uçak modunda da yeniden yüklenir; Word, Excel ve PDF çıktıları tamamen tarayıcıda üretilir." },
   { q: "Bilgisayar değiştirirsem ne olur?", a: "Tüm kasayı parolalı .akredite dosyası olarak indirip diğer bilgisayarda geri yükleyebilirsiniz. Paket PBKDF2 (100.000 iterasyon) ve AES-256-GCM ile şifrelenir." },
   { q: "Yapay zekâ verilerimi bir yere gönderir mi?", a: "Yalnızca siz bir AI eylemini başlattığınızda ve kendi anahtarınızla; istek tarayıcınızdan doğrudan seçtiğiniz sağlayıcıya gider. Öğrenci kimlik bilgileri hiçbir isteğe eklenmez. Tamamen yerel çalışmak için Ollama desteklenir." },
-  { q: "Hangi akreditasyon çerçevelerine uygun?", a: "Ölçme-değerlendirme çıktıları (belirtke, ÖÇ/PÇ başarısı, PUKÖ, madde analizi) program akreditasyonunun ortak kanıt ihtiyaçlarına göre tasarlanmıştır; kurum anteti 205 yükseköğretim kurumunun logosuyla otomatik doldurulur." },
+  { q: "Hangi akreditasyon kuruluşları destekleniyor?", a: "YÖKAK'ın tescilli 29 program akreditasyon kuruluşunun tamamı ile YÖKAK Kurumsal Akreditasyon Programı. Ölçütler ve örnek kanıtlar her kuruluşun kendi yayımladığı belgeden, belge ve sayfa atfıyla alınmıştır; belgede açıkça yazmayan kanıtlar “ölçütten türetilmiş” olarak ayrıca işaretlenir. Listede olmayan bir çerçeve (ör. iç denetim) için kendi ölçüt setinizi tanımlayabilirsiniz." },
+  { q: "Kanıt dosyalarım nereye yükleniyor?", a: "Hiçbir yere. Eklediğiniz PDF, Word veya görsel dosyalar tarayıcınızda AES-256-GCM ile şifrelenip cihazınızdaki kasaya yazılır; .akredite yedeğine de şifreli olarak dahil edilir. Kanıt paketi ZIP'i yine tarayıcıda üretilir ve her dosyanın SHA-256 özetini içerir." },
 ];
+
+const frameworks = (frameworkIndex as FrameworkIndexEntry[]).filter((f) => f.status !== "not_found");
+const totals = frameworks.reduce((t, f) => ({ criteria: t.criteria + f.criteria, sub: t.sub + f.subcriteria, evidence: t.evidence + f.evidence, explicit: t.explicit + f.explicit }), { criteria: 0, sub: 0, evidence: 0, explicit: 0 });
+const frameworkAccessed = "23.10.2026";
+const num = (n: number) => n.toLocaleString("tr-TR");
 
 export default function Landing() {
   const withLogo = UNIVERSITIES.filter((u) => u.logo).length;
@@ -71,7 +81,7 @@ export default function Landing() {
               <span className="text-brand-700">bütün dönem tek kasada.</span>
             </h1>
             <p className="mt-5 max-w-xl text-[16.5px] leading-relaxed text-zinc-600">
-              Akademisyenler, bölüm başkanları ve kalite komisyonları için sınav kağıdı, sınav programı, kapı listesi, rubrik, ÖÇ/PÇ analizi ve PUKÖ raporu. Verileriniz cihazınızdan hiç çıkmaz.
+              Akademisyenler, bölüm başkanları ve kalite komisyonları için sınav kağıdı, sınav programı, kapı listesi, rubrik, ÖÇ/PÇ analizi, PUKÖ raporu ve akreditasyon kanıt yönetimi. Verileriniz cihazınızdan hiç çıkmaz.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <Link href="/app" className="inline-flex h-11 items-center gap-2 rounded-lg bg-zinc-900 px-5 text-sm font-medium text-white transition-colors hover:bg-zinc-800">
@@ -81,10 +91,11 @@ export default function Landing() {
                 <ShieldCheck className="h-4 w-4 text-brand-700" /> Güvenlik mimarisi
               </a>
             </div>
-            <dl className="mt-10 grid max-w-lg grid-cols-3 gap-6 border-t border-zinc-200/80 pt-6">
+            <dl className="mt-10 grid max-w-xl grid-cols-2 gap-6 border-t border-zinc-200/80 pt-6 sm:grid-cols-4">
               {[
                 ["AES-256", "GCM şifreleme"],
                 ["0", "sunucuya istek"],
+                [String(frameworks.length), "akreditasyon çerçevesi"],
                 [String(withLogo), "üniversite logosu"],
               ].map(([v, l]) => (
                 <div key={l}>
@@ -191,27 +202,38 @@ export default function Landing() {
         <div className="mx-auto max-w-6xl px-5">
           <div className="flex flex-wrap items-end justify-between gap-6">
             <div className="max-w-2xl">
-              <div className="font-mono text-[11px] uppercase tracking-[0.14em] text-brand-700">Akreditasyon</div>
-              <h2 className="font-display mt-3 text-[34px] font-medium leading-tight text-zinc-950">YÖKAK tescilli {ACCREDITATION_BODIES.length} ulusal akreditasyon kuruluşu</h2>
+              <div className="font-mono text-[11px] uppercase tracking-[0.14em] text-brand-700">Akreditasyon kanıt merkezi</div>
+              <h2 className="font-display mt-3 text-[34px] font-medium leading-tight text-zinc-950">
+                YÖKAK tescilli {ACCREDITATION_BODIES.length} kuruluşun tamamı, ölçüt ve örnek kanıtlarıyla
+              </h2>
               <p className="mt-4 text-[15px] leading-relaxed text-zinc-600">
-                Liste YÖKAK&apos;ın resmi tescil sayfasından alınmıştır; tarih, en son tescil döneminin bitişidir.
+                {num(totals.criteria)} ölçüt, {num(totals.sub)} alt ölçüt ve {num(totals.evidence)} kanıt kalemi; her biri kuruluşun yayımladığı belgeden belge ve sayfa atfıyla. Bunların{" "}
+                {num(totals.explicit)} tanesi kuruluşun kendi “örnek kanıt” listesinden birebir alınmıştır.
               </p>
             </div>
             <a href={YOKAK_REGISTRY_URL} target="_blank" rel="noreferrer noopener" className="text-[13px] font-medium text-brand-700 hover:underline">
-              Kaynak: YÖKAK ({YOKAK_REGISTRY_ACCESSED.split("-").reverse().join(".")}) ↗
+              Tescil listesi: YÖKAK ({YOKAK_REGISTRY_ACCESSED.split("-").reverse().join(".")}) ↗
             </a>
           </div>
           <div className="mt-10 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
-            {ACCREDITATION_BODIES.map((b) => (
-              <div key={b.code} className="flex items-center gap-3 rounded-xl border border-zinc-200/80 bg-white px-4 py-3">
-                <span className="w-24 shrink-0 font-mono text-[12.5px] font-medium text-zinc-900">{b.code}</span>
-                <span className="min-w-0 flex-1 truncate text-[13px] text-zinc-500" title={b.name}>
-                  {b.field}
-                </span>
-                <span className="font-mono text-[11px] text-zinc-400">{b.validUntil.slice(0, 4)}</span>
-              </div>
-            ))}
+            {frameworks.map((f) => {
+              const body = ACCREDITATION_BODIES.find((b) => b.code === f.registryCode);
+              return (
+                <div key={f.slug} className="flex items-center gap-3 rounded-xl border border-zinc-200/80 bg-white px-4 py-3">
+                  <span className="w-28 shrink-0 truncate font-mono text-[12.5px] font-medium text-zinc-900" title={f.code}>
+                    {f.code}
+                  </span>
+                  <span className="min-w-0 flex-1 truncate text-[13px] text-zinc-500" title={f.name}>
+                    {body?.field ?? (f.kind === "institutional" ? "Kurumsal akreditasyon" : f.name)}
+                  </span>
+                  <span className="shrink-0 font-mono text-[11px] tabular-nums text-zinc-400" title={`${f.criteria} ölçüt · ${f.evidence} kanıt kalemi`}>
+                    {f.criteria}·{f.evidence}
+                  </span>
+                </div>
+              );
+            })}
           </div>
+          <p className="mt-4 text-[12px] text-zinc-500">Sağdaki sayılar: ölçüt · kanıt kalemi. Kaynak belgeler {frameworkAccessed} tarihinde kuruluşların resmi sitelerinden alınmıştır.</p>
         </div>
       </section>
 

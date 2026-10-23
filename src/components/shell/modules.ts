@@ -3,6 +3,7 @@ import {
   Compass,
   ClipboardList,
   FileText,
+  FolderCheck,
   LayoutGrid,
   LineChart,
   ShieldCheck,
@@ -10,7 +11,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 
-export type ModuleId = "genel" | "kasa" | "sinav" | "program" | "oturma" | "rubrik" | "medek" | "ai";
+export type ModuleId = "genel" | "kasa" | "sinav" | "program" | "oturma" | "rubrik" | "medek" | "akreditasyon" | "ai";
 
 export type ModuleGroup = "Genel" | "Hazırlık" | "Operasyon" | "Kalite" | "Sistem";
 
@@ -78,6 +79,15 @@ export const MODULES: {
     description: "Soru bazlı notlardan öğrenme ve program çıktısı başarı yüzdeleri, eşik altı çıktılar için sürekli iyileştirme raporu.",
     group: "Kalite",
     icon: LineChart,
+  },
+  {
+    id: "akreditasyon",
+    no: 8,
+    label: "Akreditasyon Kanıt Merkezi",
+    short: "Kanıt merkezi",
+    description: "Seçtiğiniz akreditasyonun ölçütleri, kuruluş belgesinden alınmış örnek kanıtlar, şifreli kanıt dosyaları, görev takibi ve tek tıkla kanıt paketi.",
+    group: "Kalite",
+    icon: FolderCheck,
   },
   {
     id: "kasa",

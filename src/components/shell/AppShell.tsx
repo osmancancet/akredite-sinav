@@ -54,6 +54,7 @@ import { SeatingModule } from "@/modules/seating/SeatingModule";
 import { RubricStudio } from "@/modules/rubric/RubricStudio";
 import { MedekModule } from "@/modules/medek/MedekModule";
 import { AiModule } from "@/modules/ai/AiModule";
+import { AccreditationModule } from "@/modules/accreditation/AccreditationModule";
 
 const VIEWS: Record<ModuleId, React.ComponentType> = {
   genel: OverviewModule,
@@ -63,6 +64,7 @@ const VIEWS: Record<ModuleId, React.ComponentType> = {
   oturma: SeatingModule,
   rubrik: RubricStudio,
   medek: MedekModule,
+  akreditasyon: AccreditationModule,
   ai: AiModule,
 };
 
@@ -414,7 +416,7 @@ function TopBar({
                 desc="Boş kasa ile sıfırdan başla"
                 onClick={async () => {
                   setMenu(false);
-                  if (await confirmDialog({ title: "Tüm veriler silinsin mi?", message: "Dersler, sınavlar, öğrenci listeleri, program ve notlar silinecek. Önce .akredite yedeği almanız önerilir.", destructive: true, confirmLabel: "Temizle" })) {
+                  if (await confirmDialog({ title: "Tüm veriler silinsin mi?", message: "Dersler, sınavlar, öğrenci listeleri, program, notlar ve şifreli akreditasyon kanıt dosyaları silinecek. Önce .akredite yedeği almanız önerilir.", destructive: true, confirmLabel: "Temizle" })) {
                     await clearAll();
                     toast.info("Kasa temizlendi");
                   }

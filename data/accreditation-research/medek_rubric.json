@@ -1,0 +1,651 @@
+{
+ "1.1": {
+  "page": 6,
+  "pdr": "1.1. Programa yerleştirilen öğrenciler, program çıktılarını (bilgi, beceri ve yeterlilikler) normal öğrenim süresinde kazanabilecek akademik yeterlilik düzeyine sahiptir.",
+  "levels": {
+   "1": "Programa yerleştirilen öğrencilerin akademik yeterlilik düzeyleri ile ilgili herhangi bir değerlendirme yapılmamaktadır.",
+   "2": "Programa yerleştirilen öğrencilerin akademik yeterlilik düzeyleri kısmen takip edilmektedir.",
+   "3": "Öğrencilerin akademik yeterlilikleri, program çıktılarını normal sürede kazanacak düzeydedir. Giriş puanları ve kontenjan dolulukları takip edilmektedir.",
+   "4": "Programa yerleştirilen öğrencilerin, akademik yeterlilikleri sistematik olarak izlenmekte ve iyileştirme önlemleri alınmaktadır.",
+   "5": "Öğrenci başarısı ve akademik gelişim süreci, veriye dayalı özgün modellerle kesintisiz izlenmekte ve eğitim süreçleri bu verilere göre sürekli olarak iyileştirilmektedir."
+  }
+ },
+ "1.2": {
+  "page": 7,
+  "pdr": "1.2. Öğrenci kabulünde göz önüne alınan göstergeler (YKS puanı, kontenjan doluluk oranı, taban-tavan puanlar, özel koşullar vb.) düzenli olarak izlenmeli ve bunların yıllara göre gelişimi değerlendirilmektedir.",
+  "levels": {
+   "1": "Kontenjan doluluğu, taban puan ve başarı sıralaması gibi göstergeler takip edilmemektedir.",
+   "2": "Göstergelerin izlenmesine yönelik bir izleme planı ve veri tablosu şablonu oluşturulmuş ancak henüz düzenli veri analizi yapılmamıştır.",
+   "3": "Son 2 yıla ait kabul göstergeleri sistematik olarak takip edilmekte ve bu veriler her yıl ilgili kurullar tarafından değerlendirilmektedir.",
+   "4": "Göstergelerdeki değişimler (puan düşüşü/artışı vb.) analiz edilerek, tanıtım faaliyetleri veya kontenjan güncellemeleri gibi iyileştirme önlemleri alınmaktadır.",
+   "5": "Göstergelerdeki değişimler özgün bir modelle kesintisiz izlenmekte, sürekli olarak iyileştirilmekte ve/veya örnek bir model olarak uygulanmaktadır."
+  }
+ },
+ "1.3": {
+  "page": 8,
+  "pdr": "1.3. Öğrenci kabul süreçlerine ilişkin (özel yetenek sınavı, yatay geçiş ve uluslararası öğrenci kabulü vb.) yazılı prosedürler bulunmalı ve uygulanmaktadır.",
+  "levels": {
+   "1": "Öğrenci kabul süreçlerine ilişkin (Yatay geçiş, çift anadal, yandal, özel öğrenci vb.) yazılı bir prosedür bulunmamaktadır.",
+   "2": "Öğrenci kabul süreçlerine ilişkin uygulanmayan yazılı bir prosedür bulunmaktadır veya tanımsız bir süreç işletilmektedir.",
+   "3": "Öğrenci kabul süreçleri üniversite senatosunca onaylı prosedürlere göre sistematik olarak yürütülmektedir.",
+   "4": "Öğrenci kabul süreçlerinin etkinliği (intibak hızı, öğrenci memnuniyeti vb.) izlenmekte ve gerekli hallerde güncellenmektedir.",
+   "5": "Öğrenci kabul süreçleri sürekli izlenmekte, geri bildirimlerle sürekli iyileştirilmekte ve/veya örnek bir model olarak uygulanmaktadır."
+  }
+ },
+ "1.4": {
+  "page": 9,
+  "pdr": "1.4. Önceki öğrenimlerin kredilendirilmesi tanımlanmış ve uygulanmaktadır.",
+  "levels": {
+   "1": "Önceki öğrenimlerin tanınması veya muafiyet süreçlerine dair herhangi bir tanım veya uygulama yoktur.",
+   "2": "Önceki öğrenimlerin tanınması süreçlerine ilişkin prosedürün uygulanmaması veya tanımlanmamış bir süreç işletilmektedir.",
+   "3": "Önceki öğrenimlerin (yatay geçiş, dikey geçiş, muafiyet vb.) kredilendirilmesi yazılı prosedürlerle tanımlanmış ve tüm öğrencilere sistematik olarak uygulanmaktadır (YÖK mevzuatları gereğince temel seviyede uygulanan kredi transfer süreçleri bu kategoride değerlendirilebilir).",
+   "4": "Öğrencilerin kayıtlı olduğu eğitim programı dışında edindikleri kazanımlar (sertifika, iş deneyimi vb.) özel bir yönerge ile tanınmakta; muafiyet ve kredilendirme süreçlerinin etkin bir şekilde işletilmektedir.",
+   "5": "Önceki öğrenmelerin tanınması ile ilgili süreçler işletilmekte, sürekli olarak iyileştirilmekte ve/veya örnek bir model uygulanmaktadır."
+  }
+ },
+ "1.5": {
+  "page": 10,
+  "pdr": "1.5. Öğretim süreçleri, öğrencinin aktif katılımını, farklı öğrenme stillerini ve bireysel gelişim ihtiyaçlarını dikkate alan öğrenci merkezli bir yaklaşım bulunmakta ve işletilmektedir.",
+  "levels": {
+   "1": "Eğitim-öğretim sadece geleneksel (öğretim elemanı odaklı) yöntemlerle yürütülmekte, öğrenci pasif dinleyici konumundadır.",
+   "2": "Öğrenci merkezli öğrenme yöntemlerinin (proje, grup çalışması vb.) kullanımı teşvik edilmekte, planlanmakta ve bazı derslerde uygulanmakta olup yaygınlaştırılmamıştır.",
+   "3": "Öğrencinin aktif katılımını sağlayan yöntemler (proje, grup çalışmaları, interaktif laboratuvar uygulamaları vb.) ders planlarına işlenmekte ve ilgili derslerde uygulanmaktadır.",
+   "4": "Öğrencinin aktif katılımını sağlayan yöntemler sistematik olarak ilgili derslerde uygulanmaktadır. Uygulanan yöntemlerin etkisi ve öğrenci memnuniyeti izlenmekte (anket, başarı analizleri ve geri bildirimler vb.) ve süreçler güncellenmektedir.",
+   "5": "Her öğrencinin bireysel gelişimine ve farklı öğrenme tekniklerine odaklanan özgün ve/veya örnek bir eğitim modeli uygulanmaktadır."
+  }
+ },
+ "1.6": {
+  "page": 11,
+  "pdr": "1.6. Kurum ve/veya programın diğer kurum veya kuruluşlarla gerçekleştirdiği iş birlikleri ve/veya protokoller işletilmektedir.",
+  "levels": {
+   "1": "Eğitim-öğretim süreçlerini ve programı kapsayacak şekilde Üniversite/MYO/ Bölüm/Programın diğer kurumlarla yapmış olduğu herhangi bir protokol veya işbirliği bulunmamaktadır.",
+   "2": "Üniversite/MYO/ Bölüm/Programın eğitim öğretim süreçlerini kapsayan diğer kurumlarla imzalanmış ancak uygulanmayan program ilişkin bir protokol bulunmaktadır veya tanımlı olmayan bir iş birliği ile yürüyen süreçler bulunmaktadır.",
+   "3": "Üniversite/MYO/ Bölüm/Programın diğer kuruluşlarla yaptığı protokoller / işbirliği bulunmakta ve işletilmektedir.",
+   "4": "Program özelinde işbirlikleri bulunmakta ve işletilmektedir. Bu iş birliklerinin etkinliği (öğrenciye katkısı, sektör memnuniyeti vb.) izlenmekte ve alınan geri bildirimlere göre süreçler güncellenmektedir.",
+   "5": "Sektör ile ilgili danışma kurulu bulunmakta, yürütülen iş birlikleri ve protokollerin verimliliği periyodik olarak analiz edilmekte ve sürekli iyileştirilmekte ve/veya örnek bir model olarak uygulanmaktadır."
+  }
+ },
+ "1.7": {
+  "page": 12,
+  "pdr": "1.7. Öğrenci hareketliliğini ve değişim programlarını teşvik eden prosedür ve düzenlemeler bulunmaktadır.",
+  "levels": {
+   "1": "Öğrenci hareketliliği ve değişim programlarına yönelik herhangi bir düzenleme veya uygulama bulunmamaktadır.",
+   "2": "Öğrenci hareketliliği ve değişim programlarına yönelik uygulanmayan prosedürler bulunmakta veya tanımlı olmayan süreçler işletilmektedir.",
+   "3": "Öğrenci hareketliliği ve değişim programları yazılı prosedürlerle tanımlanmış, ilanlarla duyurulmakta ve bilgilendirme toplantıları yapılmaktadır.",
+   "4": "Öğrenci hareketliliği gerçekleşmekte, süreçler teşvik edilmekte ve teşvik süreçlerinin etkinliği ve / veya öğrenci memnuniyeti izlenmektedir.",
+   "5": "Öğrenci hareketlilik oranları yüksek, uluslararası ağları geniş, özgün teşvik mekanizmalarına sahip, sürekli olarak iyileştirilmekte ve/veya örnek bir model olarak uygulanmaktadır."
+  }
+ },
+ "1.8": {
+  "page": 13,
+  "pdr": "1.8. Hedeflenen mezun yeterliliklerine ulaşmak için öğrenci merkezli öğretim, ölçme ve değerlendirme yöntemleri sistematik olarak uygulanmaktadır.",
+  "levels": {
+   "1": "Öğrenci merkezli öğretim, ölçme ve değerlendirme yöntemleri bulunmamaktadır.",
+   "2": "Öğrenci merkezli öğretim ve ölçme yöntemleri (ödev, proje, grup çalışması vb.) bazı derslerde uygulanmakta olup yaygınlaşmamıştır.",
+   "3": "Öğrenci merkezli öğretim (ödev, proje, grup çalışması vb.) ve uygun ölçme yöntemleri (sunu, performans görevi vb.) ilgili tüm derslerde uygulanmaktadır.",
+   "4": "Öğrenci merkezli öğretim, ölçme ve değerlendirme yöntemleri (ödev, proje, grup çalışması vb.) sistematik olarak uygulanmakta, yöntemlerin etkinliği izlenmekte ve iyileştirmeler yapılmaktadır.",
+   "5": "Öğrenci merkezli öğretim, ölçme ve değerlendirme yöntemlerinin etkinliği sistematik olarak izlenmekte ve analiz sonuçlarına göre sürekli iyileştirilmektedir."
+  }
+ },
+ "1.9": {
+  "page": 14,
+  "pdr": "1.9. Öğrencilerin akademik gelişimi ve kariyer planlamasına yönelik danışmanlık hizmetleri işletilmektedir.",
+  "levels": {
+   "1": "Öğrencilerin akademik gelişimi ve kariyer planlamasına yönelik tanımlı bir danışmanlık hizmeti bulunmamaktadır.",
+   "2": "Öğrenci danışmanlık hizmetleri sadece ders kayıtları ile sınırlı kalmaktadır. Akademik ve kariyer odaklı olarak yapılandırılması için bir uygulama planı oluşturulmuştur.",
+   "3": "Öğrencilerin akademik gelişim ve kariyer planlamasına yönelik danışmanlık süreçleri yazılı prosedürlerle tanımlanmış ve işletilmektedir.",
+   "4": "Tanımlı süreçler işletilmekte, hizmetlerin etkinliği (öğrenci memnuniyeti, toplantı sıklığı vb.) izlenmektedir.",
+   "5": "Tanımlı danışmanlık sistemi işletilmekte, geri bildirimler alınmakta, uygulanmakta ve sürekli olarak iyileştirilmektedir."
+  }
+ },
+ "1.10": {
+  "page": 15,
+  "pdr": "1.10. Öğrencilerin derslerdeki başarı durumunu izleyecek ve onları ders planlaması konularında rehberlik eden danışmanlık hizmetleri işletilmektedir.",
+  "levels": {
+   "1": "Öğrencilerin derslerdeki başarı durumunu izleyen ve ders planlamasına rehberlik eden tanımlı bir danışmanlık hizmeti bulunmamaktadır.",
+   "2": "Öğrencilerin derslerdeki başarı durumunu izleyen ve ders planlamasına rehberlik eden tanımlı bir danışmanlık hizmeti bulunmakta veya tanımlı olmayan bir danışmanlık süreci işletilmektedir.",
+   "3": "Öğrencilerin derslerdeki başarı durumunu izleyen ve ders planlamasına rehberlik eden danışmanlık hizmetleri yazılı prosedürlerle tanımlanmış ve işletilmektedir.",
+   "4": "Tanımlı ve sürdürülen danışmanlık hizmetlerinin etkinliği (öğrenci memnuniyeti, toplantı sıklığı vb.) izlenmektedir.",
+   "5": "Etkinliği değerlendirilen danışmanlık sisteminde gerekli iyileştirmeler yapılmış ve özgün ve/veya örnek bir model olarak uygulanmaktadır."
+  }
+ },
+ "1.11": {
+  "page": 16,
+  "pdr": "1.11. Öğrenci geri bildirimlerinin alınmasına yönelik mekanizmalar bulunmalı, uygulanmalı ve sürekli iyileştirme çalışmalarında değerlendirilmektedir.",
+  "levels": {
+   "1": "Öğrenci geri bildirimi almak için herhangi bir mekanizma (anket, geri bildirim formu vb.) yoktur.",
+   "2": "Öğrenci geri bildirimlerinin alınmasına yönelik mekanizmalar tanımlanmış veya tanımlı olmayan bir geri bildirim mekanizması işletilmektedir. Geri bildirim kanalları (memnuniyet anketi vb.) tasarlanmış ve takvime bağlanmıştır ancak henüz veriler toplanıp analiz edilmemiştir.",
+   "3": "Öğrenci geri bildirimleri (ders değerlendirme, genel memnuniyet vb.) periyodik olarak alınmakta ve raporlanmaktadır. Geri bildirimler alınmış ancak henüz değerlendirilmemiştir.",
+   "4": "Öğrenci geri bildirim sonuçları kurullarda değerlendirilerek iyileştirme kararları alınmakta ve bu kararlar öğrencilere duyurulmaktadır.",
+   "5": "Sistematik olarak işleyen bir geri bildirim sistemi oluşturulmuştur; öğrenci odaklı bu sistem örnek niteliğinde sürdürülmektedir."
+  }
+ },
+ "1.12": {
+  "page": 17,
+  "pdr": "1.12. Tüm derslerde öğrenci ders başarısı şeffaf, adil, tutarlı ve önceden ilan edilmiş yöntemlerle ölçülmeli ve değerlendirilmektedir.",
+  "levels": {
+   "1": "Derslerde uygulanan ölçme yöntemleri önceden ilan edilmemekte ve değerlendirme kriterleri belirsizdir.",
+   "2": "Derslerde uygulanan ölçme yöntemleri önceden ilan edilmekte ancak tüm derslere yaygınlaşmamıştır. İlan edilen ölçme değerlendirme yöntemleri uygulanmamaktadır.",
+   "3": "Tüm derslerin ölçme- değerlendirme yöntemleri ders izlencelerinde dersin niteliğine uygun olarak önceden ilan edilmiştir. Değerlendirme rubrikleri (sınav, ödev, sunum vb. için) şeffaf ve tutarlı bir şekilde tanımlanmakta ve yürütülmektedir.",
+   "4": "Süreçler, izlenmekte; cevap anahtarları ve puanlama kriterleri (rubrik) öğrencilerle paylaşılarak itiraz süreçleri şeffaf ve adil bir şekilde yönetilmektedir. Toplanan geri bildirimlere göre iyileştirme planları yapılmaktadır.",
+   "5": "Ölçme-değerlendirme sistemi sürekli iyileştirilmekte ve/veya örnek bir model olarak uygulanmaktadır."
+  }
+ },
+ "1.13": {
+  "page": 18,
+  "pdr": "1.13. Öğrenci mezuniyetine karar verebilmek için, tüm akademik gerekliliklerin karşılandığını doğrulayan sistematik kontrol mekanizmaları bulunmakta ve uygulanmaktadır.",
+  "levels": {
+   "1": "Mezuniyet kontrolleri için tanımlı bir mekanizma yoktur.",
+   "2": "Mezuniyet kontrolü için komisyon/ kurul / sistem yapısı planlanmıştır ancak süreç kişisel inisiyatiflerle veya tanımlı olmayan süreçlere göre yürütülmektedir.",
+   "3": "Tüm akademik gerekliliklerin (ders, AKTS, staj vb.) karşılandığına dair mezuniyet kontrol mekanizmaları tanımlanmış ve süreç işletilmektedir.",
+   "4": "Mezuniyet kontrol süreçleri sistematik olarak tanımlı süreçlere göre işletilmekte ve etkinliği izlenmektedir.",
+   "5": "Sistematik olarak tanımlı prosedürlere göre işletilen mezuniyet süreçleri geri bildirimler ile iyileştirilmekte ve/veya örnek bir model olarak uygulanmaktadır."
+  }
+ },
+ "2.1": {
+  "page": 19,
+  "pdr": "2.1. Program, eğitim amaç ve hedeflerini tanımlanmış ve kamuoyuyla paylaşmış olmalıdır.",
+  "levels": {
+   "1": "Programın eğitim amaç ve hedefleri belirlenmemiştir.",
+   "2": "Programın eğitim amaç ve hedefleri belirlenmiş ancak programın özgün yapısı, program çıktıları ve mezunların istihdam alanlarıyla tam uyumlu değildir.",
+   "3": "Programın eğitim amaç ve hedefleri, programın özgün yapısı, program çıktıları ve mezunların istihdam alanlarıyla uyumlu bir şekilde belirlenmiş, program web sayfası veya program bilgi paketi üzerinden kamuoyuyla paylaşılmaktadır.",
+   "4": "Programın belirlenmiş eğitim amaç ve hedefleri düzenli olarak izlenmekte ve paydaş geri bildirimleri doğrultusunda gerekli iyileştirmeler yapılmaktadır.",
+   "5": "Programın belirlenmiş eğitim amaç ve hedeflerine yönelik paydaş geri bildirimleri doğrultusunda sürekli iyileştirme yaklaşımı ve/veya örnek uygulamalar bulunmaktadır."
+  }
+ },
+ "2.2": {
+  "page": 20,
+  "pdr": "2.2. Program eğitim amaç ve hedeflerine ulaşma düzeyini ölçmek ve belgelemek için anahtar performans göstergelerine sahip olmalıdır.",
+  "levels": {
+   "1": "Program eğitim amaç ve hedeflerine ulaşma düzeyini ölçmek için tanımlanmış performans göstergeleri bulunmamaktadır.",
+   "2": "Program eğitim amaç ve hedeflerine ulaşma düzeyini ölçmek için tanımlanan performans göstergeleri ölçülebilir değil veya ölçülmemektedir.",
+   "3": "Program eğitim amaç ve hedeflerine ulaşma düzeyini ölçmek için, tanımlı, ölçülebilir performans göstergeleri bulunmaktadır ve ölçülmektedir.",
+   "4": "Program eğitim amaç ve hedeflerine ulaşma düzeyini ölçmek için tanımlanan performans göstergeleri izlenmekte ve ilgili kurullarda geri bildirimler değerlendirilmektedir.",
+   "5": "Program eğitim amaçları ve hedeflerine ulaşma durumunu yansıtan performans göstergelerine yönelik sürekli iyileştirme yaklaşımı ve/veya örnek uygulamalar bulunmaktadır."
+  }
+ },
+ "2.3.1": {
+  "page": 21,
+  "pdr": "2.3.1. Program eğitim amaçları MEDEK’in misyon ve vizyonu ile uyumludur.",
+  "levels": {
+   "1": "Program eğitim amaçları, MEDEK’in misyon ve vizyonu (www.medek.org.tr/hakkimizda) ile uyumlu değildir.",
+   "2": "Program eğitim amaçları belirlenmiştir ancak, MEDEK’in misyon ve vizyonu ile uyumluluğu bulunmamaktadır.",
+   "3": "Program eğitim amaçları, MEDEK’in misyon ve vizyonu ile uyumludur.",
+   "4": "Program eğitim amaçları, uyumluluk açısından izlenmekte ve değerlendirilmektedir.",
+   "5": "Program eğitim amaçlarının uyumluluğuna yönelik sürekli iyileştirme yaklaşımı ve/veya örnek uygulamalar bulunmaktadır."
+  }
+ },
+ "2.3.2": {
+  "page": 22,
+  "pdr": "2.3.2. Program eğitim amaçları kurumun (üniversitenin) misyon ve vizyonu ile uyumludur.",
+  "levels": {
+   "1": "Program eğitim amaçları, kurumun misyon ve vizyonu ile uyumlu değildir.",
+   "2": "Program eğitim amaçları belirlenmiştir ancak, kurumun misyon ve vizyonu ile kısmen uyumluluğu bulunmaktadır.",
+   "3": "Program eğitim amaçları, kurumun misyon ve vizyonu ile uyumludur.",
+   "4": "Program eğitim amaçları, uyumluluk açısından izlenmekte ve değerlendirilmektedir.",
+   "5": "Program eğitim amaçlarının uyumluluğuna yönelik sürekli iyileştirmeler yapılmakta ve/veya örnek uygulamalar bulunmaktadır."
+  }
+ },
+ "2.3.3": {
+  "page": 23,
+  "pdr": "2.3.3. Program eğitim amaçları meslek yüksekokulunun misyon ve vizyonu ile uyumludur.",
+  "levels": {
+   "1": "Program eğitim amaçları, MYO misyon ve vizyonu ile uyumlu değildir.",
+   "2": "Program eğitim amaçları belirlenmiştir ancak, MYO’nun misyon ve vizyonu ile kısmen uyumluluğu bulunmaktadır.",
+   "3": "Program eğitim amaçları, MYO’nun misyonu ve vizyonu ile uyumludur.",
+   "4": "Program eğitim amaçları, uyumluluk açısından izlenmekte ve değerlendirilmektedir.",
+   "5": "Program eğitim amaçlarının uyumluluğuna yönelik sürekli iyileştirme yaklaşımı ve/veya örnek uygulamalar bulunmaktadır."
+  }
+ },
+ "2.4.1": {
+  "page": 24,
+  "pdr": "2.4.1. Program eğitim amaçlarına nasıl ulaşılacağı tanımlıdır.",
+  "levels": {
+   "1": "Programın eğitim amaçlarına ulaşılmasını sağlayacak program çıktıları, dersler ve / veya uygulamalar (staj, İME, proje, sektör danışma toplantıları vb.) arasındaki ilişkilendirmeler tanımlı değildir.",
+   "2": "Programın eğitim amaçlarına ulaşılmasını sağlayacak program çıktıları, dersler ve / veya uygulamalar (staj, İME, proje, sektör danışma toplantıları vb.) arasındaki ilişkilendirmeler planlanmıştır veya planlanmamış bir süreç yürütülmektedir.",
+   "3": "Program eğitim amaçları ile program çıktıları, dersler ve uygulamalar (staj, İME, proje, sektör danışma toplantıları vb.) arasında izlenebilir ve tutarlı bir ilişkilendirme bulunmakta ve uygulanmaktadır.",
+   "4": "Programın eğitim amaçlarına ulaşmayı sağlayan yöntemlerin uygunluğu izlenmekte ve gerekli iyileştirmeler yapılmaktadır.",
+   "5": "Programın eğitim amaçlarına ulaşmayı sağlayan yöntemlere yönelik sistematik bir süreç işletilmekte ve iyileştirme yaklaşımı ve/veya örnek uygulamalar bulunmaktadır."
+  }
+ },
+ "2.4.2": {
+  "page": 25,
+  "pdr": "2.4.2. Program eğitim amaçlarına nasıl ulaşılacağının belirlenmesi için uygun bir ölçme değerlendirme sistemi bulunmaktadır.",
+  "levels": {
+   "1": "Programın eğitim amaçlarına ulaşmayı sağlayan yöntemlere ilişkin bir ölçme- değerlendirme sistemi bulunmamaktadır.",
+   "2": "Programın eğitim amaçlarına ulaşmayı sağlayan yöntemlere ilişkin bir ölçme- değerlendirme sistemi oluşturulmuş veya tanımlı olmayan bir süreç uygulanmaktadır.",
+   "3": "Programın eğitim amaçlarına ulaşmayı sağlayan yöntemlere ilişkin uygun bir ölçme- değerlendirme sistemi bulunmakta ve işletilmektedir.",
+   "4": "Ölçme-Değerlendirme sistemi, programın eğitim amaçlarına ulaşılabilirliği açısından öğrenci geri bildirimleri ve başarı analizleri doğrultusunda izlenmekte ve değerlendirilmektedir.",
+   "5": "Ölçme-değerlendirme sisteminde, programın eğitim amaçlarına ulaşılabilirliği açısından sürekli iyileştirme yaklaşımı ve/veya örnek uygulamalar bulunmaktadır."
+  }
+ },
+ "2.5": {
+  "page": 26,
+  "pdr": "2.5. Program eğitim amaçlarına ulaşılma düzeyi sistematik bir şekilde izlenmektedir.",
+  "levels": {
+   "1": "Program eğitim amaçlarına ulaşılma düzeyi sistematik bir şekilde izlenememektedir.",
+   "2": "Program eğitim amaçlarına ulaşılma düzeyinin sistematik bir şekilde izlenmesine yönelik planlamalar bulunmaktadır.",
+   "3": "Program eğitim amaçlarına ulaşılma düzeyi sistematik bir şekilde (işveren, mezun, paydaş anketleri/geri bildirimler vb.) izlenmektedir.",
+   "4": "İzlemi yapılan programın tüm eğitim amaçlarına ulaşılma durumu, geri bildirimler ile değerlendirilmektedir.",
+   "5": "Programın eğitim amaçlarına ulaşılma durumu için sürekli izleme ve gerekli iyileştirmeler yapılmaktadır."
+  }
+ },
+ "2.6.1": {
+  "page": 27,
+  "pdr": "2.6.1. Programın tanımlanmış misyon ve vizyonu mevcuttur.",
+  "levels": {
+   "1": "Programın tanımlanmış misyon ve vizyonu bulunmamaktadır.",
+   "2": "Programın kendi misyon ve vizyon belirlemeye yönelik planlama çalışmaları bulunmaktadır ancak MYO’nun tanımlanmış süreçlerini benimsemektedir.",
+   "3": "Programın tanımlanmış misyon ve vizyonu bulunmaktadır.",
+   "4": "Programın tanımlanmış misyon ve vizyonu, paydaş geri bildirimleri ile izlenmektedir.",
+   "5": "Programın tanımlanmış misyon ve vizyonuna yönelik sürekli iyileştirme yaklaşımı ve/veya uygulamaları bulunmaktadır."
+  }
+ },
+ "2.6.2": {
+  "page": 28,
+  "pdr": "2.6.2. Programın tanımlanmış misyon ve vizyonu kamuoyu ile paylaşılmıştır.",
+  "levels": {
+   "1": "Programın tanımlanmış misyon ya da vizyonu kamuoyuyla (web sitesi, tanıtım dokümanları, kataloglar vb.) paylaşılmamaktadır.",
+   "2": "Programın tanımlanmış misyon ve vizyonu kısıtlı düzeyde kamuoyuyla paylaşılmıştır veya paylaşılan programın misyon ve vizyonunda uyumsuzluk/eksiklik bulunmaktadır.",
+   "3": "Programın uygun tanımlanmış misyon ve vizyonu kamuoyuyla paylaşılmaktadır.",
+   "4": "Programın misyon ve vizyonunun kamuoyuyla birçok farklı kanaldan paylaşılmakta, erişilebilirlik, güncellik ve fark edilebilirlik açısından izlenmekte ve gerekli iyileştirmeler yapılmaktadır.",
+   "5": "Programın misyon ve vizyonunun kamuoyuyla paylaşımına yönelik paydaş geri bildirimleri doğrultusunda sürekli iyileştirme yaklaşımı ve/veya örnek uygulamalar bulunmaktadır."
+  }
+ },
+ "2.7.1": {
+  "page": 29,
+  "pdr": "2.7.1. İç paydaşların eğitim- öğretim süreçlerine katılımını sağlayacak mekanizmalar oluşturulmuş ve işletilmektedir.",
+  "levels": {
+   "1": "İç paydaşların eğitim- öğretim süreçlerine katılımını sağlayacak mekanizmalar (anket geri bildirimleri, talep dilekçesi, sektör toplantıları, paydaş toplantıları vb.) oluşturulmamış ve işletilmemektedir.",
+   "2": "İç paydaşların eğitim- öğretim süreçlerine katılımını (öğretim planı değerlendirme, ders önerisi ve uygulaması vb.) sağlayacak mekanizmalar planlanmış veya plansız süreçler işletilmiştir.",
+   "3": "İç paydaşların eğitim- öğretim süreçlerine katılımını sağlayacak mekanizmalar oluşturulmuş ve işletilmektedir.",
+   "4": "İç paydaşların süreçlere katkısı ile işletilen süreç izlenmektedir.",
+   "5": "İç paydaşların süreçlere katkısı ile işletilen süreç sonrası izleme verileri sürekli iyileştirme yaklaşımı ile değerlendirilmektedir."
+  }
+ },
+ "2.7.2": {
+  "page": 30,
+  "pdr": "2.7.2. Dış paydaşların eğitim- öğretim süreçlerine katılımını sağlayacak mekanizmalar oluşturulmuş ve işletilmektedir.",
+  "levels": {
+   "1": "Dış paydaşların eğitim- öğretim süreçlerine katılımını sağlayacak mekanizmalar (anket geri bildirimleri, talep dilekçesi, sektör toplantıları, paydaş toplantıları vb.) oluşturulmamış ve işletilmemektedir.",
+   "2": "Dış paydaşların eğitim- öğretim süreçlerine katılımını (öğretim planı değerlendirme, ders önerisi ve uygulaması vb.) sağlayacak mekanizmalar işletilmiş veya plansız süreçler işletilmektedir.",
+   "3": "Dış paydaşların eğitim- öğretim süreçlerine katılımını sağlayacak mekanizmalar oluşturulmuş ve işletilmektedir.",
+   "4": "Dış paydaşların süreçlere katkısı ile işletilen süreç izlenmektedir.",
+   "5": "Dış paydaşların süreçlere katkısı ile işletilen süreç sonrası izleme verileri sürekli iyileştirme yaklaşımı ile değerlendirilmektedir."
+  }
+ },
+ "3.1.1": {
+  "page": 31,
+  "pdr": "3.1.1. Program çıktılarını belirleme yöntemi vardır.",
+  "levels": {
+   "1": "Program çıktılarının belirlenmesine ilişkin herhangi bir yöntem bulunmamaktadır.",
+   "2": "Program çıktılarının belirlenmesine ilişkin bir yöntem uygulanmadan belirlenmekte veya sürece yönelik bir planlama bulunmaktadır.",
+   "3": "Program çıktılarının belirlenmesine ilişkin bir yöntem bulunmaktadır. Bu yöntemde, ilgili paydaş görüşleri alınmakta, taraflar (öğrenci, öğretim elemanı, sektör temsilcisi vb.) temsil edilmekte, süreç yönetimi ve dönemleri net olarak tanımlanmaktadır.",
+   "4": "Program çıktılarının belirlenmesine ilişkin yöntemin geçerliliği, etkinliği izlenmektedir.",
+   "5": "Program çıktılarının belirlenmesine ilişkin yöntem hakkında sürekli iyileştirme yaklaşımı ve/veya örnek uygulamalar bulunmaktadır."
+  }
+ },
+ "3.1.2": {
+  "page": 32,
+  "pdr": "3.1.2. Program çıktılarının belirleme yöntemi işletilmektedir.",
+  "levels": {
+   "1": "Program çıktılarını belirleme yöntemi işletilmemektedir.",
+   "2": "Program çıktıları bir yöntem olmaksızın belirlenmiştir veya yöntem işletilme süreçlerine ilişkin planlamalar yapılmıştır.",
+   "3": "Program çıktılarının belirlenmesine ilişkin tanımlanan yöntem işletilmekte, ilgili paydaş görüşleri alınmakta, tarafların (öğrenci, öğretim elemanı, sektör temsilcisi vb.) süreçlere katkısı kayıt altına alınarak süreç işletilmektedir.",
+   "4": "Program çıktılarını belirleme yönteminin işletilmesine yönelik süreçler izlenmekte ve değerlendirilmektedir.",
+   "5": "Program çıktılarını belirleme yönteminin işletilmesine yönelik sürekli iyileştirme yaklaşımı ve/veya örnek uygulamalar bulunmaktadır."
+  }
+ },
+ "3.1.3": {
+  "page": 33,
+  "pdr": "3.1.3. Program çıktıları, program eğitim amaçları ile tutarlıdır.",
+  "levels": {
+   "1": "Program çıktıları ile program eğitim amaçları arasında herhangi bir tutarlılık bulunmamaktadır.",
+   "2": "Program çıktıları ile program eğitim amaçları arasındaki tutarlılığı kısmen sağlamaktadır veya bu süreci yürütmeye yönelik planlama çalışmaları bulunmaktadır.",
+   "3": "Program çıktıları ile program eğitim amaçları tutarlı bir şekilde ilişkilendirilmekte ve PÖA-PÇ ilişki tablosu ile sunulmaktadır.",
+   "4": "Program çıktıları ile program eğitim amaçlarının tutarlığına yönelik süreçler izlenmekte ve değerlendirilmektedir.",
+   "5": "Program çıktıları ile program eğitim amaçlarının tutarlığına yönelik sürekli iyileştirme yaklaşımı ve/veya örnek uygulamalar bulunmaktadır."
+  }
+ },
+ "3.1.4": {
+  "page": 34,
+  "pdr": "3.1.4. Program çıktıları MEDEK çıktılarını (PÇ1- PÇ10) kapsamaktadır.",
+  "levels": {
+   "1": "Tanımlı program çıktıları yoktur veya tanımlanan program çıktıları MEDEK çıktılarını kapsamamaktadır veya geçerli ders planı ile MEDEK program çıktılarını tamamını karşılayacak dersler bulunmamaktadır.",
+   "2": "Tanımlı program çıktılarının MEDEK çıktılarını kapsama düzeyi tamamına yönelik değildir ve/veya tanımlı program çıktılarının tamamı tüm öğrencilere kazandırılamamaktadır. Örneğin seçmeli bir ders ile bazı öğrencilerin bir çıktıyı sağlamaması vb.",
+   "3": "Tanımlı program çıktılarının MEDEK çıktılarının tamamını kapsamaktadır. Ders planlarında ilgili program çıktıları tüm öğrencilere (en az zorunlu veya tüm öğrencilerin seçtiği seçmeli bir dersle ile ilişkilendirme vb.) kazandırılmakta ve ölçülmektedir.",
+   "4": "Tanımlı program çıktılarının karşılanmasına yönelik süreçler izlenmekte ve değerlendirilmektedir.",
+   "5": "Tanımlı program çıktılarının karşılanmasına yönelik sürekli iyileştirme yaklaşımı ve/veya örnek uygulamalar bulunmaktadır."
+  }
+ },
+ "3.2.1": {
+  "page": 35,
+  "pdr": "3.2.1. Program çıktılarına ulaşıldığını dönemsel olarak belirlemek ve belgelemek için kullanılan bir yöntem tanımlanmıştır.",
+  "levels": {
+   "1": "Program çıktılarına ulaşıldığını dönemsel olarak belirlemek ve belgelemek için tanımlanmış bir yöntem bulunmamaktadır.",
+   "2": "Program çıktılarına ulaşıldığını dönemsel olarak belirlemek ve belgelemek için bir yöntem belirlenmemiş ancak bir planlama bulunmaktadır.",
+   "3": "Program çıktılarına ulaşıldığını dönemsel olarak belirlemek ve belgelemek için kullanılan bir yöntem bulunmaktadır. Bu yöntemde süreç (program çıktıları ölçme dönemleri, ölçme- değerlendirme faaliyetleri, program çıktılarının sağlanma düzeyi tanımı, kullanılacak yöntem, sistem, yazılım, vb.) ve takibi net olarak tanımlanmaktadır.",
+   "4": "Program çıktılarına ulaşıldığını dönemsel olarak belirlemek ve belgelemek için tanımlanmış olan yöntem/sistem izlenmekte ve değerlendirilmektedir.",
+   "5": "Program çıktılarına ulaşıldığını dönemsel olarak belirlemek ve belgelemek için tanımlanmış olan yöntem/sisteme yönelik sürekli iyileştirme yaklaşımı ve/veya örnek uygulamalar bulunmaktadır."
+  }
+ },
+ "3.2.2": {
+  "page": 36,
+  "pdr": "3.2.2. Program çıktılarına ulaşıldığını dönemsel olarak belirlemek ve belgelemek için kullanılan bir yöntem işletilmektedir. (Bu süreç ağırlıklı olarak sınav, proje, ödev gibi öğrenci çalışmalarına dayanmalıdır. Sadece anketlere ve ders geçme başarı notlarına dayalı ölçme ve değerlendirme yöntemleri yetersiz sayılacaktır.)",
+  "levels": {
+   "1": "Program çıktılarına ulaşıldığını dönemsel olarak belirlemek ve belgelemek için tanımlanmış sistem/yöntem işletilmemektedir.",
+   "2": "Program çıktılarına ulaşıldığını dönemsel olarak belirlemek ve belgelemek için tanımlanmış sistem/yöntem bulunmakta ve bazı derslerde işletilmekte ve/veya tanımlı olmayan bir süreç bazı/tüm derslerde işletilmektedir.",
+   "3": "Program çıktılarına ulaşıldığını dönemsel olarak belirlemek ve belgelemek için tanımlanmış sistem/yöntem, tüm derslerde işletilmektedir.",
+   "4": "Program çıktılarına ulaşıldığını dönemsel olarak belirlemek ve belgelemek için tanımlanmış sistem/yöntemin işletilmesine yönelik süreçler izlenmekte ve değerlendirilmektedir.",
+   "5": "Program çıktılarına ulaşıldığını dönemsel olarak belirlemek ve belgelemek için tanımlanmış sistem/yöntemin işletilmesine yönelik sürekli iyileştirme yaklaşımı ve/veya örnek uygulamalar bulunmaktadır."
+  }
+ },
+ "4.1.1": {
+  "page": 37,
+  "pdr": "4.1.1. Ders öğrenme çıktıları ve program çıktılarının sistematik olarak izlenmesine, değerlendirilmesi ve iyileştirilmesi için mekanizmaların kurulmuştur.",
+  "levels": {
+   "1": "Ders öğrenme çıktılarının ve program çıktılarının izlenmesine, güncellenmesine ve sürekli iyileştirilmesine yönelik tanımlı bir mekanizma (komisyon, kurul, yönerge vb.) veya uygulama bulunmamaktadır.",
+   "2": "Ders öğrenme çıktılarının ve program çıktılarının izlenmesine, güncellenmesine ve sürekli iyileştirilmesine yönelik planlamalar bulunmakta veya tanımlı olmayan süreçler ile izleme ve iyileştirme faaliyetleri gerçekleştirilmektedir.",
+   "3": "Ders öğrenme çıktılarının ve program çıktılarının izlenmesine, güncellenmesine ve sürekli iyileştirilmesine yönelik program geneline yaygınlaştırılmış ve sistematik hale getirilmiş tanımlı bir mekanizma bulunmaktadır.",
+   "4": "Ders öğrenme çıktılarının ve program çıktılarının izlenmesine, güncellenmesine ve sürekli iyileştirilmesine yönelik tanımlı mekanizmalar periyodik olarak izlenmekte ve değerlendirilmektedir.",
+   "5": "Ders öğrenme çıktılarının ve program çıktılarının izlenmesi, güncellenmesi ve sürekli iyileştirilmesine yönelik tanımlı mekanizmalar, kurulmuş, izlenmekte ve bu sistem örnek gösterilebilecek nitelik taşımaktadır."
+  }
+ },
+ "4.1.2": {
+  "page": 38,
+  "pdr": "4.1.2. Ders öğrenme çıktıları ve program çıktılarının sistematik olarak izlenmesine, değerlendirilmesi ve iyileştirilmesi için mekanizmalar işletilmekte ve somut kanıtlar bulunmaktadır.",
+  "levels": {
+   "1": "Ders öğrenme çıktılarının ve program çıktılarının izlenmesine, değerlendirilmesi ve iyileştirilmesine yönelik tanımlı bir mekanizma (komisyon, kurul, yönerge, analiz raporları vb.) veya uygulama bulunmamaktadır.",
+   "2": "Ders öğrenme çıktılarının ve program çıktılarının izlenmesine, değerlendirilmesi ve iyileştirilmesine yönelik çalışmalar bulunmakta veya tanımlı olmayan mekanizmalar ile süreç işletilmektedir.",
+   "3": "Ders öğrenme çıktılarının ve program çıktılarının izlenmesine, değerlendirilmesine ve iyileştirilmesine yönelik program geneline yaygınlaştırılmış ve sistematik hale getirilmiş bir süreç işletilmekte ve somut kanıtlar sunulabilmektedir.",
+   "4": "Ders öğrenme çıktılarının ve program çıktılarının izlenmesi, güncellenmesi ve sürekli iyileştirilmesine yönelik mekanizmalar düzenli olarak izlenmekte, analiz ve iyileştirme faaliyetleri somut kanıtlar üzerinden değerlendirilmektedir.",
+   "5": "Ders öğrenme çıktılarının ve program çıktılarının izlenmesi, iyileştirilmesi veriye dayalı, bütüncül ve sürdürülebilir bir sistem çerçevesinde yürütülmekte; elde edilen çıktılar doğrultusunda yapılan iyileştirmeler örnek uygulama niteliği taşımaktadır."
+  }
+ },
+ "4.2": {
+  "page": 39,
+  "pdr": "4.2. Program, tanımlı bir süreç, sistem veya mekanizma yoluyla elde ettiği iç ve dış paydaş geri bildirimlerini, sürekli iyileştirme ve güncelleme amacıyla kullanmaktadır.",
+  "levels": {
+   "1": "Programda iç ve dış paydaşlardan geri bildirim alınmasına yönelik tanımlı bir süreç, sistem, mekanizma veya uygulama bulunmamaktadır.",
+   "2": "İç ve dış paydaşlardan geri bildirim alınmakla birlikte, bu geri bildirimler programın sürekli iyileştirilmesi ve güncellenmesinde kullanılmamakta veya ilgili tarafları kapsamayan (yeterli bir paydaş grubu olmaması) bir paydaş toplantısı ile kısmi süreç yürütülmektedir.",
+   "3": "Programda iç ve dış paydaşlardan alınan geri bildirimler, programın sürekli iyileştirilmesinde ve güncellenmesinde kullanılmaktadır.",
+   "4": "Programda iç ve dış paydaşlardan alınan geri bildirimler doğrultusunda yapılan sürekli iyileştirmeler ve güncellemeler, izlenmekte ve değerlendirilmektedir.",
+   "5": "Programda iç ve dış paydaşlardan alınan geri bildirimler doğrultusunda yapılan sürekli iyileştirmeler ve güncellemeler, izlenmekte ve periyodik olarak paydaşlar ile değerlendirilmektedir."
+  }
+ },
+ "4.3": {
+  "page": 40,
+  "pdr": "4.3. Program, mezun izleme sistemi aracılığıyla elde ettiği verileri düzenli olarak analiz ederek sürekli iyileştirme çalışmalarında kullanmaktadır.",
+  "levels": {
+   "1": "Program mezunları için bir izleme sistemi yoktur veya mezunlar izlenmemektedir ve mezunlara yönelik veriler bulunmamaktadır.",
+   "2": "Genel bir mezun izleme yöntemi bulunmakta, veriler toplanmakta ancak bu veriler programa özgü bilgileri kapsamamakta ve sürekli iyileştirme çalışmalarında kullanılamamaktadır.",
+   "3": "Mezun izleme yöntemi aracılığıyla veriler toplanmakta ve bu veriler program özelinde değerlendirilebilmektedir.",
+   "4": "Mezun izleme yöntemleriyle elde edilen veriler periyodik olarak takip edilerek analiz edilmekte ve iyileştirme çalışmalarında kullanmaktadır.",
+   "5": "Mezun izleme sistemi sürdürülebilir bir yapıda işletilmekte; elde edilen veriler karar alma süreçlerine entegre edilerek örnek bir sürekli iyileştirme modeli sunmaktadır."
+  }
+ },
+ "5.1.1": {
+  "page": 41,
+  "pdr": "5.1.1. Programa/alana özgü mesleki dersler en az 60 AKTS’dir.",
+  "levels": {
+   "1": "Programa/alana özgü en az 60 AKTS’lik dersler bulunmamaktadır.",
+   "2": "Programa/alana özgü mesleki dersler için en az 60 AKTS’lik bir planlama yapılmış ve yeni ders planı uygulanmaya başlanmıştır. Bu derslerin tamamının zorunlu olmaması nedeniyle tüm öğrenciler için gerekli mesleki çıktılar güvence altına alınamamaktadır. Ayrıca AKTS hesaplamalarında hata bulunması ya da toplamın 60 AKTS sınırında (58-59) kalması ile ölçüt tam olarak karşılanmamaktadır.",
+   "3": "Programa/alana özgü mesleki dersler kategorisinde en az 60 AKTS’lik dersler bulunmakta ve ilgili mesleki kazanımların tüm öğrencilere kazandırılması (tüm meslek derslerinin zorunlu olması, seçmeli ders grubunun tamamının meslek dersi olması vb.) garanti altına alınmaktadır.",
+   "4": "Programa/alana özgü 60 AKTS’yi içeren mesleki dersler, güncellik ve mesleki yeterlilik açısından izlenmektedir.",
+   "5": "Programa/alana özgü 60 AKTS’yi içeren mesleki dersler, güncellik ve mesleki yeterlilik açısından izlenmekte ve sürekli iyileştirme yaklaşımı ile güncellenmekte ve/veya örnek gösterilebilir uygulamalar bulunmaktadır."
+  }
+ },
+ "5.1.2": {
+  "page": 42,
+  "pdr": "5.1.2. Programa/alana özgü mesleki derslerin en az 20 AKTS kadarı programa özgü çıktıları (Bkz. Ölçüt 9) sağlayan derslerden oluşmaktadır.",
+  "levels": {
+   "1": "Programa özgü çıktıları sağlayan en az 20 AKTS’lik dersler bulunmamaktadır.",
+   "2": "Programa özgü çıktıları sağlayan en az 20 AKTS yeni ders planı uygulanmaktadır. Ancak bu derslerin tamamı zorunlu değildir ve tüm öğrencilere gerekli mesleki çıktılar kazandırılamamaktadır. Ayrıca AKTS hesaplamalarında hata bulunması ya da toplamın 20 AKTS sınırında (18-19) kalması ile ölçüt tam olarak karşılanmamaktadır.",
+   "3": "Programa özgü çıktıları sağlayan en az 20 AKTS’lik dersler bulunmakta ve ilgili mesleki kazanımların tüm öğrencilere kazandırılması (tüm meslek derslerinin zorunlu olması, seçmeli ders grubunun tamamının programa özgü çıktıları sağlaması vb.) garanti altına alınmaktadır",
+   "4": "Programa özgü çıktıları sağlayan 20 AKTS’lik dersler, güncellik ve mesleki yeterlilik açısından izlenmektedir.",
+   "5": "Programa özgü çıktıları sağlayan 20 AKTS’yi içeren dersler izlenmekte ve sürekli iyileştirme yaklaşımı ile güncellenmekte ve/veya örnek gösterilebilir uygulamalar bulunmaktadır."
+  }
+ },
+ "5.2": {
+  "page": 43,
+  "pdr": "5.2. En az 5 AKTS, dış paydaş önerilerini dikkate alan ders/dersler vardır.",
+  "levels": {
+   "1": "Programda dış paydaş önerilerini dikkate alan en az 5 AKTS’lik ders kategorisinde yeni ders önerisi ya da ders içeriği güncellemesi bulunmamaktadır.",
+   "2": "Programda dış paydaş önerilerini dikkate alan en az 5 AKTS’lik ders kategorisinde yeni ders önerisi ya da ders içeriği güncellemesine yönelik yeni ders planı uygulanmaktadır. Ancak bu ders/dersler zorunlu değildir ve tüm öğrencilere gerekli mesleki çıktılar kazandırılamamaktadır. Ayrıca AKTS hesaplamalarında hata bulunması ya da toplamın 5 AKTS sınırında (4) kalması ile ölçüt tam olarak karşılanmamaktadır.",
+   "3": "Programda dış paydaş önerilerini dikkate alan en az 5 AKTS’lik ders kategorisinde yeni ders önerisi ya da ders içeriği güncellemesi bulunmakta ve ilgili mesleki kazanımların tüm öğrencilere kazandırılması (bu ders/derslerinin zorunlu olması, seçmeli ders grubunun tamamının sektör önerisi ile açılması vb.) garanti altına alınmaktadır.",
+   "4": "Programda dış paydaş önerilerini dikkate alan en az 5 AKTS’lik dersler, güncellik ve mesleki yeterlilik açısından izlenmektedir.",
+   "5": "Programda dış paydaş önerilerini dikkate alan en az 5 AKTS’yi içeren dersler izlenmekte ve sürekli iyileştirme yaklaşımı ile güncellenmekte ve/veya örnek gösterilebilir uygulamalar bulunmaktadır."
+  }
+ },
+ "5.3": {
+  "page": 44,
+  "pdr": "5.3. En az 15 AKTS, İşletmede Mesleki Eğitim, Staj ve Uygulamalı Ders ve/veya güncel mesleki program/yazılım içeren ders/dersler vardır.",
+  "levels": {
+   "1": "Programda İşletmede Mesleki Eğitim, Staj ve Uygulamalı Ders ve/veya güncel mesleki program/yazılım içeren en az 15 AKTS’lik dersler bulunmamaktadır.",
+   "2": "Programda, İşletmede Mesleki Eğitim, Staj ve Uygulamalı Ders ve/veya güncel mesleki program/yazılım içeren ders/derslerin en az 15 AKTS kategorisinde yer aldığı yeni ders planı uygulanmaktadır. Ancak bu ders/dersler zorunlu değildir ve tüm öğrencilere gerekli mesleki çıktılar kazandırılamamaktadır. Ayrıca AKTS hesaplamalarında hata bulunması ya da toplamın 15 AKTS sınırında (13-14) kalması ile ölçüt tam olarak karşılanmamaktadır.",
+   "3": "Programda İşletmede Mesleki Eğitim, Staj ve Uygulamalı Ders ve/veya güncel mesleki program/yazılım içeren zorunlu ders/dersler 15 AKTS ve üzerindedir. İlgili derslere yönelik mesleki kazanımların tüm öğrencilere kazandırılması (bu ders/derslerinin zorunlu olması, seçmeli ders grubunun tamamının sektör önerisi ile açılması vb.) garanti altına alınmaktadır.",
+   "4": "Programda İşletmede Mesleki Eğitim, Staj ve Uygulamalı Ders ve/veya güncel mesleki program/yazılım içeren ders/dersleri içeren 15 AKTS’lik dersler, güncellik ve mesleki yeterlilik açısından izlenmektedir.",
+   "5": "Programda İşletmede Mesleki Eğitim, Staj ve Uygulamalı Ders ve/veya güncel mesleki program/yazılım içeren ders/dersleri içeren 15 AKTS’lik dersler izlenmekte ve sürekli iyileştirme yaklaşımı ile güncellenmekte ve/veya örnek gösterilebilir uygulamalar bulunmaktadır."
+  }
+ },
+ "5.4": {
+  "page": 45,
+  "pdr": "5.4. Öğretim planı ilgili programın programa özgü ölçütleri (Bkz. Ölçüt 9) sağlamaktadır.",
+  "levels": {
+   "1": "Öğretim planı, Ölçüt 9’da tanımlanan programa özgü ölçütleri kapsamamaktadır.",
+   "2": "Öğretim planının programa özgü ölçütler yeni ders planı ile uygulanmakta veya programa özgü ölçütleri bütüncül bir şekilde kapsayacak düzeyde planlanmamıştır.",
+   "3": "Öğretim planında tanımlı dersler programa özgü ölçütleri bütüncül bir şekilde kapsayacak düzeyde planlanmış ve dersler ile ilişkilendirilmiştir.",
+   "4": "Programa özgü ölçütleri bütüncül bir şekilde kapsayacak düzeyde planlanmış ve ilişkilendirilmiş dersler öğrenci başarısı ve paydaş geri bildirimleri ile izlenmekte ve değerlendirilmektedir.",
+   "5": "Programa özgü ölçütleri bütüncül bir şekilde kapsayacak düzeyde planlanmış ve ilişkilendirilmiş derslerin ile ilgili geri bildirimlere yönelik iyileştirmelere gerçekleştirilmektedir."
+  }
+ },
+ "5.5": {
+  "page": 46,
+  "pdr": "5.5. AKTS iş yükü hesaplamalarına dayalı, öğrenme çıktıları merkezli öğretim planı kamuoyuyla paylaşılmakta ve uygulanmaktadır.",
+  "levels": {
+   "1": "AKTS iş yüklerini ve ders öğrenme çıktılarını (kazanım / yeterlilik) içeren öğretim planı kamuoyuyla paylaşılmamakta ve uygulanmamaktadır.",
+   "2": "Kamuoyuyla paylaşılan AKTS iş yükü hesaplamaları ile ölçme değerlendirme faaliyetleri arasında uyumsuzluk bulunmakta veya öğretim planlarının AKTS iş yükleri ve ders öğrenme çıktıları (kazanım/yeterlilik) ile tam uyumlu hale getirilmesine yönelik çalışmalar bulunmaktadır.",
+   "3": "AKTS iş yüklerini ve ders öğrenme çıktılarını (kazanım / yeterlilik) içeren öğretim planı kamuoyuyla paylaşılmakta ve tüm derslerde uygulanmaktadır.",
+   "4": "Öğretim planında AKTS iş yükü, öğrenme çıktıları ve ölçme değerlendirme faaliyetleri düzenli olarak izlenmekte ve paydaş geri bildirimleri doğrultusunda gerekli iyileştirmeler yapılmaktadır.",
+   "5": "Öğretim planındaki AKTS iş yükü, öğrenme çıktıları ve ölçme değerlendirme faaliyetlerinde paydaş geri bildirimleri doğrultusunda sürekli iyileştirme yaklaşımı ve/veya örnek uygulamalar bulunmaktadır."
+  }
+ },
+ "5.6": {
+  "page": 47,
+  "pdr": "5.6. Öğretim planının uygulanmasını ve sürekli iyileştirilmesini sağlayan kurumsal yönetim sistemleri bulunmakta ve işletilmektedir.",
+  "levels": {
+   "1": "Öğretim planının uygulanmasını ve sürekli iyileştirilmesini sağlayan kurumsal yönetim sistemleri bulunmamakta ve işletilmemektedir.",
+   "2": "Öğretim planının uygulanmasını sağlayan bir yönetim sistemi bulunmakta ancak kısmen işletilmektedir.",
+   "3": "Öğretim planının uygulanmasını ve sürekli iyileştirilmesini sağlayan kurumsal yönetim sistemleri (yazılım, kurul tutanakları vb.) bulunmakta ve işletilmektedir.",
+   "4": "Öğretim planının uygulanmasını ve sürekli iyileştirilmesini sağlayan kurumsal yönetim sistemleri bulunmakta, işletilmekte, izlenmekte ve değerlendirilmektedir.",
+   "5": "Öğretim planının uygulanmasını sağlayan kurumsal yönetim sistemlerine yönelik olarak paydaş geri bildirimleri doğrultusunda sürekli iyileştirme yaklaşımı ve/veya örnek uygulamalar bulunmaktadır."
+  }
+ },
+ "6.1.1": {
+  "page": 48,
+  "pdr": "6.1.1. Öğretim kadrosu, öğretim gereksinimlerini karşılayacak niceliğe sahiptir.",
+  "levels": {
+   "1": "Öğretim kadrosu, eğitim öğretim faaliyetlerinin sürdürülebilirliği açısından yeterli sayıya sahip değildir.",
+   "2": "Eğitim öğretim faaliyetleri (ders, danışmanlık, komisyon görevleri vb.) yürütülmektedir; ancak iş yükü dağılımında belirgin bir dengesizlik vardır veya süreçlerin yürütülmesi program dışı/ücretli öğretim elemanı desteğine bağımlıdır.",
+   "3": "Eğitim öğretim faaliyetleri (ders, danışmanlık, komisyon görevleri vb.), tam zamanlı öğretim elemanlarıyla dengeli bir iş yükü dağılımı ile sürdürülebilir şekilde yürütülmektedir.",
+   "4": "Öğretim elemanlarının iş yükleri izlenmekte (ders, danışmanlık, komisyon görevleri vb.) ve süreçlere yönelik değerlendirmeler yapılarak kayıt altına alınmaktadır.",
+   "5": "Programda kadro planlaması, öğretim elemanlarının iş yükleri dikkate alınarak yapılmakta; bu süreçte sürekli iyileştirme yaklaşımı benimsenmekte ve örnek uygulamalar bulunmaktadır."
+  }
+ },
+ "6.1.2": {
+  "page": 49,
+  "pdr": "6.1.2. Öğretim kadrosu, öğretim gereksinimlerini karşılayacak niteliklere sahiptir.",
+  "levels": {
+   "1": "Öğretim elemanlarının akademik ve mesleki nitelikleri programın gereksinimlerini karşılamamaktadır. Mesleki dersler alan yetkinliği olmayan öğretim elemanları tarafından verilmektedir.",
+   "2": "Öğretim elemanlarının bir kısmı program alanıyla ilişkili olmakla birlikte, uygulamalı ve mesleki dersleri yürütecek ilgili uzmanlık alanına sahip öğretim elemanı sayısı yetersizdir. Bazı mesleki dersler alan uzmanı olmayan öğretim elemanları ile yürütülmekte veya görevlendirme ile yürütüldüğü için sürdürülebilirlik sorunları açık şekilde görülmektedir.",
+   "3": "Öğretim elemanlarının uzmanlık alanları, programın alanıyla uyumludur; uygulamalı ve mesleki dersleri yürütebilecek yeterliliklere sahiptir.",
+   "4": "Öğretim kadrosunun yetkinliği izlenmektedir. Öğretim elemanlarının niteliklerinin geliştirilmesine yönelik iyileştirmeler yapılmaktadır.",
+   "5": "Öğretim elemanı nitelikleri sürekli olarak iyileştirilmekte, hizmet içi eğitimler düzenlenmekte ve/veya örnek gösterilebilir uygulamalar bulunmaktadır."
+  }
+ },
+ "6.2": {
+  "page": 50,
+  "pdr": "6.2. Öğretim elemanlarına yönelik teşvik ve ödüllendirilme mekanizmaları var, adil ve şeffaf şekilde sürdürülmektedir.",
+  "levels": {
+   "1": "Öğretim elemanlarına yönelik bir teşvik veya ödüllendirme mekanizması bulunmamaktadır.",
+   "2": "Genel/ulusal bir teşvik veya ödüllendirme süreci uygulanmakta veya yönetmelik, yönerge vb. prosedürlere bağlı olmaksızın kişiye bağlı uygulamalar bulunmaktadır.",
+   "3": "Kuruma özgü, öğretim elemanlarına yönelik teşvik ve ödüllendirilme mekanizmaları var, adil ve şeffaf şekilde sürdürülmektedir.",
+   "4": "Kuruma özgü teşvik ve ödüllendirme sisteminin akademik motivasyona katkısı düzenli olarak izlenmektedir.",
+   "5": "Teşvik ve ödüllendirme süreçleri özgün modellerle çeşitlendirilmiş; sürdürülebilir bir başarı kültürü oluşturulmuştur."
+  }
+ },
+ "6.3": {
+  "page": 51,
+  "pdr": "6.3. Öğretim elemanı alımı ve/veya yükseltilmesinde tanımlı bir sistemi bulunmakta ve uygulanmaktadır.",
+  "levels": {
+   "1": "Öğretim elemanı alımı ve yükseltilmesine ilişkin tanımlı bir sistem bulunmamaktadır.",
+   "2": "Öğretim elemanı alımı ve yükseltilmesine yönelik bir sistem olmasına rağmen, süreçlerin yürütüldüğüne dair programda yeterli bilgi düzeyi oluşmamıştır.",
+   "3": "Öğretim elemanı alımı ve yükseltilmesine yönelik bir sistem mevcuttur; adil ve şeffaf bir şekilde uygulanmaktadır.",
+   "4": "Öğretim elemanı alım ve yükseltme sistemine ilişkin geri bildirim mekanizmaları oluşturulmuş ve öğretim elemanları tarafında farkındalık bulunmaktadır.",
+   "5": "Öğretim elemanı alım ve yükseltme sistemine ilişkin geri bildirim mekanizmalar oluşturulmuş ve öğretim elemanları bu sürece katkıda/geri bildirimde bulunmaktadır."
+  }
+ },
+ "6.4": {
+  "page": 52,
+  "pdr": "6.4. Programda öğretim elemanlarının niteliklerine göre adil ve şeffaf ders dağılım dengesi uygulanmaktadır.",
+  "levels": {
+   "1": "Öğretim elemanlarının niteliklerine göre adil ve şeffaf ders dağılımı bulunmamaktadır.",
+   "2": "Öğretim elemanlarının niteliklerine göre ders dağılımında veya ders yüklerinde belirgin bir dengesizlik vardır.",
+   "3": "Öğretim elemanlarının niteliklerine göre eğitim öğretim faaliyetleri dengeli bir ders yükü dağılımı ile sürdürülebilir şekilde yürütülmektedir.",
+   "4": "Öğretim elemanlarının niteliklerine göre ders yükü dağılımı düzenli olarak izlenmekte ve gerekli iyileştirmeler yapılmaktadır.",
+   "5": "Programda ders dağılımı, öğretim elemanlarının niteliklerine ve iş yükleri dikkate alınarak yapılmakta; bu süreçte sürekli iyileştirme yaklaşımı benimsenmekte ve örnek uygulamalar bulunmaktadır."
+  }
+ },
+ "7.1": {
+  "page": 53,
+  "pdr": "7.1. Eğitim-öğretim etkinliklerini destekleyen yeterli sayıda ve nitelikte öğrenme ortamına ve kaynağına (sınıflar, uygulama alanları, donanım yeterliliği vb.) sahiptir.",
+  "levels": {
+   "1": "Eğitim-öğretim faaliyetlerini sürdürebilmek için öğrenci sayılarına yeterli olacak şekilde sınıflar, uygulama alanları ve donanım bulunmamaktadır.",
+   "2": "Eğitim-öğretim faaliyetlerinin sürdürebilmesi için öğrenci sayılarına uygun sınıf, uygulama alanı ve donanım, asgari düzeyde bulunmaktadır. Ancak, mevcut altyapı ile mesleki derslerin uygulanmasında aksaklıklar yaşanmakta veya sürdürülebilirlik sorunları bulunmaktadır.",
+   "3": "Eğitim-öğretim faaliyetlerini sürdürebilmek için öğrenci sayılarına yeterli olacak şekilde sınıflar, uygulama alanları ve donanım bulunmaktadır.",
+   "4": "Eğitim-öğretim faaliyetlerini sürdürebilmek için gerekli sınıf ve uygulama alanlarının yeterliliği izlenmekte ve gerekli iyileştirmeler yapılmaktadır.",
+   "5": "Eğitim-öğretim faaliyetlerini sürdürebilmek için sınıf, uygulama alanları ve donanımların yeterliliği sürekli iyileştirme kapsamında güncellenmekte ve/veya örnek gösterilebilir altyapılar bulunmaktadır."
+  }
+ },
+ "7.2": {
+  "page": 54,
+  "pdr": "7.2. Program öğrencilerine ders dışı etkinlikler yapmalarına olanak veren altyapı vardır.",
+  "levels": {
+   "1": "Öğrencilerin ders dışı sosyal, kültürel veya sportif etkinlik yapabileceği herhangi bir altyapı/alan bulunmamaktadır.",
+   "2": "Öğrencilerin ders dışı sosyal, kültürel veya sportif etkinlik yapabileceği altyapı asgari düzeyde olup, geliştirilmesi için planlamalar bulunmaktadır.",
+   "3": "Öğrencilerin ders dışı sosyal, kültürel veya sportif etkinlik yapabileceği altyapı mevcuttur ve tüm öğrencilerin kolayca erişebileceği bir şekilde kullanılmaktadır.",
+   "4": "Öğrencilerin ders dışı sosyal, kültürel veya sportif etkinlik yapabileceği altyapılar mevcuttur ve bu altyapılara yönelik geri bildirimler alınarak değerlendirmeler yapılmakta ve ilgili mercilere iletilmektedir.",
+   "5": "Öğrencilerin ders dışı sosyal, kültürel veya sportif etkinlik yapabileceği altyapı sürekli iyileştirme kapsamında sistematik olarak geliştirilmekte ve/veya örnek gösterilebilir altyapılar bulunmaktadır."
+  }
+ },
+ "7.3": {
+  "page": 55,
+  "pdr": "7.3. Öğrencilerin öğrenim ve yaşam ortamlarında gerekli güvenlik, ilk yardım ve İSG önlemleri alınmıştır.",
+  "levels": {
+   "1": "Öğrencilerin öğrenim ve yaşam ortamlarında (derslikler, laboratuvarlar, uygulama alanları vb.) güvenlik, ilk yardım veya İSG'ye yönelik tanımlı bir süreç, ekipman veya uygulama bulunmamaktadır.",
+   "2": "Öğrencilerin öğrenim ve yaşam ortamlarında güvenlik, ilk yardım veya İSG'ye yönelik tanımlı bir süreç, ekipman veya uygulama olmamasına rağmen asgari önlem alınmıştır. Uygulamalar kurumsal düzeyde olmayıp bireysel süreçler yürütülmektedir.",
+   "3": "Öğrencilerin öğrenim ve yaşam ortamlarında gerekli güvenlik, ilk yardım ve İSG önlemleri alınmıştır. Bu amaçla birimin İSG raporu oluşturulmuş ve rapor gereği ilgili faaliyetlerin bu rapor çerçevesince gerçekleştirilme süreçleri devam etmektedir.",
+   "4": "Öğrencilerin öğrenim ve yaşam ortamlarında gerekli güvenlik, ilk yardım ve İSG önlemleri alınmıştır. Bu amaçla birimin İSG raporu oluşturulmuş ve rapor gereği ilgili faaliyetlerin bu rapor çerçevesince gerçekleştirilme süreçleri tamamlanmıştır. Ayrıca, Öğrencilerin öğrenim ve yaşam ortamlarında güvenlik, ilk yardım ve İSG'ye yönelik tanımlı süreç veya uygulamalarla ilgili geri bildirimler alınmakta ve izlenmektedir.",
+   "5": "Öğrencilerin öğrenim ve yaşam ortamlarında gerekli güvenlik, ilk yardım ve İSG önlemleri sürekli iyileştirme kapsamında sistematik olarak geliştirilmiş ve/veya örnek gösterilebilir altyapılar bulunmaktadır."
+  }
+ },
+ "7.4": {
+  "page": 56,
+  "pdr": "7.4. Öğrencilere sağlanan bilgiye erişim olanakları, program amaç ve çıktılarına ulaşmak için yeterlidir.",
+  "levels": {
+   "1": "Öğrencilere sağlanan bilgiye erişim olanakları (kütüphane, e-kaynaklar, ders notu paylaşımları vb.) program amaç ve çıktılarına ulaşmak için yeterli değildir/yoktur.",
+   "2": "Öğrencilere sağlanan bilgiye erişim olanakları yeterli olmamasına rağmen, ilgili süreçler için kurul kararları, satın alma süreçleri vb. planlamalar yapılmaktadır.",
+   "3": "Öğrencilere sağlanan bilgiye erişim olanakları (kütüphane, e-kaynaklar, ders notu paylaşımları, açık lab. alt yapısı vb.) program amaç ve çıktılarına ulaşmak için yeterli düzeydedir.",
+   "4": "Öğrencilere sağlanan bilgiye erişim olanakları ile ilgili geri bildirimler alınmakta, izlenmekte ve değerlendirilmektedir.",
+   "5": "Öğrencilere sağlanan bilgiye erişim olanakları ile ilgili sürekli iyileştirme yaklaşımı ile sistematik ve/veya örnek gösterilebilir uygulamalar bulunmaktadır."
+  }
+ },
+ "7.5": {
+  "page": 57,
+  "pdr": "7.5. Özel gereksinimli öğrenciler için altyapı düzenlemesi yapılmıştır (Programa özel gereksinimli öğrenci alınmasını engelleyen herhangi bir karar veya mekanizma olmadığı durumlarda “öğrenci olmaması” sebebi ile ilgili gerekçe ifade edilerek altyapı hazırlıklarının yapılmaması eksiklik olarak değerlendirilecektir).",
+  "levels": {
+   "1": "Özel gereksinimli öğrencilere yönelik herhangi bir fiziksel düzenleme ve koordinatörlük, yönetmelik, yönerge, vb. bulunmamaktadır.",
+   "2": "Özel gereksinimli öğrenciler için fiziki alt yapı düzenlemeleri kısmen yapılmıştı, süreçler için koordinatörlük, yönetmelik, yönerge, vb. bulunmakla birlikte farkındalık düzeyi düşüktür. Özel gereksinimli öğrenciler için süreçler asgari düzeyde sürdürülebilir seviyededir.",
+   "3": "Özel gereksinimli öğrencilerin eğitim ve sosyal alanlara erişim olanakları tanımlı ve kesintisiz olarak sunulmakta; bazı fiziksel alanlarda kısıtlı erişim söz konusu olsa dahi, bu durum yürürlükte olan yönetmelik, yönerge ve uygulama talimatları doğrultusunda geliştirilen çözüm mekanizmalarıyla (mekân değişikliği, bireysel destek vb.) kurumsal bir yapıya kavuşturulmaktadır.",
+   "4": "Erişilebilirlik düzeyi ve özel gereksinimli öğrenci memnuniyeti düzenli olarak izlenmektedir. Geri bildirimler doğrultusunda Özel gereksinimli öğrenciler için yaşam alanlarında somut iyileştirmeler yapılmaktadır.",
+   "5": "Özel gereksinimli öğrencilerin eğitim ve sosyal alanlara fiziksel ve dijital erişim olanakları ile ilgili sürekli iyileştirme yaklaşımı ile sistematik ve/veya örnek uygulamalar bulunmaktadır."
+  }
+ },
+ "7.6.1": {
+  "page": 58,
+  "pdr": "7.6.1. Bilgi ve iletişim teknolojileri (BİT) altyapısı, program amaçlarını destekleyecek doğrultuda öğrencilerin eğitsel gereksinimlerini karşılamaktadır.",
+  "levels": {
+   "1": "Programın eğitim amaçlarını ve öğrenci çalışmalarını destekleyecek doğrultuda BİT altyapısı (bilgisayar laboratuvarı, yazılım, internet erişimi vb.) bulunmamaktadır.",
+   "2": "Programın eğitim amaçlarını ve öğrenci çalışmalarını destekleyecek doğrultuda BİT altyapısı asgari düzeydedir, gözlemler ve öğrenci geri bildirimleri ciddi eksiklikler olduğunu göstermektedir.",
+   "3": "Programın eğitim amaçlarını ve öğrenci çalışmalarını destekleyen BİT altyapısı, tüm öğrenciler için erişilebilir ve yeterlidir.",
+   "4": "BİT altyapısı, program amaçlarını destekleyecek doğrultuda öğrencilerin eğitsel gereksinimlerini karşılamakta ve geri bildirimler alınarak izlenmektedir.",
+   "5": "BİT altyapısı ile ilgili sürekli iyileştirme yaklaşımı ile sistematik ve/veya örnek uygulamalar bulunmaktadır."
+  }
+ },
+ "7.6.2": {
+  "page": 59,
+  "pdr": "7.6.2. Bilgi ve iletişim teknolojileri (BİT) altyapısı, program amaçlarını destekleyecek doğrultuda öğretim elemanlarının eğitsel gereksinimlerini karşılamaktadır.",
+  "levels": {
+   "1": "Öğretim elemanlarının çalışmalarını destekleyecek doğrultuda BİT altyapısı (bilgisayar, yazılım, internet erişimi vb.) bulunmamaktadır.",
+   "2": "Öğretim elemanlarının çalışmalarını destekleyecek BİT altyapısı asgari düzeydedir, gözlemler ve öğretim elemanlarını geri bildirimleri ciddi eksiklikler olduğunu göstermektedir",
+   "3": "Öğretim elemanlarının çalışmalarını destekleyecek doğrultuda BİT altyapısı, tüm öğretim elemanları için yeterlidir.",
+   "4": "BİT altyapısının kullanım etkinliği ve memnuniyeti izlenmekte ve geri bildirimlere göre iyileştirmeler yapılmaktadır.",
+   "5": "BİT altyapısı ile ilgili sürekli iyileştirme yaklaşımı ile sistematik ve/veya örnek uygulamalar bulunmaktadır."
+  }
+ },
+ "8.1": {
+  "page": 60,
+  "pdr": "8.1. Kurumun misyonu ile uyumlu ve stratejik amaç ve hedeflerini gerçekleştirmeyi sağlayacak yönetim modeli ve organizasyonel yapılanması vardır.",
+  "levels": {
+   "1": "Kurumun misyonu ve stratejik amaç ve hedeflerini gerçekleştirmeyi sağlayacak yönetim modeli ve organizasyon yapısı bulunmamaktadır.",
+   "2": "Kurumun misyonu ile uyumlu yönetim modeli ve organizasyonel yapılanmaya ilişkin uygulamalar mevcuttur; ancak bu yapı stratejik amaç ve hedeflerin gerçekleştirilmesini destekleyecek düzeyde değildir.",
+   "3": "Yönetim ve idari süreçler, kurumun misyonu ile uyumlu, stratejik amaç ve hedeflerini gerçekleştirmeyi sağlayacak yönetim modeli ve organizasyonel yapılanma şeklinde yürütülmektedir.",
+   "4": "Kurumun misyonu ile uyumlu, stratejik amaç ve hedeflerini gerçekleştirmeyi sağlayacak yönetim modeli ve organizasyonel yapılanması izlenmekte ve değerlendirilmektedir.",
+   "5": "Kurumun misyonu ile uyumlu, stratejik amaç ve hedeflerini gerçekleştirmeyi sağlayacak yönetim modeli ve organizasyonel yapılanmasına yönelik sürekli iyileştirme yaklaşımı ve/veya örnek uygulamalar bulunmaktadır."
+  }
+ },
+ "8.2": {
+  "page": 61,
+  "pdr": "8.2. İnsan kaynakların etkin ve verimli kullanımını güvence altına alan tanımlı prosedür ve süreçler bulunmaktadır.",
+  "levels": {
+   "1": "İnsan kaynaklarının yönetimine dair tanımlanmış bir politika veya süreç bulunmamaktadır.",
+   "2": "Personel istihdamı ve görevlendirme süreçleri yürütülmekle birlikte; çalışan memnuniyeti ve verimliliğini esas alan insan kaynakları yönetim politikası ve uygulama planı bulunmamaktadır.",
+   "3": "İnsan kaynakları yönetimi; çalışan memnuniyeti ve verimliliğini esas alan bir insan kaynakları yönetim politikası çerçevesinde kurumsallaşmış bir şekilde yürütülmektedir.",
+   "4": "İnsan kaynağına yönelik izleme-değerlendirme süreçleri ile alınan geri bildirimler alınmakta ve çalışma ortamının kalitesinin arttırılması için değerlendirmeler yapılmaktadır.",
+   "5": "İnsan kaynağının stratejik yönetimine yönelik, teşvik ve ödüllendirme odaklı, sürekli iyileştirme yaklaşımını benimsemiş bir yönetim modeli veya örnek model uygulanmaktadır."
+  }
+ },
+ "8.3": {
+  "page": 62,
+  "pdr": "8.3. Akademik ve idari personele yönelik tanımlı hizmet içi eğitim süreçleri işletilmektedir.",
+  "levels": {
+   "1": "Akademik ve idari personele yönelik hizmet içi eğitim bulunmamaktadır.",
+   "2": "Akademik ve idari personele yönelik eğitimler düzenlenmektedir ancak bu eğitimler bir ihtiyaç analizine veya yıllık plana dayanmamaktadır.",
+   "3": "Akademik ve idari personele yönelik planlı hizmet içi eğitimler işletilmektedir.",
+   "4": "Akademik ve idari personele yönelik planlı hizmet içi eğitimlere programdan katılım sağlanmakta ve geri bildirimler alınmaktadır.",
+   "5": "Akademik ve idari personelin hizmet içi eğitim süreçlerine yönelik sürekli iyileştirme yaklaşımı ve/veya örnek uygulamalar bulunmaktadır."
+  }
+ },
+ "8.4": {
+  "page": 63,
+  "pdr": "8.4. Program, hesap verebilirliği ve kamuoyunu bilgilendirmeyi ilke olarak benimsemekte ve uygulamaktadır.",
+  "levels": {
+   "1": "Kamuoyunu bilgilendirme ilkesi benimsenmemekte; bilgi paylaşımı yapılmamaktadır.",
+   "2": "Web sitesi veya kamuya açık ortamlar üzerinden temel bilgiler paylaşılmaktadır, ancak veriler güncel değildir ve sistematik bir yapı yoktur.",
+   "3": "Program hesap vermeyi ve kamuoyunu bilgilendirmeyi ilke olarak benimsemektedir ve bunu sürdürülebilir bir şekilde işletmektedir. Dönemsel olarak kamuya açık bildirimler yapılmaktadır.",
+   "4": "Kamuya açık bilgilendirme kanallarının (web sitesi, sosyal medya vb.) etkinliği izlenmekte; paylaşımlar zenginleştirilmektedir.",
+   "5": "Program ile ilgili güncel bilgilerin kamuoyu ile paylaşımı konusunda sürekli iyileştirme yaklaşımı ve/veya örnek uygulamalar bulunmaktadır."
+  }
+ },
+ "9.1": {
+  "page": 64,
+  "pdr": "9.1. Program öğretim planında yer alan dersler, ölçme- değerlendirme yöntemleri aracılığıyla programa özgü ölçütleri sağlamaktadır.",
+  "levels": {
+   "1": "Program çıktıları MEDEK’in programa özgü çıktılarını kapsamamaktadır ya da ders planında ilgili programa özgü tüm çıktıları kazandıracak ders/dersler bulunmamaktadır.",
+   "2": "Ders planında programa özgü tüm çıktılar tüm öğrencilere (seçmeli ders uygulamaları vb.) kazandırılmamaktadır veya programa özgü çıktıları karşılamak üzere yeni bir ders planı uygulanmaktadır.",
+   "3": "Program öğretim planında yer alan dersler ile MEDEK’in programa özgü çıktıları sağlanmakta ve ilgili program çıktıları tüm öğrencilere (en az zorunlu bir dersle ilişkilendirme vb.) kazandırılmaktadır. Ders öğrenme çıktıları ve/veya programa özgü çıktılar ile ölçme- değerlendirme faaliyetleri ilişkilendirilerek ölçüm yapılmakta; çıktıların sağlanma durumu değerlendirilmektedir.",
+   "4": "Programa özgü tüm çıktıların karşılanmasına ve ölçülmesine yönelik süreçler izlenmekte ve değerlendirilmektedir.",
+   "5": "Programa özgü tüm çıktıların çıktılarının karşılanmasına yönelik sürekli iyileştirme yaklaşımı ve/veya örnek uygulamalar bulunmaktadır."
+  }
+ }
+}
