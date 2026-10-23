@@ -150,7 +150,7 @@ export function SchedulerModule() {
       {tab === "grid" && (
         <div className="grid gap-4 2xl:grid-cols-[minmax(0,1fr)_380px]">
           <ScheduleGrid schedule={schedule} courses={courses} rooms={rooms} invigilators={invigilators} conflicts={conflicts} onChange={setSchedule} />
-          <div className="space-y-4">
+          <div className="min-w-0 space-y-4">
             <Card>
               <CardHeader title="Çakışma Denetçisi" description="Kesin ve yumuşak kısıtlar canlı denetlenir" />
               <CardBody className="max-h-72 space-y-1.5 overflow-y-auto scrollbar-thin">

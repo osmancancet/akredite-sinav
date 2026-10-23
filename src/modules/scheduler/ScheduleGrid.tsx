@@ -42,7 +42,7 @@ export function ScheduleGrid({
   };
 
   return (
-    <div className="space-y-3">
+    <div className="min-w-0 space-y-3">
       {unplaced.length > 0 && (
         <div className="rounded-xl border border-dashed border-amber-300 bg-amber-50 p-3">
           <div className="mb-2 text-xs font-semibold text-amber-800">Yerleştirilmemiş dersler — takvime sürükleyin</div>

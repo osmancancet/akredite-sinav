@@ -217,8 +217,8 @@ function QuestionCard({
 
   return (
     <div className={cn("rounded-xl border bg-white shadow-sm", open ? "border-brand-300 ring-1 ring-brand-100" : "border-zinc-200")}>
-      <div className="flex items-center gap-2 px-4 py-2.5">
-        <button onClick={onToggle} className="flex min-w-0 flex-1 items-center gap-2 text-left cursor-pointer">
+      <div className="flex flex-wrap items-center gap-2 px-4 py-2.5">
+        <button onClick={onToggle} className="flex min-w-[12rem] flex-1 basis-full items-center gap-2 text-left cursor-pointer sm:basis-0">
           {open ? <ChevronDown className="h-4 w-4 text-zinc-400" /> : <ChevronRight className="h-4 w-4 text-zinc-400" />}
           <span className="rounded-md bg-brand-50 px-2 py-0.5 text-xs font-bold text-brand-700">S{index + 1}</span>
           <span className="truncate text-sm text-zinc-800">{q.text.replace(/\*\*/g, "") || <em className="text-zinc-400">Soru metni girilmedi</em>}</span>

@@ -2,7 +2,7 @@ import * as React from "react";
 import { cn } from "@/lib/utils";
 
 export function Card({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
-  return <div className={cn("rounded-xl border border-zinc-200/80 bg-white shadow-[var(--shadow-card)]", className)} {...props} />;
+  return <div className={cn("min-w-0 rounded-xl border border-zinc-200/80 bg-white shadow-[var(--shadow-card)]", className)} {...props} />;
 }
 
 export function CardHeader({
@@ -58,15 +58,15 @@ export function StatTile({
   };
   const dot = { slate: "bg-zinc-300", brand: "bg-brand-500", emerald: "bg-emerald-500", amber: "bg-amber-500", red: "bg-red-500" };
   return (
-    <div className="rounded-xl border border-zinc-200/80 bg-white p-4 shadow-[var(--shadow-card)]">
+    <div className="min-w-0 rounded-xl border border-zinc-200/80 bg-white p-4 shadow-[var(--shadow-card)]">
       <div className="flex items-center justify-between gap-2 text-[11.5px] font-medium text-zinc-500">
-        <span className="flex items-center gap-1.5">
-          <span className={cn("h-1.5 w-1.5 rounded-full", dot[tone])} />
-          {label}
+        <span className="flex min-w-0 items-center gap-1.5">
+          <span className={cn("h-1.5 w-1.5 shrink-0 rounded-full", dot[tone])} />
+          <span className="truncate" title={label}>{label}</span>
         </span>
-        <span className="text-zinc-300 [&_svg]:h-4 [&_svg]:w-4 [&_svg]:text-zinc-400">{icon}</span>
+        <span className="shrink-0 text-zinc-300 [&_svg]:h-4 [&_svg]:w-4 [&_svg]:text-zinc-400">{icon}</span>
       </div>
-      <div className={cn("mt-2 font-mono text-[26px] font-medium leading-none tracking-tight tabular-nums", tones[tone])}>{value}</div>
+      <div className={cn("mt-2 truncate font-mono text-[26px] font-medium leading-none tracking-tight tabular-nums", tones[tone])}>{value}</div>
       {hint && <div className="mt-1.5 text-xs text-zinc-500">{hint}</div>}
     </div>
   );

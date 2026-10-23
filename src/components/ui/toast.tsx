@@ -39,7 +39,7 @@ const icons = {
 export function Toaster() {
   const { items, remove } = useToastStore();
   return (
-    <div className="no-print pointer-events-none fixed bottom-4 right-4 z-[60] flex w-96 max-w-[calc(100vw-2rem)] flex-col gap-2">
+    <div className="no-print pointer-events-none fixed bottom-4 left-4 right-4 z-[60] flex flex-col gap-2 sm:left-auto sm:w-96">
       <AnimatePresence>
         {items.map((t) => (
           <motion.div
@@ -48,7 +48,7 @@ export function Toaster() {
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, x: 40 }}
-            className="pointer-events-auto flex gap-3 rounded-xl border border-zinc-200 bg-white p-3 shadow-lg"
+            className="pointer-events-auto flex w-full min-w-0 gap-3 rounded-xl border border-zinc-200 bg-white p-3 shadow-[var(--shadow-pop)]"
             onClick={() => remove(t.id)}
           >
             {icons[t.tone]}
