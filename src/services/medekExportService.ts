@@ -7,7 +7,7 @@ import { scaleLabel, suggestPuko, type Analysis } from "@/lib/medekMath";
 import { analyzeItems, decisionLabel } from "@/lib/itemAnalysis";
 import { computeProgramPanel } from "@/lib/programPanel";
 import type { VaultData } from "@/lib/types";
-import { bloomLabel, clamp, formatTrDate, round, safeFileName, uid } from "@/lib/utils";
+import { bloomLabel, clamp, formatTrDate, safeFileName, uid, num, fixed } from "@/lib/utils";
 import { buildDocument, infoTable, LANDSCAPE_WIDTH, letterhead, para, PORTRAIT_WIDTH, saveDocx, saveWorkbook, sectionTitle, signatureTable, simpleTable, type Block } from "./docxCommon";
 
 export interface PukoCtx {
@@ -26,8 +26,8 @@ export function resolvePuko(ctx: PukoCtx): PukoEntry[] {
     .map((o) => ctx.sheet.puko[o.outcomeId] ?? suggestPuko(o, ctx.exam, ctx.analysis, ctx.threshold));
 }
 
-const pct = (v: number | null) => (v === null ? "—" : `%${round(v, 1)}`);
-const s5 = (v: number | null) => (v === null ? "—" : round(v, 2).toFixed(2));
+const pct = (v: number | null) => (v === null ? "—" : `%${num(v, 1)}`);
+const s5 = (v: number | null) => (v === null ? "—" : fixed(v, 2));
 
 export function pukoBlocks(ctx: PukoCtx): Block[] {
   const { inst, course, exam, analysis, threshold, programOutcomes } = ctx;
@@ -46,7 +46,7 @@ export function pukoBlocks(ctx: PukoCtx): Block[] {
     sectionTitle("2. Sınav İstatistikleri"),
     simpleTable(
       ["Ortalama", "Medyan", "Std. Sapma", "En Yüksek", "En Düşük", "Başarı Oranı (≥%50)"],
-      [[round(st.mean, 2), round(st.median, 2), round(st.sd, 2), round(st.max, 1), round(st.min, 1), `%${round(st.passRate, 1)}`]],
+      [[num(st.mean, 2), num(st.median, 2), num(st.sd, 2), num(st.max, 1), num(st.min, 1), `%${num(st.passRate, 1)}`]],
       [16, 16, 16, 16, 16, 20],
       PORTRAIT_WIDTH,
       { alignCols: ["center", "center", "center", "center", "center", "center"] },
@@ -59,8 +59,8 @@ export function pukoBlocks(ctx: PukoCtx): Block[] {
         bloomLabel(q.bloom),
         q.outcomeIds.map((id) => course.outcomes.find((o) => o.id === id)?.code).filter(Boolean).join(", "),
         q.maxPoints,
-        round(q.avg, 2),
-        `%${round(q.pct, 1)}`,
+        num(q.avg, 2),
+        `%${num(q.pct, 1)}`,
       ]),
       [10, 18, 22, 16, 16, 18],
       PORTRAIT_WIDTH,
@@ -74,7 +74,7 @@ export function pukoBlocks(ctx: PukoCtx): Block[] {
         o.code,
         o.text,
         o.questionLabels.join(", ") || "—",
-        `${round(o.sumAvg, 1)} / ${o.sumMax}`,
+        `${num(o.sumAvg, 1)} / ${o.sumMax}`,
         pct(o.pct),
         s5(o.scale5),
         o.pct === null ? "Ölçülmedi" : o.flagged ? "İYİLEŞTİRME GEREKLİ" : scaleLabel(o.pct),
@@ -107,14 +107,14 @@ export function pukoBlocks(ctx: PukoCtx): Block[] {
     blocks.push(sectionTitle("7. Madde (Soru) Analizi"));
     blocks.push(
       para(
-        `Cronbach α = ${ia.test.alpha === null ? "—" : ia.test.alpha.toFixed(2)} (${ia.test.reliability}) · Ölçmenin standart hatası = ${ia.test.sem === null ? "—" : `±${round(ia.test.sem, 1)}`} puan · Ortalama güçlük p = ${ia.test.meanP.toFixed(2)} · Ortalama ayırt edicilik D = ${ia.test.meanD.toFixed(2)} (üst/alt %27 = ${ia.test.groupSize} öğrenci).`,
+        `Cronbach α = ${ia.test.alpha === null ? "—" : fixed(ia.test.alpha, 2)} (${ia.test.reliability}) · Ölçmenin standart hatası = ${ia.test.sem === null ? "—" : `±${num(ia.test.sem, 1)}`} puan · Ortalama güçlük p = ${fixed(ia.test.meanP, 2)} · Ortalama ayırt edicilik D = ${fixed(ia.test.meanD, 2)} (üst/alt %27 = ${ia.test.groupSize} öğrenci).`,
         { size: 9.5 },
       ),
     );
     blocks.push(
       simpleTable(
         ["Soru", "p", "Güçlük", "D", "Ayırt edicilik", "r", "α (çıkarılırsa)", "Karar"],
-        ia.items.map((i) => [i.label, i.p.toFixed(2), i.difficulty, i.D.toFixed(2), i.discrimination, i.r === null ? "—" : i.r.toFixed(2), i.alphaIfDeleted === null ? "—" : i.alphaIfDeleted.toFixed(2), decisionLabel(i.decision)]),
+        ia.items.map((i) => [i.label, fixed(i.p, 2), i.difficulty, fixed(i.D, 2), i.discrimination, i.r === null ? "—" : fixed(i.r, 2), i.alphaIfDeleted === null ? "—" : fixed(i.alphaIfDeleted, 2), decisionLabel(i.decision)]),
         [8, 8, 13, 8, 16, 8, 16, 23],
         PORTRAIT_WIDTH,
         { size: 9, alignCols: ["center", "center", "left", "center", "left", "center", "center", "left"] },
@@ -242,7 +242,7 @@ export async function exportProgramPanelDocx(data: VaultData) {
         s.po.text,
         s.supportingCourses,
         s.measuredCourses,
-        s.pct === null ? "—" : `%${round(s.pct, 1)}`,
+        s.pct === null ? "—" : `%${num(s.pct, 1)}`,
         s.uncovered ? "DESTEKLENMİYOR" : s.pct === null ? "Ölçülmedi" : s.flagged ? "EŞİK ALTI" : "Hedefte",
       ]),
       [6, 52, 10, 10, 10, 12],

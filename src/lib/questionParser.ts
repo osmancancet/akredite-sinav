@@ -19,7 +19,7 @@ export interface ParsedQuestion {
 
 const Q_START = /^\s*(?:(?:soru|s)\s*)?(\d{1,3})\s*[.)\-:]\s*(.*)$/i;
 const OPTION = /^\s*\(?([A-Fa-f])\s*[).:\-]\s+(.*)$/;
-const INLINE_OPT = /(?:^|\s)\(?([A-F])\)\s*/g;
+const INLINE_OPT = /(?:^|\s)\(?([A-Fa-f])\)\s*/g;
 const ANSWER = /^\s*(?:doğru\s*cevap|cevap\s*anahtarı|cevap|yanıt|cvp|answer)\s*[:\-=]\s*(.+)$/i;
 const POINTS = /[(\[]\s*(\d+(?:[.,]\d+)?)\s*(?:puan|p\.?|pts?|points?)\s*[)\]]|(?:^|\s)(\d+(?:[.,]\d+)?)\s*puan\b/i;
 const BLANK = /_{3,}|\.{5,}|…{2,}/;
@@ -49,29 +49,40 @@ function extractPoints(line: string): { line: string; points: number | null } {
   return { line: line.replace(m[0], " ").replace(/\s{2,}/g, " ").trim(), points: Number.isFinite(value) ? value : null };
 }
 
-/** Tek satırdaki "A) … B) … C) …" şıklarını ayırır; şıklardan önceki metin soru kökü sayılır. */
-function splitInlineOptions(line: string): { prefix: string; options: string[] } | null {
+/**
+ * Satırdaki "A) … B) … C) …" şıklarını ayırır. İlk harf, beklenen sıradaki şık olmalıdır
+ * (ilk satırda A, sonraki satırda C gibi) — "A) 4   B) 6 / C) 7   D) 8" düzeni desteklenir.
+ * Şıklardan önce gelen metin soru kökü sayılır.
+ */
+function splitInlineOptions(line: string, nextIndex: number): { prefix: string; options: string[] } | null {
   const all = Array.from(line.matchAll(INLINE_OPT));
-  const firstA = all.findIndex((m) => m[1] === "A");
-  if (firstA < 0) return null;
-  const matches = all.slice(firstA);
-  if (matches.length < 2 || matches.some((m, i) => m[1].charCodeAt(0) !== 65 + i)) return null;
+  const firstLetter = String.fromCharCode(65 + nextIndex);
+  const start = all.findIndex((m) => m[1].toUpperCase() === firstLetter);
+  if (start < 0) return null;
+  const matches = all.slice(start);
+  if (matches.length < 2 || matches.some((m, i) => m[1].toUpperCase().charCodeAt(0) !== 65 + nextIndex + i)) return null;
   const options = matches.map((m, i) => {
-    const start = (m.index ?? 0) + m[0].length;
-    const end = i + 1 < matches.length ? matches[i + 1].index ?? line.length : line.length;
-    return line.slice(start, end).trim();
+    const s0 = (m.index ?? 0) + m[0].length;
+    const e0 = i + 1 < matches.length ? matches[i + 1].index ?? line.length : line.length;
+    return line.slice(s0, e0).trim();
   });
-  return { prefix: line.slice(0, matches[0].index ?? 0).trim(), options };
+  const prefix = line.slice(0, matches[0].index ?? 0).trim();
+  if (nextIndex > 0 && prefix) return null; // satır ortasında devam eden şıklar yalnızca satır başından kabul edilir
+  return { prefix, options };
 }
 
 function parseBlock(lines: string[]): ParsedQuestion | null {
   const textParts: string[] = [];
   const options: string[] = [];
+  const optionRaw: string[] = [];
   const codeLines: string[] = [];
+  const answerLines: string[] = [];
   let marked: number | undefined;
-  let answer = "";
   let points: number | null = null;
   let inCode = false;
+  let inAnswer = false;
+  let blankAfterOptions = false;
+  let afterAnswer = false;
 
   for (const raw of lines) {
     if (/^\s*```/.test(raw)) {
@@ -85,33 +96,59 @@ function parseBlock(lines: string[]): ParsedQuestion | null {
     const pt = extractPoints(raw);
     if (pt.points !== null && points === null) points = pt.points;
     const line = pt.line.trim();
-    if (!line) continue;
+    if (!line) {
+      if (options.length) blankAfterOptions = true;
+      if (inAnswer) {
+        inAnswer = false;
+        afterAnswer = true; // cevaptan sonra boş satırla ayrılan metin (bölüm başlığı vb.) yok sayılır
+      }
+      continue;
+    }
+    if (afterAnswer) continue;
 
     const ans = line.match(ANSWER);
     if (ans) {
-      answer = ans[1].trim();
+      answerLines.push(ans[1].trim());
+      inAnswer = true;
       continue;
     }
-    const inline = splitInlineOptions(line);
-    if (inline && !options.length) {
+    // "Cevap:" satırından sonraki satırlar (sonraki soruya kadar) cevabın devamıdır
+    if (inAnswer) {
+      answerLines.push(line);
+      continue;
+    }
+    const inline = blankAfterOptions ? null : splitInlineOptions(line, options.length);
+    if (inline) {
       if (inline.prefix) textParts.push(inline.prefix);
       inline.options.forEach((o) => {
         if (MARKED.test(o)) marked = options.length;
         options.push(o.replace(MARKED, "").trim());
+        optionRaw.push(`${String.fromCharCode(65 + optionRaw.length)}) ${o}`);
       });
       continue;
     }
-    const opt = line.match(OPTION);
+    const opt = blankAfterOptions ? null : line.match(OPTION);
     if (opt && opt[1].toUpperCase().charCodeAt(0) - 65 === options.length) {
       if (MARKED.test(opt[2])) marked = options.length;
       options.push(opt[2].replace(MARKED, "").trim());
+      optionRaw.push(line);
       continue;
     }
+    // Şıklardan sonra boş satırla ayrılmış metin (bölüm başlığı, "Başarılar" vb.) soruya ait değildir
+    if (blankAfterOptions) continue;
     if (options.length) options[options.length - 1] += ` ${line}`;
     else textParts.push(line);
   }
 
-  const text = textParts.join("\n").trim();
+  let answer = answerLines.join("\n").trim();
+  let text = textParts.join("\n").trim();
+
+  // Alt sorular (a) … ? b) … ?) veya tek "şık": çoktan seçmeli değil, metnin parçasıdır
+  const subQuestions = options.length >= 2 && marked === undefined && !/^\(?[A-Fa-f]\b/.test(answer) && options.every((o) => /\?\s*$/.test(o));
+  if (options.length === 1 || subQuestions) {
+    text = [text, ...optionRaw].filter(Boolean).join("\n");
+    options.length = 0;
+  }
   if (!text && !options.length) return null;
 
   let type: QuestionType = "open";
@@ -131,6 +168,7 @@ function parseBlock(lines: string[]): ParsedQuestion | null {
   } else if (TF_ANSWER.test(ansLower) || /\(\s*D\s*\/\s*Y\s*\)|\(\s*\)\s*doğru|doğru\s*\/\s*yanlış/i.test(text)) {
     type = "truefalse";
     if (ansLower) correctBool = TF_TRUE.test(ansLower);
+    answer = answer.split("\n")[0];
   }
 
   const cleanText = text.replace(/\(\s*D\s*\/\s*Y\s*\)/i, "").trim();
@@ -148,7 +186,7 @@ function parseBlock(lines: string[]): ParsedQuestion | null {
 }
 
 export function parseQuestionsText(raw: string): ParsedQuestion[] {
-  const lines = raw.replace(/\r/g, "").replace(/ /g, " ").split("\n");
+  const lines = raw.replace(/\r/g, "").replace(/\u00a0/g, " ").split("\n");
   const blocks: string[][] = [];
   let current: string[] | null = null;
   let inCode = false;
@@ -156,11 +194,12 @@ export function parseQuestionsText(raw: string): ParsedQuestion[] {
   for (const line of lines) {
     if (/^\s*```/.test(line)) inCode = !inCode;
     const m = !inCode ? line.match(Q_START) : null;
-    // Yeni soru: beklenen numara (veya ilk soru) ile başlayan satır
-    if (m && (Number(m[1]) === expected || (!current && Number(m[1]) >= 1))) {
+    const n = m ? Number(m[1]) : 0;
+    // Yeni soru: beklenen numara, küçük bir atlama (eksik soru) veya bölüm başında yeniden 1'den başlama
+    if (m && m[2].trim() && (!current || n === expected || n === 1 || (n > expected && n - expected <= 3))) {
       if (current) blocks.push(current);
       current = [m[2]];
-      expected = Number(m[1]) + 1;
+      expected = n + 1;
       continue;
     }
     if (current) current.push(line);

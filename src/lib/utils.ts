@@ -160,9 +160,9 @@ export function maskName(name: string): string {
 }
 
 export function safeFileName(s: string): string {
+  const map: Record<string, string> = { ğ: "g", Ğ: "G", ü: "u", Ü: "U", ş: "s", Ş: "S", ı: "i", İ: "I", ö: "o", Ö: "O", ç: "c", Ç: "C", â: "a", Â: "A", î: "i", Î: "I", û: "u", Û: "U" };
   return s
-    .replace(/[ğĞ]/g, "g").replace(/[üÜ]/g, "u").replace(/[şŞ]/g, "s")
-    .replace(/[ıİ]/g, "i").replace(/[öÖ]/g, "o").replace(/[çÇ]/g, "c")
+    .replace(/[ğĞüÜşŞıİöÖçÇâÂîÎûÛ]/g, (ch) => map[ch] ?? ch)
     .replace(/[^a-zA-Z0-9-_]+/g, "_")
     .replace(/_+/g, "_")
     .replace(/^_|_$/g, "");
@@ -196,4 +196,14 @@ export function docNumberPrefix(department: string): string {
 /** Türkçe duyarlı arama anahtarı: küçük harf, aksan yok, ı → i */
 export function foldTr(s: string): string {
   return s.toLocaleLowerCase("tr-TR").normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/ı/g, "i");
+}
+
+/** Türkçe sayı biçimi (ondalık virgül), gereksiz sıfırlar atılır: 64.1 → "64,1", 60 → "60" */
+export function num(n: number, digits = 1): string {
+  return (Number.isFinite(n) ? n : 0).toLocaleString("tr-TR", { minimumFractionDigits: 0, maximumFractionDigits: digits });
+}
+
+/** Türkçe sabit ondalık: 0.8 → "0,80" */
+export function fixed(n: number, digits = 2): string {
+  return (Number.isFinite(n) ? n : 0).toLocaleString("tr-TR", { minimumFractionDigits: digits, maximumFractionDigits: digits });
 }

@@ -24,7 +24,7 @@ import { useData, useVault } from "@/lib/store";
 import type { Course, Exam, GradeRow, GradeSheet, PukoEntry } from "@/lib/types";
 import { computeAnalysis, rowTotal, scaleLabel, simulateGrades, suggestPuko } from "@/lib/medekMath";
 import { fullName } from "@/lib/seating";
-import { bloomLabel, clamp, cn, round, uid } from "@/lib/utils";
+import { bloomLabel, clamp, cn, uid, num, fixed } from "@/lib/utils";
 import { Card, CardBody, CardHeader, StatTile } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Field, Select, Textarea } from "@/components/ui/form";
@@ -82,10 +82,10 @@ export function MedekModule() {
           </Field>
           <div className="grid flex-[2] grid-cols-2 gap-3 md:grid-cols-5">
             <StatTile label="Öğrenci" value={analysis.stats.n} icon={<Users className="h-4 w-4 text-brand-500" />} />
-            <StatTile label="Ortalama" value={round(analysis.stats.mean, 1)} hint={`σ ${round(analysis.stats.sd, 1)}`} />
-            <StatTile label="Başarı Oranı" value={`%${round(analysis.stats.passRate, 0)}`} hint="≥ %50 puan" />
+            <StatTile label="Ortalama" value={num(analysis.stats.mean, 1)} hint={`σ ${num(analysis.stats.sd, 1)}`} />
+            <StatTile label="Başarı Oranı" value={`%${num(analysis.stats.passRate, 0)}`} hint="≥ %50 puan" />
             <StatTile label="ÖÇ Eşik Altı" value={`${flagged.length} / ${course.outcomes.length}`} tone={flagged.length ? "red" : "emerald"} hint={`Hedef %${threshold}`} />
-            <StatTile label="Ort. PÇ Sağlanma" value={`%${round(avgNonNull(analysis.poStats.map((p) => p.pct)), 1)}`} tone="brand" />
+            <StatTile label="Ort. PÇ Sağlanma" value={`%${num(avgNonNull(analysis.poStats.map((p) => p.pct)), 1)}`} tone="brand" />
           </div>
         </CardBody>
       </Card>
@@ -246,7 +246,7 @@ function GradeEntry({ exam, course, sheet, setSheet }: { exam: Exam; course: Cou
                       </td>
                     );
                   })}
-                  <td className="px-2 py-0.5 text-center font-semibold tabular-nums">{round(t, 1)}</td>
+                  <td className="px-2 py-0.5 text-center font-semibold tabular-nums">{num(t, 1)}</td>
                   <td className="px-1">
                     <button className="text-zinc-300 hover:text-red-500 cursor-pointer" onClick={() => setSheet({ rows: sheet.rows.filter((x) => x.id !== r.id) })} aria-label="Satırı sil">
                       <Trash2 className="h-3.5 w-3.5" />
@@ -373,7 +373,7 @@ function AnalysisView({ ctx }: { ctx: PukoCtx }) {
             reference={threshold}
             referenceLabel={`Hedef eşik %${threshold}`}
             flagBelow={threshold}
-            format={(v) => `%${round(v, 1)}`}
+            format={(v) => `%${num(v, 1)}`}
             labelWidth={52}
           />
           <table className="mt-4 w-full text-xs">
@@ -390,9 +390,9 @@ function AnalysisView({ ctx }: { ctx: PukoCtx }) {
               {analysis.outcomeStats.map((o) => (
                 <tr key={o.outcomeId} className="border-t border-zinc-100">
                   <td className="py-1 font-semibold">{o.code}</td>
-                  <td className="tabular-nums">{round(o.sumAvg, 1)} / {o.sumMax}</td>
-                  <td className="tabular-nums">{o.pct === null ? "—" : `%${round(o.pct, 1)}`}</td>
-                  <td className="tabular-nums">{o.scale5 === null ? "—" : o.scale5.toFixed(2)}</td>
+                  <td className="tabular-nums">{num(o.sumAvg, 1)} / {o.sumMax}</td>
+                  <td className="tabular-nums">{o.pct === null ? "—" : `%${num(o.pct, 1)}`}</td>
+                  <td className="tabular-nums">{o.scale5 === null ? "—" : fixed(o.scale5, 2)}</td>
                   <td>{o.flagged ? <Badge tone="red">İyileştirme Gerekli</Badge> : <Badge tone="emerald">{scaleLabel(o.pct)}</Badge>}</td>
                 </tr>
               ))}
@@ -404,12 +404,12 @@ function AnalysisView({ ctx }: { ctx: PukoCtx }) {
         <CardHeader title="PÇ Sağlanma Oranları" description="Başarı(PÇ_j)% = Σ Başarı(ÖÇ_k)% × W_kj / Σ W_kj" />
         <CardBody>
           <HBarChart
-            data={analysis.poStats.map((p) => ({ key: p.poId, label: p.code, value: p.pct, hint: `${p.text} — Σ ağırlık ${p.weightSum}${p.scale5 !== null ? ` · 5'lik ${p.scale5.toFixed(2)}` : ""}` }))}
+            data={analysis.poStats.map((p) => ({ key: p.poId, label: p.code, value: p.pct, hint: `${p.text} — Σ ağırlık ${p.weightSum}${p.scale5 !== null ? ` · 5'lik ${fixed(p.scale5, 2)}` : ""}` }))}
             max={100}
             reference={threshold}
             referenceLabel={`Hedef eşik %${threshold} · Ağırlığı 0 olan PÇ'ler "ölçülmedi"`}
             flagBelow={threshold}
-            format={(v) => `%${round(v, 1)}`}
+            format={(v) => `%${num(v, 1)}`}
             labelWidth={52}
           />
         </CardBody>
@@ -422,18 +422,18 @@ function AnalysisView({ ctx }: { ctx: PukoCtx }) {
               key: q.questionId,
               label: q.label,
               value: q.pct,
-              hint: `${bloomLabel(q.bloom)} · ${q.outcomeIds.map((id) => course.outcomes.find((o) => o.id === id)?.code).join(", ")} · ort. ${round(q.avg, 2)}/${q.maxPoints}`,
+              hint: `${bloomLabel(q.bloom)} · ${q.outcomeIds.map((id) => course.outcomes.find((o) => o.id === id)?.code).join(", ")} · ort. ${num(q.avg, 2)}/${q.maxPoints}`,
             }))}
             max={100}
             flagBelow={threshold}
             reference={threshold}
-            format={(v) => `%${round(v, 1)}`}
+            format={(v) => `%${num(v, 1)}`}
             labelWidth={40}
           />
         </CardBody>
       </Card>
       <Card>
-        <CardHeader title="Puan Dağılımı (Histogram)" description={`Ortalama ${round(analysis.stats.mean, 1)} · Medyan ${round(analysis.stats.median, 1)} · En yüksek ${analysis.stats.max} · En düşük ${analysis.stats.min}`} />
+        <CardHeader title="Puan Dağılımı (Histogram)" description={`Ortalama ${num(analysis.stats.mean, 1)} · Medyan ${num(analysis.stats.median, 1)} · En yüksek ${analysis.stats.max} · En düşük ${analysis.stats.min}`} />
         <CardBody>
           <ColumnChart
             data={analysis.stats.histogram.map((n, i) => ({ key: String(i), label: `${i * 10}–${i === 9 ? 100 : i * 10 + 9}`, value: n, hint: `%${i * 10}–${i === 9 ? 100 : i * 10 + 9} aralığında ${n} öğrenci` }))}
@@ -454,7 +454,7 @@ function PukoPanel({ ctx, setSheet }: { ctx: PukoCtx; setSheet: (p: Partial<Grad
   const setEntry = (e: PukoEntry, patch: Partial<PukoEntry>) => setSheet({ puko: { ...sheet.puko, [e.outcomeId]: { ...e, ...patch } } });
 
   const aiWrite = async () => {
-    const extra = analysis.questionStats.map((q) => `${q.label} (${bloomLabel(q.bloom)}, ${q.outcomeIds.map((id) => course.outcomes.find((o) => o.id === id)?.code).join("/")}): %${round(q.pct, 1)}`).join("; ");
+    const extra = analysis.questionStats.map((q) => `${q.label} (${bloomLabel(q.bloom)}, ${q.outcomeIds.map((id) => course.outcomes.find((o) => o.id === id)?.code).join("/")}): %${num(q.pct, 1)}`).join("; ");
     const res = await run("puko", (s) => aiWritePuko(s, course, exam.title, flagged, analysis.outcomeStats, threshold, extra));
     if (!res) return;
     const puko = { ...sheet.puko };
@@ -498,7 +498,7 @@ function PukoPanel({ ctx, setSheet }: { ctx: PukoCtx; setSheet: (p: Partial<Grad
                 <div key={e.outcomeId} className="rounded-xl border border-red-200 bg-red-50/40 p-4">
                   <div className="flex items-center gap-2">
                     <Badge tone="red">{o.code}</Badge>
-                    <span className="text-sm font-medium">%{round(o.pct ?? 0, 1)}</span>
+                    <span className="text-sm font-medium">%{num(o.pct ?? 0, 1)}</span>
                     <span className="truncate text-xs text-zinc-600">{o.text}</span>
                   </div>
                   <div className="mt-3 grid gap-2">
@@ -528,7 +528,7 @@ function PukoPanel({ ctx, setSheet }: { ctx: PukoCtx; setSheet: (p: Partial<Grad
                 variant="outline"
                 onClick={() =>
                   setSheet({
-                    generalEvaluation: `${analysis.stats.n} öğrencinin değerlendirildiği ${exam.title} sınavında sınıf ortalaması ${round(analysis.stats.mean, 1)}, başarı oranı %${round(analysis.stats.passRate, 1)} olarak gerçekleşmiştir. ${flagged.length ? `${flagged.map((f) => f.code).join(", ")} hedef eşik değerin altında kaldığından PUKÖ döngüsü başlatılmıştır.` : "Tüm öğrenme çıktıları hedef eşik değerin üzerindedir."}`,
+                    generalEvaluation: `${analysis.stats.n} öğrencinin değerlendirildiği ${exam.title} sınavında sınıf ortalaması ${num(analysis.stats.mean, 1)}, başarı oranı %${num(analysis.stats.passRate, 1)} olarak gerçekleşmiştir. ${flagged.length ? `${flagged.map((f) => f.code).join(", ")} hedef eşik değerin altında kaldığından PUKÖ döngüsü başlatılmıştır.` : "Tüm öğrenme çıktıları hedef eşik değerin üzerindedir."}`,
                   })
                 }
               >

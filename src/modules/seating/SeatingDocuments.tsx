@@ -2,7 +2,7 @@
 
 import { A4Page, OfficialHeader, SignatureRow } from "@/components/print/DocParts";
 import type { Course, Exam, Institution } from "@/lib/types";
-import { formatTrDate, maskName, maskStudentNo, round } from "@/lib/utils";
+import { formatTrDate, maskName, maskStudentNo, num } from "@/lib/utils";
 import { roomSheets, type EvidenceSample, type RoomSheet, type SeatingCtx } from "@/services/seatingExportService";
 
 function ExamInfo({ ctx, s }: { ctx: SeatingCtx; s: RoomSheet }) {
@@ -200,8 +200,8 @@ export function EvidenceCoversDocument({
                   ["Öğretim Elemanı", course.instructor],
                   ["Öğrenci No", mask ? maskStudentNo(s.studentNo) : s.studentNo],
                   ["Adı Soyadı", mask ? maskName(s.fullName) : s.fullName],
-                  ["Aldığı Puan", `${round(s.score, 1)} / ${total}`],
-                  ["Sınıf Ortalaması", String(round(classMean, 2))],
+                  ["Aldığı Puan", `${num(s.score, 1)} / ${total}`],
+                  ["Sınıf Ortalaması", String(num(classMean, 2))],
                   ["Ölçülen ÖÇ'ler", course.outcomes.map((o) => o.code).join(", ")],
                 ] as [string, string][]
               ).map(([k, v]) => (

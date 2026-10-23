@@ -5,7 +5,7 @@ import type { Course, Exam, Institution } from "@/lib/types";
 import { buildBooklet, correctAnswerText, type BookletType } from "@/lib/booklet";
 import { buildBlueprint } from "@/lib/medekMath";
 import { A4Page, AnswerLines, Latex, OfficialHeader, RichText, SignatureRow } from "@/components/print/DocParts";
-import { bloomLabel, formatTrDate, OPTION_LETTERS, questionTypeLabel, round } from "@/lib/utils";
+import { bloomLabel, formatTrDate, OPTION_LETTERS, questionTypeLabel, num } from "@/lib/utils";
 
 export function ExamPaper({ inst, course, exam, booklet }: { inst: Institution; course: Course; exam: Exam; booklet: BookletType }) {
   const items = buildBooklet(exam, booklet);
@@ -149,7 +149,7 @@ export function BlueprintTable({ course, exam, compact }: { course: Course; exam
             <td className={cellCls(compact)}>{bloomLabel(r.question.bloom)}</td>
             {course.outcomes.map((o) => (
               <td key={o.id} className={cellCls(compact, "text-center tabular-nums")}>
-                {r.cells[o.id] ? round(r.cells[o.id], 2) : compact ? "" : <span className="text-zinc-300">—</span>}
+                {r.cells[o.id] ? num(r.cells[o.id], 2) : compact ? "" : <span className="text-zinc-300">—</span>}
               </td>
             ))}
             <td className={cellCls(compact, "text-center font-semibold tabular-nums")}>{r.question.points}</td>
@@ -159,7 +159,7 @@ export function BlueprintTable({ course, exam, compact }: { course: Course; exam
           <td colSpan={3} className={cellCls(compact, "text-right font-bold")}>ÖÇ Toplam Puan</td>
           {course.outcomes.map((o) => (
             <td key={o.id} className={cellCls(compact, `text-center font-bold tabular-nums ${bp.totals[o.id] === 0 && !compact ? "bg-red-50 text-red-700" : ""}`)}>
-              {round(bp.totals[o.id] ?? 0, 2)}
+              {num(bp.totals[o.id] ?? 0, 2)}
             </td>
           ))}
           <td className={cellCls(compact, "text-center font-bold tabular-nums")}>{bp.totalPoints}</td>
@@ -167,7 +167,7 @@ export function BlueprintTable({ course, exam, compact }: { course: Course; exam
         <tr className={compact ? "" : "bg-zinc-50"}>
           <td colSpan={3} className={cellCls(compact, "text-right font-bold")}>Ağırlık (%)</td>
           {course.outcomes.map((o) => (
-            <td key={o.id} className={cellCls(compact, "text-center tabular-nums")}>%{round(bp.percents[o.id] ?? 0, 1)}</td>
+            <td key={o.id} className={cellCls(compact, "text-center tabular-nums")}>%{num(bp.percents[o.id] ?? 0, 1)}</td>
           ))}
           <td className={cellCls(compact, "text-center tabular-nums")}>%100</td>
         </tr>
@@ -267,7 +267,7 @@ export function AnswerKeyDocument({ inst, course, exam }: { inst: Institution; c
               <tr key={o.id}>
                 <td className="w-[12%] text-center font-bold">{o.code}</td>
                 <td>{o.text}</td>
-                <td className="w-[16%] text-center">%{round(bp.percents[o.id] ?? 0, 1)}</td>
+                <td className="w-[16%] text-center">%{num(bp.percents[o.id] ?? 0, 1)}</td>
               </tr>
             ))}
           </tbody>

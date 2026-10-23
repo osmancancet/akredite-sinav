@@ -30,7 +30,7 @@ import { toast } from "@/components/ui/toast";
 import { confirmDialog } from "@/components/ui/confirm";
 import { printDocument } from "@/components/print/PrintHost";
 import { auditExam, buildBlueprint } from "@/lib/medekMath";
-import { BLOOM_LEVELS, cn, round, uid } from "@/lib/utils";
+import { BLOOM_LEVELS, cn, uid, num } from "@/lib/utils";
 import type { BookletType } from "@/lib/booklet";
 import { exportAnswerKeyDocx, exportExamDocx, exportOpticKeyTxt, exportOpticKeyXlsx } from "@/services/examExportService";
 import { exportEvidencePack } from "@/services/evidencePackService";
@@ -273,7 +273,7 @@ function BlueprintPanel() {
                 <div key={o.id} title={o.text}>
                   <div className="flex justify-between text-xs">
                     <span className="font-semibold text-zinc-700">{o.code}</span>
-                    <span className="tabular-nums text-zinc-600">%{round(pct, 1)}</span>
+                    <span className="tabular-nums text-zinc-600">%{num(pct, 1)}</span>
                   </div>
                   <div className="mt-1 h-2 rounded-full bg-zinc-100">
                     <div className={cn("h-2 rounded-full", pct === 0 ? "bg-red-400" : "bg-brand-600")} style={{ width: `${Math.max(pct, pct === 0 ? 2 : 0)}%` }} />

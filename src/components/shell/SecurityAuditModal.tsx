@@ -26,7 +26,7 @@ import { useOnline } from "@/hooks/useOnline";
 import { CSP } from "@/lib/csp";
 import type { CollectionKey } from "@/lib/types";
 import { buildDocument, letterhead, para, saveDocx, sectionTitle, simpleTable, infoTable } from "@/services/docxCommon";
-import { cn, todayIso } from "@/lib/utils";
+import { cn, todayIso, fixed } from "@/lib/utils";
 
 const LABELS: Partial<Record<CollectionKey, string>> = {
   institution: "Kurum Anteti",
@@ -132,7 +132,7 @@ function CipherInspector() {
         <div className="flex flex-wrap items-center justify-between gap-2 border-b border-zinc-100 px-4 py-2.5">
           <div className="text-sm font-medium">IndexedDB → AkrediteSinavVault.records (diskte duran gerçek veri)</div>
           <div className="flex items-center gap-2">
-            <Badge tone="emerald">{records.length} şifreli kayıt · {(totalBytes / 1024).toFixed(1)} KB</Badge>
+            <Badge tone="emerald">{records.length} şifreli kayıt · {fixed((totalBytes / 1024), 1)} KB</Badge>
             <Button size="sm" variant="outline" onClick={refresh}>
               <RefreshCw className="h-3.5 w-3.5" /> Yenile
             </Button>
@@ -147,7 +147,7 @@ function CipherInspector() {
                 className={cn("flex w-full items-center justify-between rounded-md px-2 py-1.5 text-left text-xs cursor-pointer", selected === r.key ? "bg-brand-50 text-brand-800" : "hover:bg-zinc-50")}
               >
                 <span>{LABELS[r.key] ?? r.key}</span>
-                <span className="tabular-nums text-zinc-400">{(r.byteLength / 1024).toFixed(1)}K</span>
+                <span className="tabular-nums text-zinc-400">{fixed((r.byteLength / 1024), 1)}K</span>
               </button>
             ))}
           </div>

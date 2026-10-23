@@ -4,7 +4,7 @@ import * as React from "react";
 import { AlertTriangle, CheckCircle2, Info, PenLine, SlidersHorizontal } from "lucide-react";
 import type { Exam, GradeSheet } from "@/lib/types";
 import { analyzeItems, decisionLabel, type ItemDecision, type ItemStat } from "@/lib/itemAnalysis";
-import { bloomLabel, cn, round } from "@/lib/utils";
+import { bloomLabel, cn, num, fixed } from "@/lib/utils";
 import { Card, CardBody, CardHeader, StatTile } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 
@@ -30,13 +30,13 @@ export function ItemAnalysisView({ exam, sheet }: { exam: Exam; sheet: GradeShee
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-5">
         <StatTile
           label="Cronbach α (güvenirlik)"
-          value={test.alpha === null ? "—" : test.alpha.toFixed(2)}
+          value={test.alpha === null ? "—" : fixed(test.alpha, 2)}
           tone={test.alpha === null ? "slate" : test.alpha >= 0.7 ? "emerald" : test.alpha >= 0.6 ? "amber" : "red"}
           hint={test.reliability}
         />
-        <StatTile label="Ölçmenin standart hatası" value={test.sem === null ? "—" : `±${round(test.sem, 1)}`} hint="puan (SEM)" />
-        <StatTile label="Ortalama güçlük (p)" value={test.meanP.toFixed(2)} hint="ideal 0,30–0,70" />
-        <StatTile label="Ortalama ayırt edicilik (D)" value={test.meanD.toFixed(2)} tone={test.meanD >= 0.3 ? "emerald" : "amber"} hint={`üst/alt grup ${test.groupSize}'er öğrenci (%27)`} />
+        <StatTile label="Ölçmenin standart hatası" value={test.sem === null ? "—" : `±${num(test.sem, 1)}`} hint="puan (SEM)" />
+        <StatTile label="Ortalama güçlük (p)" value={fixed(test.meanP, 2)} hint="ideal 0,30–0,70" />
+        <StatTile label="Ortalama ayırt edicilik (D)" value={fixed(test.meanD, 2)} tone={test.meanD >= 0.3 ? "emerald" : "amber"} hint={`üst/alt grup ${test.groupSize}'er öğrenci (%27)`} />
         <StatTile
           label="Müdahale gereken madde"
           value={`${(counts["yeniden-yaz"] ?? 0) + (counts["gozden-gecir"] ?? 0)} / ${test.k}`}
@@ -84,14 +84,14 @@ export function ItemAnalysisView({ exam, sheet }: { exam: Exam; sheet: GradeShee
                       <td className="px-4 py-2 font-mono font-semibold">{i.label}</td>
                       <td className="px-2 py-2 text-zinc-600">{bloomLabel(exam.questions[idx].bloom)}</td>
                       <td className="px-2 py-2 font-mono tabular-nums">
-                        {i.p.toFixed(2)} <span className="font-sans text-[10.5px] text-zinc-400">{i.difficulty}</span>
+                        {fixed(i.p, 2)} <span className="font-sans text-[10.5px] text-zinc-400">{i.difficulty}</span>
                       </td>
                       <td className={cn("px-2 py-2 font-mono tabular-nums", i.D < 0.2 ? "text-red-700" : i.D < 0.3 ? "text-amber-700" : "")}>
-                        {i.D.toFixed(2)} <span className="font-sans text-[10.5px] text-zinc-400">{i.discrimination}</span>
+                        {fixed(i.D, 2)} <span className="font-sans text-[10.5px] text-zinc-400">{i.discrimination}</span>
                       </td>
-                      <td className="px-2 py-2 font-mono tabular-nums">{i.r === null ? "—" : i.r.toFixed(2)}</td>
+                      <td className="px-2 py-2 font-mono tabular-nums">{i.r === null ? "—" : fixed(i.r, 2)}</td>
                       <td className={cn("px-2 py-2 font-mono tabular-nums", raisesAlpha && "font-semibold text-amber-700")}>
-                        {i.alphaIfDeleted === null ? "—" : i.alphaIfDeleted.toFixed(2)}
+                        {i.alphaIfDeleted === null ? "—" : fixed(i.alphaIfDeleted, 2)}
                         {raisesAlpha && <span className="ml-1 font-sans text-[10px]">↑</span>}
                       </td>
                       <td className="px-2 py-2">
@@ -124,6 +124,22 @@ function ItemScatter({ items }: { items: ItemStat[] }) {
   const yMax = 1;
   const y = (d: number) => pad.t + (1 - (Math.max(yMin, Math.min(yMax, d)) - yMin) / (yMax - yMin)) * (H - pad.t - pad.b);
   const [hover, setHover] = React.useState<string | null>(null);
+  // Etiket çakışma önleme: her etiket için sağ-üst, sol-üst, sağ-alt, sol-alt sırasıyla boş yer aranır
+  const placed: { x: number; y: number }[] = [];
+  const labelPos = new Map<string, { x: number; y: number; anchor: "start" | "end" }>();
+  items.forEach((i) => {
+    const cx = x(i.p);
+    const cy = y(i.D);
+    const candidates = [
+      { x: cx + 9, y: cy - 7, anchor: "start" as const },
+      { x: cx - 9, y: cy - 7, anchor: "end" as const },
+      { x: cx + 9, y: cy + 15, anchor: "start" as const },
+      { x: cx - 9, y: cy + 15, anchor: "end" as const },
+    ];
+    const free = candidates.find((c) => placed.every((p) => Math.abs(p.x - c.x) > 24 || Math.abs(p.y - c.y) > 12)) ?? candidates[0];
+    placed.push({ x: free.x, y: free.y });
+    labelPos.set(i.questionId, free);
+  });
   return (
     <svg viewBox={`0 0 ${W} ${H}`} className="w-full" role="img" aria-label="Güçlük ve ayırt edicilik saçılım grafiği">
       <rect x={x(0.3)} y={pad.t} width={x(0.7) - x(0.3)} height={H - pad.t - pad.b} fill="oklch(0.948 0.032 178)" opacity="0.7" />
@@ -131,7 +147,7 @@ function ItemScatter({ items }: { items: ItemStat[] }) {
         <g key={`x${t}`}>
           <line x1={x(t)} x2={x(t)} y1={H - pad.b} y2={H - pad.b + 4} stroke="#a1a1aa" />
           <text x={x(t)} y={H - pad.b + 15} textAnchor="middle" fontSize="10" fill="#71717a" fontFamily="var(--font-mono)">
-            {t.toFixed(1)}
+            {fixed(t, 1)}
           </text>
         </g>
       ))}
@@ -139,7 +155,7 @@ function ItemScatter({ items }: { items: ItemStat[] }) {
         <g key={`y${t}`}>
           <line x1={pad.l} x2={W - pad.r} y1={y(t)} y2={y(t)} stroke="#f4f4f5" />
           <text x={pad.l - 6} y={y(t) + 3} textAnchor="end" fontSize="10" fill="#71717a" fontFamily="var(--font-mono)">
-            {t.toFixed(1)}
+            {fixed(t, 1)}
           </text>
         </g>
       ))}
@@ -161,14 +177,14 @@ function ItemScatter({ items }: { items: ItemStat[] }) {
           <g key={i.questionId} onMouseEnter={() => setHover(i.questionId)} onMouseLeave={() => setHover(null)} style={{ cursor: "default" }}>
             <circle cx={cx} cy={cy} r={14} fill="transparent" />
             <circle cx={cx} cy={cy} r={active ? 7 : 5.5} fill={DECISION_STYLE[i.decision].dot} stroke="white" strokeWidth="2" />
-            <text x={cx + 9} y={cy - 7} fontSize="10.5" fontWeight="600" fill="#27272a" fontFamily="var(--font-mono)">
+            <text x={labelPos.get(i.questionId)!.x} y={labelPos.get(i.questionId)!.y} textAnchor={labelPos.get(i.questionId)!.anchor} fontSize="10.5" fontWeight="600" fill="#27272a" fontFamily="var(--font-mono)">
               {i.label}
             </text>
             {active && (
               <g>
                 <rect x={Math.min(cx + 10, W - 150)} y={Math.max(4, cy + 8)} width="140" height="34" rx="6" fill="#18181b" />
                 <text x={Math.min(cx + 18, W - 142)} y={Math.max(4, cy + 8) + 14} fontSize="10.5" fill="white">
-                  {i.label} · p {i.p.toFixed(2)} · D {i.D.toFixed(2)}
+                  {i.label} · p {fixed(i.p, 2)} · D {fixed(i.D, 2)}
                 </text>
                 <text x={Math.min(cx + 18, W - 142)} y={Math.max(4, cy + 8) + 27} fontSize="10" fill="#d4d4d8">
                   {decisionLabel(i.decision)}

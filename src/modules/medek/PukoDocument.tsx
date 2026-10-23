@@ -2,11 +2,11 @@
 
 import { A4Page, OfficialHeader, SignatureRow } from "@/components/print/DocParts";
 import { scaleLabel } from "@/lib/medekMath";
-import { bloomLabel, formatTrDate, round } from "@/lib/utils";
+import { bloomLabel, formatTrDate, num, fixed } from "@/lib/utils";
 import { resolvePuko, type PukoCtx } from "@/services/medekExportService";
 import { analyzeItems, decisionLabel } from "@/lib/itemAnalysis";
 
-const pct = (v: number | null) => (v === null ? "—" : `%${round(v, 1)}`);
+const pct = (v: number | null) => (v === null ? "—" : `%${num(v, 1)}`);
 
 function PrintBar({ value, threshold }: { value: number | null; threshold: number }) {
   if (value === null) return <span>—</span>;
@@ -57,12 +57,12 @@ export function PukoDocument({ ctx }: { ctx: PukoCtx }) {
         </thead>
         <tbody>
           <tr className="text-center">
-            <td>{round(st.mean, 2)}</td>
-            <td>{round(st.median, 2)}</td>
-            <td>{round(st.sd, 2)}</td>
-            <td>{round(st.max, 1)}</td>
-            <td>{round(st.min, 1)}</td>
-            <td>%{round(st.passRate, 1)}</td>
+            <td>{num(st.mean, 2)}</td>
+            <td>{num(st.median, 2)}</td>
+            <td>{num(st.sd, 2)}</td>
+            <td>{num(st.max, 1)}</td>
+            <td>{num(st.min, 1)}</td>
+            <td>%{num(st.passRate, 1)}</td>
           </tr>
         </tbody>
       </table>
@@ -85,8 +85,8 @@ export function PukoDocument({ ctx }: { ctx: PukoCtx }) {
               <td>{bloomLabel(q.bloom)}</td>
               <td>{q.outcomeIds.map((id) => course.outcomes.find((o) => o.id === id)?.code).filter(Boolean).join(", ")}</td>
               <td className="text-center">{q.maxPoints}</td>
-              <td className="text-center">{round(q.avg, 2)}</td>
-              <td className="text-center">%{round(q.pct, 1)}</td>
+              <td className="text-center">{num(q.avg, 2)}</td>
+              <td className="text-center">%{num(q.pct, 1)}</td>
             </tr>
           ))}
         </tbody>
@@ -112,7 +112,7 @@ export function PukoDocument({ ctx }: { ctx: PukoCtx }) {
               <td className="text-[9pt]">{o.text}</td>
               <td className="text-center">{o.questionLabels.join(", ") || "—"}</td>
               <td className="text-center">{pct(o.pct)}</td>
-              <td className="text-center">{o.scale5 === null ? "—" : o.scale5.toFixed(2)}</td>
+              <td className="text-center">{o.scale5 === null ? "—" : fixed(o.scale5, 2)}</td>
               <td className="align-middle">
                 <PrintBar value={o.pct} threshold={threshold} />
               </td>
@@ -171,7 +171,7 @@ export function PukoDocument({ ctx }: { ctx: PukoCtx }) {
         <>
           <div className="doc-section-title">7. Madde (Soru) Analizi</div>
           <p className="text-[9.5pt]">
-            Cronbach α = {ia.test.alpha === null ? "—" : ia.test.alpha.toFixed(2)} ({ia.test.reliability}) · SEM = {ia.test.sem === null ? "—" : `±${round(ia.test.sem, 1)}`} puan · ort. p = {ia.test.meanP.toFixed(2)} · ort. D = {ia.test.meanD.toFixed(2)}
+            Cronbach α = {ia.test.alpha === null ? "—" : fixed(ia.test.alpha, 2)} ({ia.test.reliability}) · SEM = {ia.test.sem === null ? "—" : `±${num(ia.test.sem, 1)}`} puan · ort. p = {fixed(ia.test.meanP, 2)} · ort. D = {fixed(ia.test.meanD, 2)}
           </p>
           <table className="doc-table compact">
             <thead>
@@ -190,12 +190,12 @@ export function PukoDocument({ ctx }: { ctx: PukoCtx }) {
               {ia.items.map((i) => (
                 <tr key={i.questionId}>
                   <td className="text-center">{i.label}</td>
-                  <td className="text-center">{i.p.toFixed(2)}</td>
+                  <td className="text-center">{fixed(i.p, 2)}</td>
                   <td>{i.difficulty}</td>
-                  <td className="text-center">{i.D.toFixed(2)}</td>
+                  <td className="text-center">{fixed(i.D, 2)}</td>
                   <td>{i.discrimination}</td>
-                  <td className="text-center">{i.r === null ? "—" : i.r.toFixed(2)}</td>
-                  <td className="text-center">{i.alphaIfDeleted === null ? "—" : i.alphaIfDeleted.toFixed(2)}</td>
+                  <td className="text-center">{i.r === null ? "—" : fixed(i.r, 2)}</td>
+                  <td className="text-center">{i.alphaIfDeleted === null ? "—" : fixed(i.alphaIfDeleted, 2)}</td>
                   <td className="font-semibold">{decisionLabel(i.decision)}</td>
                 </tr>
               ))}

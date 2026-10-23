@@ -6,7 +6,7 @@ import * as XLSX from "xlsx";
 import type { Course, Exam, GradeSheet, Institution, Invigilator, Room, Schedule, SeatingPlan, Student } from "@/lib/types";
 import { activeRows, rowTotal } from "@/lib/medekMath";
 import { fullName } from "@/lib/seating";
-import { formatTrDate, maskName, maskStudentNo, mean, round, safeFileName } from "@/lib/utils";
+import { formatTrDate, maskName, maskStudentNo, mean, safeFileName, num } from "@/lib/utils";
 import {
   buildDocument,
   cell,
@@ -238,8 +238,8 @@ export async function exportEvidenceCoversDocx(ctx: { inst: Institution; course:
           ["Öğretim Elemanı", ctx.course.instructor],
           ["Öğrenci No", mask ? maskStudentNo(s.studentNo) : s.studentNo],
           ["Adı Soyadı", mask ? maskName(s.fullName) : s.fullName],
-          ["Aldığı Puan", `${round(s.score, 1)} / ${ctx.exam.questions.reduce((a, q) => a + q.points, 0)}`],
-          ["Sınıf Ortalaması", round(classMean, 2).toString()],
+          ["Aldığı Puan", `${num(s.score, 1)} / ${ctx.exam.questions.reduce((a, q) => a + q.points, 0)}`],
+          ["Sınıf Ortalaması", num(classMean, 2).toString()],
           ["Ölçülen ÖÇ'ler", ctx.course.outcomes.map((o) => o.code).join(", ")],
         ],
         PORTRAIT_WIDTH,

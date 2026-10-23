@@ -8,7 +8,7 @@ import type { Course, Exam, Institution } from "@/lib/types";
 import { buildBooklet, correctAnswerText, type BookletType } from "@/lib/booklet";
 import { buildBlueprint } from "@/lib/medekMath";
 import { latexToPlain } from "@/lib/textTools";
-import { bloomLabel, formatTrDate, OPTION_LETTERS, questionTypeLabel, round, safeFileName } from "@/lib/utils";
+import { bloomLabel, formatTrDate, OPTION_LETTERS, questionTypeLabel, safeFileName, num } from "@/lib/utils";
 import {
   ALL_BORDERS,
   buildDocument,
@@ -157,11 +157,11 @@ export function blueprintBlocks(course: Course, exam: Exam): Block[] {
     r.label,
     questionTypeLabel(r.question.type),
     bloomLabel(r.question.bloom),
-    ...course.outcomes.map((o) => (r.cells[o.id] ? round(r.cells[o.id], 2) : "")),
+    ...course.outcomes.map((o) => (r.cells[o.id] ? num(r.cells[o.id], 2) : "")),
     r.question.points,
   ]);
-  rows.push(["", "", "ÖÇ Toplam", ...course.outcomes.map((o) => round(bp.totals[o.id] ?? 0, 2)), bp.totalPoints]);
-  rows.push(["", "", "Ağırlık (%)", ...course.outcomes.map((o) => `%${round(bp.percents[o.id] ?? 0, 1)}`), "%100"]);
+  rows.push(["", "", "ÖÇ Toplam", ...course.outcomes.map((o) => num(bp.totals[o.id] ?? 0, 2)), bp.totalPoints]);
+  rows.push(["", "", "Ağırlık (%)", ...course.outcomes.map((o) => `%${num(bp.percents[o.id] ?? 0, 1)}`), "%100"]);
   return [
     simpleTable(["Soru", "Tip", "Bloom", ...course.outcomes.map((o) => o.code), "Puan"], rows, widths, PORTRAIT_WIDTH, {
       size: 9,
@@ -222,7 +222,7 @@ export async function exportAnswerKeyDocx(inst: Institution, course: Course, exa
     sectionTitle("Öğrenme Çıktıları"),
     simpleTable(
       ["ÖÇ", "Öğrenme Çıktısı", "Sınav Ağırlığı"],
-      course.outcomes.map((o) => [o.code, o.text, `%${round(buildBlueprint(exam, course).percents[o.id] ?? 0, 1)}`]),
+      course.outcomes.map((o) => [o.code, o.text, `%${num(buildBlueprint(exam, course).percents[o.id] ?? 0, 1)}`]),
       [10, 72, 18],
       PORTRAIT_WIDTH,
       { size: 9.5, alignCols: ["center", "left", "center"] },
@@ -268,8 +268,9 @@ export function exportOpticKeyXlsx(course: Course, exam: Exam) {
     ["Sıra No", "A Kitapçığı", "B Kitapçığı", "Puan (A sırası)"],
     ...rows,
     [],
-    ["A anahtar dizisi", keys.A.map((x) => x.answer).filter(Boolean).join("")],
-    ["B anahtar dizisi", keys.B.map((x) => x.answer).filter(Boolean).join("")],
+    ["A anahtar dizisi", keys.A.map((x) => x.answer ?? "*").join("")],
+    ["B anahtar dizisi", keys.B.map((x) => x.answer ?? "*").join("")],
+    ["", "* = klasik soru (optik okumaya dahil değil); dizideki sıra kitapçıktaki soru numarasıyla birebir aynıdır."],
   ]);
   sheet["!cols"] = [{ wch: 18 }, { wch: 16 }, { wch: 16 }, { wch: 16 }];
   XLSX.utils.book_append_sheet(wb, sheet, "Optik Anahtar");
@@ -278,9 +279,9 @@ export function exportOpticKeyXlsx(course: Course, exam: Exam) {
 
 export function exportOpticKeyTxt(course: Course, exam: Exam) {
   const keys = opticKeys(exam);
-  const line = (k: typeof keys.A) => k.filter((x) => x.answer).map((x) => x.answer).join("");
+  const line = (k: typeof keys.A) => k.map((x) => x.answer ?? "*").join("");
   const content = [
-    `# ${course.code} ${exam.title} — optik cevap anahtarı (yalnız nesnel sorular)`,
+    `# ${course.code} ${exam.title} — optik cevap anahtarı. Sıra = kitapçıktaki soru numarası; * = klasik soru (optik dışı)`,
     `A,${line(keys.A)}`,
     `B,${line(keys.B)}`,
     "",

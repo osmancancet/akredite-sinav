@@ -37,15 +37,21 @@ export function TextImportDialog({
   const [fillTo100, setFillTo100] = React.useState(true);
   const [outcomeId, setOutcomeId] = React.useState(course.outcomes[0]?.id ?? "");
   const parsed = React.useMemo(() => parseQuestionsText(text), [text]);
+  const remaining = 100 - existingPoints;
+  const canFill = remaining > parsed.reduce((s, p) => s + (p.points ?? 0), 0);
   const points = React.useMemo(
-    () => (fillTo100 ? distributePoints(parsed, Math.max(0, 100 - existingPoints)) : parsed.map((p) => p.points ?? 10)),
-    [parsed, fillTo100, existingPoints],
+    () => (fillTo100 && canFill ? distributePoints(parsed, remaining) : parsed.map((p) => p.points ?? 10)),
+    [parsed, fillTo100, canFill, remaining],
   );
   const [wasOpen, setWasOpen] = React.useState(open);
   if (open !== wasOpen) {
     setWasOpen(open);
-    if (open) setText("");
+    if (open) {
+      setText("");
+      setOutcomeId(course.outcomes[0]?.id ?? "");
+    }
   }
+  const validOutcome = course.outcomes.some((o) => o.id === outcomeId) ? outcomeId : "";
 
   const apply = () => {
     const qs: Question[] = parsed.map((p, i) => {
@@ -56,7 +62,7 @@ export function TextImportDialog({
         type: p.type,
         text: p.text,
         points: pts,
-        outcomeIds: outcomeId ? [outcomeId] : [],
+        outcomeIds: validOutcome ? [validOutcome] : [],
         bloom: p.bloom,
         options,
         correctOptionId: p.correctIndex !== undefined ? options[p.correctIndex]?.id : undefined,
@@ -92,7 +98,15 @@ export function TextImportDialog({
         <div className="space-y-3">
           <Textarea rows={18} className="font-mono text-[11.5px]" value={text} onChange={(e) => setText(e.target.value)} placeholder={EXAMPLE} />
           <div className="flex flex-wrap items-center gap-4">
-            <Checkbox checked={fillTo100} onChange={setFillTo100} label={<span className="text-xs">Puanı yazılmamış sorulara kalan puanı dağıt (toplam 100)</span>} />
+            <Checkbox
+              checked={fillTo100 && canFill}
+              onChange={setFillTo100}
+              label={
+                <span className="text-xs">
+                  {canFill ? `Puanı yazılmamış sorulara kalan ${remaining} puanı dağıt (toplam 100)` : `Sınavda dağıtılacak puan kalmadı (mevcut ${existingPoints}); belirtilmeyenlere 10 puan verilir`}
+                </span>
+              }
+            />
           </div>
           <Field label="Eklenen sorulara varsayılan ÖÇ">
             <div className="flex flex-wrap gap-1.5">
@@ -101,7 +115,7 @@ export function TextImportDialog({
                   key={o.id}
                   title={o.text}
                   onClick={() => setOutcomeId(o.id === outcomeId ? "" : o.id)}
-                  className={cn("cursor-pointer rounded-md px-2 py-0.5 text-[11px] font-medium ring-1", outcomeId === o.id ? "bg-brand-700 text-white ring-brand-700" : "text-zinc-600 ring-zinc-200")}
+                  className={cn("cursor-pointer rounded-md px-2 py-0.5 text-[11px] font-medium ring-1", validOutcome === o.id ? "bg-brand-700 text-white ring-brand-700" : "text-zinc-600 ring-zinc-200")}
                 >
                   {o.code}
                 </button>

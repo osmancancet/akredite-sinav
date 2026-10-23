@@ -4,7 +4,7 @@ import * as React from "react";
 import { AlertTriangle, FileDown, Info } from "lucide-react";
 import { useData } from "@/lib/store";
 import { computeProgramPanel } from "@/lib/programPanel";
-import { cn, round } from "@/lib/utils";
+import { cn, num } from "@/lib/utils";
 import { Card, CardBody, CardHeader, StatTile } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs } from "@/components/ui/tabs";
@@ -38,7 +38,7 @@ export function ProgramPanelView() {
         <StatTile label="Ölçülen PÇ" value={`${measured.length} / ${pos.length}`} tone={measured.length === pos.length ? "emerald" : "amber"} hint={`${gradedCourses} dersin not verisi var`} />
         <StatTile
           label="Program ortalaması"
-          value={measured.length ? `%${round(measured.reduce((s, x) => s + (x.pct ?? 0), 0) / measured.length, 1)}` : "—"}
+          value={measured.length ? `%${num(measured.reduce((s, x) => s + (x.pct ?? 0), 0) / measured.length, 1)}` : "—"}
           tone="brand"
           hint="ölçülen PÇ'lerin ortalaması"
         />
@@ -114,7 +114,7 @@ export function ProgramPanelView() {
                     }
                     const below = val !== null && val < threshold;
                     return (
-                      <td key={p.id} className="p-0.5" title={val === null ? (planned ? "Katkı planlı, ölçülmedi" : "Katkı yok") : `%${round(val, 1)} · ağırlık ${planned}`}>
+                      <td key={p.id} className="p-0.5" title={val === null ? (planned ? "Katkı planlı, ölçülmedi" : "Katkı yok") : `%${num(val, 1)} · ağırlık ${planned}`}>
                         <div
                           className={cn("flex h-9 items-center justify-center gap-0.5 rounded font-mono tabular-nums", below && "ring-1 ring-inset ring-red-300")}
                           style={{ background: val === null && planned ? "repeating-linear-gradient(135deg,#fafafa,#fafafa 4px,#f4f4f5 4px,#f4f4f5 8px)" : "transparent" }}
@@ -154,7 +154,7 @@ export function ProgramPanelView() {
               reference={threshold}
               referenceLabel={`Hedef eşik %${threshold}`}
               flagBelow={threshold}
-              format={(v) => `%${round(v, 1)}`}
+              format={(v) => `%${num(v, 1)}`}
               labelWidth={52}
             />
           </CardBody>
@@ -174,7 +174,7 @@ export function ProgramPanelView() {
               <div key={s.po.id} className="flex gap-2 rounded-lg bg-amber-50 px-3 py-2 text-[12.5px] text-amber-900">
                 <AlertTriangle className="mt-0.5 h-3.5 w-3.5 shrink-0" />
                 <span>
-                  <strong>{s.po.code}</strong> %{round(s.pct ?? 0, 1)} ile eşik altında ({s.measuredCourses} derste ölçüldü): {s.po.text}
+                  <strong>{s.po.code}</strong> %{num(s.pct ?? 0, 1)} ile eşik altında ({s.measuredCourses} derste ölçüldü): {s.po.text}
                 </span>
               </div>
             ))}

@@ -33,7 +33,7 @@ import { KDF_ITERATIONS, listEncryptedRecords } from "@/lib/cryptoVault";
 import { CryptoLattice } from "@/components/three/CryptoLattice";
 import { useShellUi } from "@/components/shell/shellStore";
 import { useStoragePersist } from "@/hooks/useStoragePersist";
-import { uid } from "@/lib/utils";
+import { uid, fixed } from "@/lib/utils";
 import { UniversityPicker } from "./UniversityPicker";
 import { exportCatalogXlsx } from "@/lib/courseImport";
 
@@ -103,7 +103,7 @@ function VaultHero() {
           <dl className="mt-6 grid max-w-lg grid-cols-3 gap-px overflow-hidden rounded-xl border border-zinc-200/80 bg-zinc-200/80">
             {[
               ["Şifreli kayıt", stats ? String(stats.records) : "—"],
-              ["Disk", stats ? `${(stats.bytes / 1024).toFixed(1)} KB` : "—"],
+              ["Disk", stats ? `${fixed((stats.bytes / 1024), 1)} KB` : "—"],
               ["Son yazım", lastSavedAt ? new Date(lastSavedAt).toLocaleTimeString("tr-TR", { hour: "2-digit", minute: "2-digit", second: "2-digit" }) : "—"],
             ].map(([k, v]) => (
               <div key={k} className="bg-white px-3.5 py-3">
@@ -306,7 +306,7 @@ function SecurityCard() {
             : storage.persisted
               ? "Kalıcı depolama izni verildi: tarayıcı kasayı kendiliğinden silmez."
               : "Tarayıcı kalıcı depolama iznini vermedi: düzenli .akredite yedeği alın."}
-          {storage.usage !== null && <span className="ml-auto font-mono text-[11px] text-zinc-400">{(storage.usage / 1024 / 1024).toFixed(1)} MB kullanılıyor</span>}
+          {storage.usage !== null && <span className="ml-auto font-mono text-[11px] text-zinc-400">{fixed((storage.usage / 1024 / 1024), 1)} MB kullanılıyor</span>}
         </div>
         <div className="flex flex-wrap gap-2">
           <Button size="sm" onClick={() => setOpen(true)}>

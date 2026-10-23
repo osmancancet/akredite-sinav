@@ -21,7 +21,7 @@ import { workflowProgress, workflowSteps, type WorkflowStep } from "@/lib/workfl
 import { computeAnalysis } from "@/lib/medekMath";
 import { scheduleDates } from "@/lib/scheduler";
 import { downloadIcs, scheduleIcs } from "@/lib/ics";
-import { cn, formatTrDate, round, todayIso, trDayName } from "@/lib/utils";
+import { cn, formatTrDate, todayIso, trDayName, num } from "@/lib/utils";
 import { Card, CardBody, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -294,11 +294,11 @@ function QualitySnapshot() {
                     </div>
                   </td>
                   <td className="px-3 py-2.5 font-mono tabular-nums">{a.stats.n}</td>
-                  <td className="px-3 py-2.5 font-mono tabular-nums">{round(a.stats.mean, 1)}</td>
+                  <td className="px-3 py-2.5 font-mono tabular-nums">{num(a.stats.mean, 1)}</td>
                   <td className="px-3 py-2.5">
                     <div className="flex items-end gap-[3px]">
                       {a.outcomeStats.map((o) => (
-                        <div key={o.outcomeId} title={`${o.code}: ${o.pct === null ? "ölçülmedi" : `%${round(o.pct, 1)}`}`} className="flex flex-col items-center gap-0.5">
+                        <div key={o.outcomeId} title={`${o.code}: ${o.pct === null ? "ölçülmedi" : `%${num(o.pct, 1)}`}`} className="flex flex-col items-center gap-0.5">
                           <div className="flex h-7 w-4 items-end rounded-sm bg-zinc-100">
                             <div className={cn("w-4 rounded-sm", o.flagged ? "bg-red-500" : "bg-[#2a78d6]")} style={{ height: `${Math.max(6, o.pct ?? 0)}%` }} />
                           </div>

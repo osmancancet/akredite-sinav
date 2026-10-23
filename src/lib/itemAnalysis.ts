@@ -104,10 +104,12 @@ export function analyzeItems(exam: Exam, sheet: GradeSheet | undefined): { items
     const rest = matrix.map((row, i) => totals[i] - row[j]);
     const r = n >= 3 ? pearson(col, rest) : null;
     const alphaIfDeleted = k > 2 ? cronbachAlpha(matrix.map((row) => row.filter((_, jj) => jj !== j))) : null;
+    // Uç güçlükte (çok kolay/çok zor) D matematiksel olarak düşük çıkar; bu maddeler önce
+    // "güçlüğü ayarla" olarak işaretlenir, aksi hâlde ayırt ediciliğe göre karar verilir.
     let decision: ItemDecision = "koru";
-    if (D < 0.2 || (r !== null && r < 0.1)) decision = "yeniden-yaz";
+    if (p >= 0.9 || p <= 0.15) decision = "guclugu-ayarla";
+    else if (D < 0.2 || (r !== null && r < 0.1)) decision = "yeniden-yaz";
     else if (D < 0.3) decision = "gozden-gecir";
-    else if (p > 0.9 || p < 0.2) decision = "guclugu-ayarla";
     return {
       questionId: q.id,
       label: `S${j + 1}`,

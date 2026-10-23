@@ -21,7 +21,7 @@ import {
 } from "lucide-react";
 import { useData, useVault } from "@/lib/store";
 import { assignInvigilators, detectConflicts, fairnessScore, invigilatorLoads, solveSchedule } from "@/lib/scheduler";
-import { mean, round, stdDev } from "@/lib/utils";
+import { mean, stdDev, num, fixed } from "@/lib/utils";
 import type { Schedule } from "@/lib/types";
 import { Card, CardBody, CardHeader, StatTile } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -62,7 +62,7 @@ export function SchedulerModule() {
     const c = detectConflicts(result, courses, rooms, invigilators, data.students).filter((x) => x.severity === "hard").length;
     toast[c ? "warning" : "success"](
       `${result.entries.length} sınav yerleştirildi`,
-      `${result.unplaced.length} yerleştirilemedi · ${c} kesin çakışma · Adalet %${fairnessScore(invigilatorLoads(result, invigilators).map((l) => l.count)).toFixed(1)}`,
+      `${result.unplaced.length} yerleştirilemedi · ${c} kesin çakışma · Adalet %${fixed(fairnessScore(invigilatorLoads(result, invigilators).map((l) => l.count)), 1)}`,
     );
   };
 
@@ -96,7 +96,7 @@ export function SchedulerModule() {
         <StatTile label="Programlanan Sınav" value={`${schedule.entries.length} / ${schedule.settings.courseIds.length}`} icon={<CalendarRange className="h-4 w-4 text-brand-500" />} />
         <StatTile label="Kesin Çakışma" value={hard.length} tone={hard.length ? "red" : "emerald"} hint={hard.length ? "Takvimde kırmızı" : "Sınıf, derslik, gözetmen çakışması yok"} icon={hard.length ? <XCircle className="h-4 w-4 text-red-500" /> : <CheckCircle2 className="h-4 w-4 text-emerald-500" />} />
         <StatTile label="Yumuşak Uyarı" value={soft.length} tone={soft.length ? "amber" : "emerald"} hint={`Günde ≤ ${schedule.settings.maxExamsPerClassPerDay} sınav kuralı`} icon={<AlertTriangle className="h-4 w-4 text-amber-500" />} />
-        <StatTile label="Adalet Skoru" value={`%${fair.toFixed(1)}`} tone={fair >= 80 ? "emerald" : fair >= 60 ? "amber" : "red"} hint={`σ = ${round(stdDev(loads.map((l) => l.count)), 2)} görev`} icon={<Scale className="h-4 w-4 text-brand-500" />} />
+        <StatTile label="Adalet Skoru" value={`%${fixed(fair, 1)}`} tone={fair >= 80 ? "emerald" : fair >= 60 ? "amber" : "red"} hint={`σ = ${num(stdDev(loads.map((l) => l.count)), 2)} görev`} icon={<Scale className="h-4 w-4 text-brand-500" />} />
         <StatTile label="Yerleştirilemeyen" value={unplaced.length} tone={unplaced.length ? "amber" : "slate"} icon={<DoorOpen className="h-4 w-4 text-zinc-400" />} />
       </div>
 
@@ -168,13 +168,13 @@ export function SchedulerModule() {
               </CardBody>
             </Card>
             <Card>
-              <CardHeader title="Gözetmen Yük Dağılımı" description={`Adalet Skoru = 100 × (1 − σ/μ) = %${fair.toFixed(1)}`} />
+              <CardHeader title="Gözetmen Yük Dağılımı" description={`Adalet Skoru = 100 × (1 − σ/μ) = %${fixed(fair, 1)}`} />
               <CardBody>
                 <HBarChart
                   data={loads.map((l) => ({ key: l.inv.id, label: l.inv.name, value: l.count, hint: `${l.inv.title} ${l.inv.name}: ${l.count} görev` }))}
                   max={Math.max(1, ...loads.map((l) => l.count)) + 1}
                   reference={mean(loads.map((l) => l.count))}
-                  referenceLabel={`Ortalama: ${round(mean(loads.map((l) => l.count)), 2)} görev`}
+                  referenceLabel={`Ortalama: ${num(mean(loads.map((l) => l.count)), 2)} görev`}
                   format={(v) => `${v} görev`}
                   labelWidth={110}
                 />

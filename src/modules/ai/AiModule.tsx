@@ -20,7 +20,7 @@ import {
 import { useData, useVault } from "@/lib/store";
 import type { AiProvider, AiSettings } from "@/lib/types";
 import { AI_PROVIDERS } from "@/lib/aiDefaults";
-import { cn } from "@/lib/utils";
+import { cn, fixed } from "@/lib/utils";
 import { Card, CardBody, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Field, Input, Select, Textarea, Checkbox } from "@/components/ui/form";
@@ -156,7 +156,7 @@ function ProviderSettings() {
               <Input value={ai.models[ai.provider]} onChange={(e) => set({ models: { ...ai.models, [ai.provider]: e.target.value } })} className="font-mono" />
             </Field>
           ) : (
-            <Field label={`Yaratıcılık (temperature): ${ai.temperature.toFixed(1)}`} hint={ai.provider === "anthropic" ? "Claude modellerinde kullanılmaz; düzey 'effort: medium' ile ayarlıdır." : undefined}>
+            <Field label={`Yaratıcılık (temperature): ${fixed(ai.temperature, 1)}`} hint={ai.provider === "anthropic" ? "Claude modellerinde kullanılmaz; düzey 'effort: medium' ile ayarlıdır." : undefined}>
               <input type="range" min={0} max={1} step={0.1} value={ai.temperature} onChange={(e) => set({ temperature: Number(e.target.value) })} className="mt-2 w-full accent-brand-600" disabled={ai.provider === "anthropic"} />
             </Field>
           )}

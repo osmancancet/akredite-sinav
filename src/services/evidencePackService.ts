@@ -35,7 +35,9 @@ export async function exportEvidencePack(data: VaultData, examId: string, onProg
     onProgress?.(label);
     const files = await collectOutputs(fn);
     files.forEach((f) => {
-      const path = `${dir}/${f.fileName}`;
+      let path = `${dir}/${f.fileName}`;
+      // Aynı adlı dosyalar (ör. aynı başlıklı iki rubrik) birbirinin üzerine yazılmasın
+      for (let n = 2; manifest.some((m) => m.path === path); n++) path = `${dir}/${f.fileName.replace(/(\.[a-z0-9]+)$/i, `_${n}$1`)}`;
       folder.file(path, f.blob);
       manifest.push({ path, blob: f.blob });
     });

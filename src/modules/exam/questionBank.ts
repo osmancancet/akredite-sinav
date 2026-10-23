@@ -5,7 +5,10 @@ import { foldTr, uid } from "@/lib/utils";
 
 type Update = <K extends keyof VaultData>(k: K, updater: VaultData[K] | ((p: VaultData[K]) => VaultData[K])) => void;
 
-const signature = (courseId: string, q: Question) => `${courseId}::${q.type}::${foldTr(q.text).replace(/[^a-z0-9çğöşü]+/g, " ").trim()}`;
+const norm = (t: string) => foldTr(t).replace(/[^a-z0-9çğöşü]+/g, " ").trim();
+/** Aynı soru = aynı ders, tip, metin, şıklar, kod ve formül (yalnız metin aynı ama kodu farklı sorular ayrı tutulur) */
+const signature = (courseId: string, q: Question) =>
+  [courseId, q.type, norm(q.text), q.options.map((o) => norm(o.text)).join("|"), norm(q.code ?? ""), norm(q.latex ?? "")].join("::");
 
 /** Soruyu bankaya kaydeder; aynı ders + aynı metin varsa kaydı günceller (kopya oluşturmaz). */
 export function saveQuestionsToBank(update: Update, courseId: string, questions: Question[], sourceExamTitle?: string): { added: number; updated: number } {
