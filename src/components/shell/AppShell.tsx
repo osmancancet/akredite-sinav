@@ -13,6 +13,9 @@ import {
   Download,
   Lock,
   Menu,
+  Monitor,
+  Moon,
+  Sun,
   RefreshCw,
   Search,
   ShieldCheck,
@@ -37,6 +40,8 @@ import { BackupModal } from "./BackupModal";
 import { CommandPalette, type CommandItem } from "./CommandPalette";
 import { BrandMark } from "./BrandMark";
 import { useShellUi } from "./shellStore";
+import { ThemeToggle } from "./ThemeToggle";
+import { useTheme } from "@/hooks/useTheme";
 import { VaultModule } from "@/modules/vault/VaultModule";
 import { OverviewModule } from "@/modules/overview/OverviewModule";
 import { CourseImportDialog } from "@/modules/vault/CourseImportDialog";
@@ -74,6 +79,7 @@ export function AppShell() {
   const mode = useVault((s) => s.mode);
   const lock = useVault((s) => s.lock);
   const loadDemo = useVault((s) => s.loadDemo);
+  const { setPref: setTheme } = useTheme();
   const View = VIEWS[route];
   const current = MODULES.find((m) => m.id === route)!;
   const data = useData();
@@ -168,6 +174,9 @@ export function AppShell() {
         return { id: `nav-${m.id}`, label: m.label, hint: m.group, group: "Modüller", icon: <Icon />, keywords: m.description, run: () => navigate(m.id) };
       }),
       { id: "audit", label: "Güvenliği kanıtla", hint: "Zero-Knowledge denetçisi", group: "Eylemler", icon: <ShieldCheck />, keywords: "şifre aes ağ çevrimdışı", run: () => setAuditOpen(true) },
+      { id: "theme-light", label: "Açık tema", group: "Görünüm", icon: <Sun />, keywords: "tema light aydınlık", run: () => setTheme("light") },
+      { id: "theme-dark", label: "Koyu tema", group: "Görünüm", icon: <Moon />, keywords: "tema dark gece karanlık", run: () => setTheme("dark") },
+      { id: "theme-system", label: "Sistem teması", group: "Görünüm", icon: <Monitor />, keywords: "tema otomatik", run: () => setTheme("system") },
       { id: "import-courses", label: "Dersleri içe aktar", hint: "Bologna / Excel", group: "Eylemler", icon: <Upload />, keywords: "ders katalog bologna excel csv", run: () => setCourseImport(true) },
       { id: "backup", label: ".akredite yedeği indir", group: "Eylemler", icon: <Download />, keywords: "yedek export", run: () => setBackupOpen("export") },
       { id: "restore", label: ".akredite yedeğini yükle", group: "Eylemler", icon: <ArchiveRestore />, keywords: "geri yükle import", run: () => setBackupOpen("import") },
@@ -186,14 +195,14 @@ export function AppShell() {
       },
       ...(mode === "password" ? [{ id: "lock", label: "Kasayı kilitle", group: "Eylemler", icon: <Lock />, run: () => lock() }] : []),
     ],
-    [navigate, loadDemo, lock, mode, setAuditOpen, setBackupOpen, setCourseImport],
+    [navigate, loadDemo, lock, mode, setAuditOpen, setBackupOpen, setCourseImport, setTheme],
   );
 
   return (
     <div className="flex min-h-screen">
       <aside
         className={cn(
-          "no-print fixed inset-y-0 left-0 z-40 flex w-64 flex-col border-r border-zinc-200/80 bg-[oklch(0.975_0.003_95)] transition-transform lg:translate-x-0",
+          "no-print fixed inset-y-0 left-0 z-40 flex w-64 flex-col border-r border-zinc-200/80 bg-[var(--surface-sidebar)] transition-transform lg:translate-x-0",
           mobileNav ? "translate-x-0 shadow-[var(--shadow-pop)]" : "-translate-x-full",
         )}
       >
@@ -336,14 +345,14 @@ function TopBar({
   const inst = data.institution;
 
   return (
-    <header className="no-print sticky top-0 z-20 flex h-14 items-center gap-3 border-b border-zinc-200/70 bg-[oklch(0.984_0.002_95/0.85)] px-4 backdrop-blur-md sm:px-6 lg:px-10">
+    <header className="no-print sticky top-0 z-20 flex h-14 items-center gap-3 border-b border-zinc-200/70 bg-[var(--surface-topbar)] px-4 backdrop-blur-md sm:px-6 lg:px-10">
       <button className="text-zinc-600 lg:hidden" onClick={onMenu} aria-label="Menü">
         <Menu className="h-5 w-5" />
       </button>
       <div className="flex min-w-0 flex-1 items-center gap-2 text-[13px]">
         {inst.logoDataUrl && (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={inst.logoDataUrl} alt="" className="h-6 w-6 rounded-sm object-contain" />
+          <img src={inst.logoDataUrl} alt="" className="h-6 w-6 rounded-sm bg-[#fff] object-contain p-px" />
         )}
         <span className="hidden truncate text-zinc-500 md:inline">{inst.university || "Kurum seçilmedi"}</span>
         <span className="hidden text-zinc-300 md:inline">/</span>
@@ -368,6 +377,8 @@ function TopBar({
         <span className="hidden lg:inline">Verileriniz cihazınızdan çıkmaz</span>
         <span className="lg:hidden">Zero-Knowledge</span>
       </button>
+
+      <ThemeToggle />
 
       <Button variant="ghost" size="sm" onClick={onAi} className="hidden sm:inline-flex">
         <Sparkles className="h-3.5 w-3.5" /> AI

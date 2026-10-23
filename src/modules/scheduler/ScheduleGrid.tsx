@@ -8,7 +8,7 @@ import { cn, formatTrDate, trDayName } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "@/components/ui/toast";
 
-const CLASS_TONES = ["bg-sky-50 border-sky-200", "bg-rose-50 border-rose-200", "bg-amber-50 border-amber-200", "bg-teal-50 border-teal-200"];
+const CLASS_TONES = ["bg-sky-50 border-sky-200", "bg-rose-50 border-rose-200", "bg-amber-50 border-amber-200", "bg-emerald-50 border-emerald-200"];
 
 export function ScheduleGrid({
   schedule,

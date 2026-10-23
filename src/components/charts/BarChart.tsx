@@ -8,8 +8,8 @@ import { cn } from "@/lib/utils";
 // Tek ton (seri rengi), eşik altı değerler "kritik" durum rengi + ikon + etiketle
 // işaretlenir; metinler her zaman nötr mürekkeptedir.
 
-const SERIES = "#2a78d6";
-const CRITICAL = "#e34948";
+const SERIES = "var(--viz-series)";
+const CRITICAL = "var(--viz-critical)";
 
 export interface BarDatum {
   key: string;

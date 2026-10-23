@@ -41,7 +41,7 @@ const TYPE_ICONS: Record<RubricType, React.ReactNode> = {
   isyeri: <Building2 className="h-4 w-4" />,
 };
 
-const LEVEL_BG = ["bg-red-50", "bg-amber-50", "bg-blue-50", "bg-emerald-50"];
+const LEVEL_BG = ["bg-red-50", "bg-amber-50", "bg-sky-50", "bg-emerald-50"];
 
 export function RubricStudio() {
   const data = useData();

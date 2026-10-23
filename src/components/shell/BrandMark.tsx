@@ -2,8 +2,9 @@ import { cn } from "@/lib/utils";
 
 /** AkrediteSınav marka işareti: mühür içinde jeodezik kafes (kasa + akreditasyon). */
 export function BrandMark({ className, inverted }: { className?: string; inverted?: boolean }) {
-  const ink = inverted ? "#fafafa" : "#18181b";
-  const paper = inverted ? "#18181b" : "#fafafa";
+  // Tema değişkenleri: koyu temada işaret otomatik olarak tersine döner
+  const ink = inverted ? "var(--color-zinc-50)" : "var(--color-zinc-900)";
+  const paper = inverted ? "var(--color-zinc-900)" : "var(--color-zinc-50)";
   return (
     <svg viewBox="0 0 32 32" className={cn("shrink-0", className)} aria-hidden="true">
       <rect x="0.5" y="0.5" width="31" height="31" rx="8" fill={ink} />

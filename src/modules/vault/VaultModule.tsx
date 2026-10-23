@@ -33,6 +33,7 @@ import { KDF_ITERATIONS, listEncryptedRecords } from "@/lib/cryptoVault";
 import { CryptoLattice } from "@/components/three/CryptoLattice";
 import { useShellUi } from "@/components/shell/shellStore";
 import { useStoragePersist } from "@/hooks/useStoragePersist";
+import { useTheme } from "@/hooks/useTheme";
 import { uid, fixed } from "@/lib/utils";
 import { UniversityPicker } from "./UniversityPicker";
 import { exportCatalogXlsx } from "@/lib/courseImport";
@@ -73,6 +74,7 @@ function VaultHero() {
   const setAudit = useShellUi((s) => s.setAudit);
   const setBackup = useShellUi((s) => s.setBackup);
   const [stats, setStats] = React.useState<{ records: number; bytes: number } | null>(null);
+  const { resolved: theme } = useTheme();
 
   React.useEffect(() => {
     let alive = true;
@@ -125,7 +127,7 @@ function VaultHero() {
           </p>
         </div>
         <div className="relative h-[300px] lg:h-[420px]">
-          <CryptoLattice pulseKey={writeCount} />
+          <CryptoLattice pulseKey={writeCount} variant={theme === "dark" ? "dark" : "light"} />
         </div>
       </div>
     </section>
@@ -171,7 +173,7 @@ function InstitutionCard() {
       />
       <CardBody className="space-y-4">
         <div className="flex items-center gap-4">
-          <div className="flex h-20 w-20 items-center justify-center overflow-hidden rounded-xl border border-dashed border-zinc-300 bg-zinc-50">
+          <div className={`flex h-20 w-20 items-center justify-center overflow-hidden rounded-xl border border-dashed border-zinc-300 ${inst.logoDataUrl ? "bg-[#fff]" : "bg-zinc-50"}`}>
             {inst.logoDataUrl ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img src={inst.logoDataUrl} alt="Logo" className="h-full w-full object-contain" />

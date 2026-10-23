@@ -274,7 +274,7 @@ function GradeEntry({ exam, course, sheet, setSheet }: { exam: Exam; course: Cou
   );
 }
 
-const WEIGHT_BG = ["bg-white", "bg-blue-50", "bg-blue-100", "bg-blue-200", "bg-blue-300", "bg-blue-400 text-white"];
+const WEIGHT_BG = ["bg-white", "bg-brand-50", "bg-brand-100", "bg-brand-200", "bg-brand-300", "bg-brand-500 text-white"];
 
 function MatrixEditor({ course }: { course: Course }) {
   const data = useData();

@@ -1,9 +1,9 @@
 // AkrediteSınav çevrimdışı önbellek servisi (yalnızca aynı köken GET istekleri).
 // Hiçbir kullanıcı verisi önbelleğe alınmaz; yalnızca uygulamanın statik dosyaları.
-const CACHE = "akredite-sinav-v1";
+const CACHE = "akredite-sinav-v2";
 
 self.addEventListener("install", (event) => {
-  event.waitUntil(caches.open(CACHE).then((c) => c.addAll(["/", "/manifest.webmanifest", "/icon.svg"])).then(() => self.skipWaiting()));
+  event.waitUntil(caches.open(CACHE).then((c) => c.addAll(["/", "/app", "/manifest.webmanifest", "/icon.svg"])).then(() => self.skipWaiting()));
 });
 
 self.addEventListener("activate", (event) => {
@@ -37,6 +37,6 @@ self.addEventListener("fetch", (event) => {
         caches.open(CACHE).then((c) => c.put(req, copy));
         return res;
       })
-      .catch(() => caches.match(req).then((hit) => hit || caches.match("/"))),
+      .catch(() => caches.match(req).then((hit) => hit || caches.match(url.pathname.startsWith("/app") ? "/app" : "/"))),
   );
 });

@@ -101,7 +101,7 @@ export function UniversityPicker() {
                   active ? "bg-brand-50 ring-brand-400" : "bg-white ring-zinc-200 hover:bg-zinc-50",
                 )}
               >
-                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-white ring-1 ring-zinc-100">
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-[#fff] ring-1 ring-zinc-100">
                   {u.logo ? (
                     // eslint-disable-next-line @next/next/no-img-element
                     <img src={`/logos/${u.logo}`} alt="" loading="lazy" className="max-h-11 max-w-11 object-contain" />

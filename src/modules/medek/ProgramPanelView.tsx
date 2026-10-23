@@ -13,7 +13,7 @@ import { HBarChart } from "@/components/charts/BarChart";
 import { exportProgramPanelDocx } from "@/services/medekExportService";
 
 // Tek tonlu sıralı ölçek (brand): açık → koyu. Eşik altı değerler ayrıca ikon + kırmızı metinle işaretlenir.
-const SEQ = ["oklch(0.977 0.014 178)", "oklch(0.948 0.032 178)", "oklch(0.895 0.06 178)", "oklch(0.82 0.088 178)", "oklch(0.72 0.11 178)", "oklch(0.62 0.115 178)", "oklch(0.53 0.1 178)"];
+const SEQ = ["var(--color-brand-50)", "var(--color-brand-100)", "var(--color-brand-200)", "var(--color-brand-300)", "var(--color-brand-400)", "var(--color-brand-500)", "var(--color-brand-600)"];
 
 function seqColor(v: number, max: number) {
   if (max <= 0) return SEQ[0];
@@ -106,7 +106,7 @@ export function ProgramPanelView() {
                     if (mode === "planned") {
                       return (
                         <td key={p.id} className="p-0.5">
-                          <div className="flex h-9 items-center justify-center rounded font-mono tabular-nums" style={{ background: planned ? seqColor(planned, maxPlanned) : "transparent", color: planned / maxPlanned > 0.6 ? "white" : "#27272a" }}>
+                          <div className="flex h-9 items-center justify-center rounded font-mono tabular-nums" style={{ background: planned ? seqColor(planned, maxPlanned) : "transparent", color: planned / maxPlanned > 0.6 ? "var(--color-white)" : "var(--color-zinc-800)" }}>
                             {planned || <span className="text-zinc-200">·</span>}
                           </div>
                         </td>
@@ -117,12 +117,12 @@ export function ProgramPanelView() {
                       <td key={p.id} className="p-0.5" title={val === null ? (planned ? "Katkı planlı, ölçülmedi" : "Katkı yok") : `%${num(val, 1)} · ağırlık ${planned}`}>
                         <div
                           className={cn("flex h-9 items-center justify-center gap-0.5 rounded font-mono tabular-nums", below && "ring-1 ring-inset ring-red-300")}
-                          style={{ background: val === null && planned ? "repeating-linear-gradient(135deg,#fafafa,#fafafa 4px,#f4f4f5 4px,#f4f4f5 8px)" : "transparent" }}
+                          style={{ background: val === null && planned ? "repeating-linear-gradient(135deg,var(--color-zinc-50),var(--color-zinc-50) 4px,var(--color-zinc-100) 4px,var(--color-zinc-100) 8px)" : "transparent" }}
                         >
                           {val === null ? (
                             <span className="text-zinc-300">{planned ? "?" : "·"}</span>
                           ) : (
-                            <span className={cn("rounded px-1", below ? "font-semibold text-red-700" : "text-zinc-800")} style={{ background: below ? "transparent" : seqColor(val, 100) }}>
+                            <span className={cn("rounded px-1", below ? "font-semibold text-red-700" : val >= 72 ? "text-[var(--color-white)]" : "text-zinc-800")} style={{ background: below ? "transparent" : seqColor(val, 100) }}>
                               {below && "▼"}
                               {Math.round(val)}
                             </span>

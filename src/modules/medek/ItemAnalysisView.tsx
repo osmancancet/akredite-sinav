@@ -9,10 +9,10 @@ import { Card, CardBody, CardHeader, StatTile } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 
 const DECISION_STYLE: Record<ItemDecision, { tone: "emerald" | "amber" | "red" | "sky"; icon: React.ReactNode; dot: string }> = {
-  koru: { tone: "emerald", icon: <CheckCircle2 className="h-3 w-3" />, dot: "#2a78d6" },
-  "gozden-gecir": { tone: "amber", icon: <AlertTriangle className="h-3 w-3" />, dot: "#c98500" },
-  "yeniden-yaz": { tone: "red", icon: <PenLine className="h-3 w-3" />, dot: "#e34948" },
-  "guclugu-ayarla": { tone: "sky", icon: <SlidersHorizontal className="h-3 w-3" />, dot: "#0b7285" },
+  koru: { tone: "emerald", icon: <CheckCircle2 className="h-3 w-3" />, dot: "var(--viz-series)" },
+  "gozden-gecir": { tone: "amber", icon: <AlertTriangle className="h-3 w-3" />, dot: "var(--viz-warning)" },
+  "yeniden-yaz": { tone: "red", icon: <PenLine className="h-3 w-3" />, dot: "var(--viz-critical)" },
+  "guclugu-ayarla": { tone: "sky", icon: <SlidersHorizontal className="h-3 w-3" />, dot: "var(--viz-info)" },
 };
 
 export function ItemAnalysisView({ exam, sheet }: { exam: Exam; sheet: GradeSheet }) {
@@ -142,31 +142,31 @@ function ItemScatter({ items }: { items: ItemStat[] }) {
   });
   return (
     <svg viewBox={`0 0 ${W} ${H}`} className="w-full" role="img" aria-label="Güçlük ve ayırt edicilik saçılım grafiği">
-      <rect x={x(0.3)} y={pad.t} width={x(0.7) - x(0.3)} height={H - pad.t - pad.b} fill="oklch(0.948 0.032 178)" opacity="0.7" />
+      <rect x={x(0.3)} y={pad.t} width={x(0.7) - x(0.3)} height={H - pad.t - pad.b} fill="var(--color-brand-100)" opacity="0.7" />
       {[0, 0.2, 0.4, 0.6, 0.8, 1].map((t) => (
         <g key={`x${t}`}>
-          <line x1={x(t)} x2={x(t)} y1={H - pad.b} y2={H - pad.b + 4} stroke="#a1a1aa" />
-          <text x={x(t)} y={H - pad.b + 15} textAnchor="middle" fontSize="10" fill="#71717a" fontFamily="var(--font-mono)">
+          <line x1={x(t)} x2={x(t)} y1={H - pad.b} y2={H - pad.b + 4} stroke="var(--color-zinc-400)" />
+          <text x={x(t)} y={H - pad.b + 15} textAnchor="middle" fontSize="10" fill="var(--color-zinc-500)" fontFamily="var(--font-mono)">
             {fixed(t, 1)}
           </text>
         </g>
       ))}
       {[-0.2, 0, 0.2, 0.4, 0.6, 0.8, 1].map((t) => (
         <g key={`y${t}`}>
-          <line x1={pad.l} x2={W - pad.r} y1={y(t)} y2={y(t)} stroke="#f4f4f5" />
-          <text x={pad.l - 6} y={y(t) + 3} textAnchor="end" fontSize="10" fill="#71717a" fontFamily="var(--font-mono)">
+          <line x1={pad.l} x2={W - pad.r} y1={y(t)} y2={y(t)} stroke="var(--color-zinc-100)" />
+          <text x={pad.l - 6} y={y(t) + 3} textAnchor="end" fontSize="10" fill="var(--color-zinc-500)" fontFamily="var(--font-mono)">
             {fixed(t, 1)}
           </text>
         </g>
       ))}
       {[0.2, 0.3].map((t) => (
-        <line key={t} x1={pad.l} x2={W - pad.r} y1={y(t)} y2={y(t)} stroke="#71717a" strokeDasharray="4 3" strokeWidth="1" />
+        <line key={t} x1={pad.l} x2={W - pad.r} y1={y(t)} y2={y(t)} stroke="var(--color-zinc-500)" strokeDasharray="4 3" strokeWidth="1" />
       ))}
-      <line x1={pad.l} x2={W - pad.r} y1={H - pad.b} y2={H - pad.b} stroke="#a1a1aa" />
-      <text x={(W + pad.l) / 2} y={H - 4} textAnchor="middle" fontSize="10.5" fill="#52525b">
+      <line x1={pad.l} x2={W - pad.r} y1={H - pad.b} y2={H - pad.b} stroke="var(--color-zinc-400)" />
+      <text x={(W + pad.l) / 2} y={H - 4} textAnchor="middle" fontSize="10.5" fill="var(--color-zinc-600)">
         Güçlük indeksi p (kolaylık →)
       </text>
-      <text x={12} y={(H - pad.b) / 2} textAnchor="middle" fontSize="10.5" fill="#52525b" transform={`rotate(-90 12 ${(H - pad.b) / 2})`}>
+      <text x={12} y={(H - pad.b) / 2} textAnchor="middle" fontSize="10.5" fill="var(--color-zinc-600)" transform={`rotate(-90 12 ${(H - pad.b) / 2})`}>
         Ayırt edicilik D
       </text>
       {items.map((i) => {
@@ -176,17 +176,17 @@ function ItemScatter({ items }: { items: ItemStat[] }) {
         return (
           <g key={i.questionId} onMouseEnter={() => setHover(i.questionId)} onMouseLeave={() => setHover(null)} style={{ cursor: "default" }}>
             <circle cx={cx} cy={cy} r={14} fill="transparent" />
-            <circle cx={cx} cy={cy} r={active ? 7 : 5.5} fill={DECISION_STYLE[i.decision].dot} stroke="white" strokeWidth="2" />
-            <text x={labelPos.get(i.questionId)!.x} y={labelPos.get(i.questionId)!.y} textAnchor={labelPos.get(i.questionId)!.anchor} fontSize="10.5" fontWeight="600" fill="#27272a" fontFamily="var(--font-mono)">
+            <circle cx={cx} cy={cy} r={active ? 7 : 5.5} fill={DECISION_STYLE[i.decision].dot} stroke="var(--color-white)" strokeWidth="2" />
+            <text x={labelPos.get(i.questionId)!.x} y={labelPos.get(i.questionId)!.y} textAnchor={labelPos.get(i.questionId)!.anchor} fontSize="10.5" fontWeight="600" fill="var(--color-zinc-800)" fontFamily="var(--font-mono)">
               {i.label}
             </text>
             {active && (
               <g>
-                <rect x={Math.min(cx + 10, W - 150)} y={Math.max(4, cy + 8)} width="140" height="34" rx="6" fill="#18181b" />
-                <text x={Math.min(cx + 18, W - 142)} y={Math.max(4, cy + 8) + 14} fontSize="10.5" fill="white">
+                <rect x={Math.min(cx + 10, W - 150)} y={Math.max(4, cy + 8)} width="140" height="34" rx="6" fill="var(--color-zinc-900)" />
+                <text x={Math.min(cx + 18, W - 142)} y={Math.max(4, cy + 8) + 14} fontSize="10.5" fill="var(--color-white)">
                   {i.label} · p {fixed(i.p, 2)} · D {fixed(i.D, 2)}
                 </text>
-                <text x={Math.min(cx + 18, W - 142)} y={Math.max(4, cy + 8) + 27} fontSize="10" fill="#d4d4d8">
+                <text x={Math.min(cx + 18, W - 142)} y={Math.max(4, cy + 8) + 27} fontSize="10" fill="var(--color-zinc-300)">
                   {decisionLabel(i.decision)}
                 </text>
               </g>

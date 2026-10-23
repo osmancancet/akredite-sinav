@@ -41,7 +41,7 @@ export function AppRoot() {
 
 function Frame({ children }: { children: React.ReactNode }) {
   return (
-    <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-zinc-950 p-6">
+    <div className="theme-invariant relative flex min-h-screen items-center justify-center overflow-hidden bg-zinc-950 p-6">
       <div className="pointer-events-none absolute inset-0 opacity-90">
         <CryptoLattice variant="dark" />
       </div>

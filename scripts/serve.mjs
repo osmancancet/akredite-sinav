@@ -34,8 +34,9 @@ http
       res.writeHead(403).end();
       return;
     }
-    if (fs.existsSync(file) && fs.statSync(file).isDirectory()) file = path.join(file, "index.html");
-    if (!fs.existsSync(file) && fs.existsSync(`${file}.html`)) file = `${file}.html`;
+    // Önce "/app" → app.html (Next statik çıktısında aynı adlı RSC klasörü de bulunur), sonra klasör index.html
+    if (fs.existsSync(`${file}.html`)) file = `${file}.html`;
+    else if (fs.existsSync(file) && fs.statSync(file).isDirectory()) file = path.join(file, "index.html");
     let status = 200;
     if (!fs.existsSync(file)) {
       file = path.join(root, "404.html");

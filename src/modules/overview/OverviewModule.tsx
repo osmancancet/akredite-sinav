@@ -300,7 +300,7 @@ function QualitySnapshot() {
                       {a.outcomeStats.map((o) => (
                         <div key={o.outcomeId} title={`${o.code}: ${o.pct === null ? "ölçülmedi" : `%${num(o.pct, 1)}`}`} className="flex flex-col items-center gap-0.5">
                           <div className="flex h-7 w-4 items-end rounded-sm bg-zinc-100">
-                            <div className={cn("w-4 rounded-sm", o.flagged ? "bg-red-500" : "bg-[#2a78d6]")} style={{ height: `${Math.max(6, o.pct ?? 0)}%` }} />
+                            <div className={cn("w-4 rounded-sm", o.flagged ? "bg-[var(--viz-critical)]" : "bg-[var(--viz-series)]")} style={{ height: `${Math.max(6, o.pct ?? 0)}%` }} />
                           </div>
                           <span className="font-mono text-[9px] text-zinc-400">{o.code.replace("ÖÇ-", "")}</span>
                         </div>

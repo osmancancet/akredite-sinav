@@ -5,6 +5,7 @@ import { Fraunces } from "next/font/google";
 import "katex/dist/katex.min.css";
 import "./globals.css";
 import { CSP } from "@/lib/csp";
+import { THEME_BOOT_SCRIPT } from "@/lib/themeScript";
 
 // Fraunces derleme sırasında indirilip _next/static altına gömülür; çalışma anında harici istek yoktur.
 const fraunces = Fraunces({
@@ -23,15 +24,16 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#18181b",
+  themeColor: "#fafaf9",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="tr" className={`h-full ${GeistSans.variable} ${GeistMono.variable} ${fraunces.variable}`}>
+    <html lang="tr" suppressHydrationWarning className={`h-full ${GeistSans.variable} ${GeistMono.variable} ${fraunces.variable}`}>
       <head>
         <meta httpEquiv="Content-Security-Policy" content={CSP} />
         <meta name="referrer" content="no-referrer" />
+        <script dangerouslySetInnerHTML={{ __html: THEME_BOOT_SCRIPT }} />
       </head>
       <body className="h-full antialiased">{children}</body>
     </html>

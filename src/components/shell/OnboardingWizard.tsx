@@ -110,7 +110,7 @@ export function OnboardingWizard() {
         animate={{ opacity: 1, y: 0 }}
         className="grid w-full max-w-5xl overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-[var(--shadow-pop)] lg:grid-cols-[0.9fr_1.4fr]"
       >
-        <aside className="relative hidden min-h-[560px] overflow-hidden bg-zinc-950 p-8 text-zinc-100 lg:block">
+        <aside className="theme-invariant relative hidden min-h-[560px] overflow-hidden bg-zinc-950 p-8 text-zinc-100 lg:block">
           <div className="pointer-events-none absolute inset-0 opacity-80">
             <CryptoLattice variant="dark" />
           </div>
@@ -182,7 +182,7 @@ export function OnboardingWizard() {
                           uni?.slug === u.slug ? "border-zinc-900 bg-zinc-50" : "border-zinc-200 hover:border-zinc-300",
                         )}
                       >
-                        <span className="flex h-8 w-8 shrink-0 items-center justify-center">
+                        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded bg-[#fff] p-0.5">
                           {u.logo ? (
                             // eslint-disable-next-line @next/next/no-img-element
                             <img src={`/logos/${u.logo}`} alt="" loading="lazy" className="max-h-8 max-w-8 object-contain" />
@@ -254,7 +254,7 @@ export function OnboardingWizard() {
                   <h3 className="font-display text-[26px] font-medium text-zinc-950">Hazır</h3>
                   <p className="mt-1 text-sm text-zinc-500">Demo veri kaldırılacak ve kurumunuz için boş, şifreli bir kasa kurulacak.</p>
                   <div className="mt-6 flex items-center gap-4 rounded-xl border border-zinc-200 p-4">
-                    <div className="flex h-14 w-14 items-center justify-center rounded-lg border border-zinc-100">
+                    <div className="flex h-14 w-14 items-center justify-center rounded-lg border border-zinc-100 bg-[#fff]">
                       {uni?.logo ? (
                         // eslint-disable-next-line @next/next/no-img-element
                         <img src={`/logos/${uni.logo}`} alt="" className="max-h-12 max-w-12 object-contain" />

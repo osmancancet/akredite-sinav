@@ -156,13 +156,13 @@ function CipherInspector() {
               <div className="mb-1 flex items-center gap-1 text-[11px] font-semibold text-red-700">
                 <XCircle className="h-3.5 w-3.5" /> Bellekteki açık metin (yalnızca bu sekmede)
               </div>
-              <pre className="h-56 overflow-auto rounded-lg bg-zinc-900 p-2 text-[10.5px] leading-snug text-zinc-200 scrollbar-thin">{plain.slice(0, 2500)}</pre>
+              <pre className="theme-invariant h-56 overflow-auto rounded-lg bg-zinc-900 p-2 text-[10.5px] leading-snug text-zinc-200 scrollbar-thin">{plain.slice(0, 2500)}</pre>
             </div>
             <div className="min-w-0">
               <div className="mb-1 flex items-center gap-1 text-[11px] font-semibold text-emerald-700">
                 <CheckCircle2 className="h-3.5 w-3.5" /> Diskteki şifreli hal (Base64)
               </div>
-              <pre className="h-56 overflow-auto whitespace-pre-wrap break-all rounded-lg bg-emerald-950 p-2 font-mono text-[10.5px] leading-snug text-emerald-300 scrollbar-thin">
+              <pre className="theme-invariant h-56 overflow-auto whitespace-pre-wrap break-all rounded-lg bg-emerald-950 p-2 font-mono text-[10.5px] leading-snug text-emerald-300 scrollbar-thin">
                 {rec ? bytesToBase64(rec.ciphertext).slice(0, 2500) : "Kayıt bulunamadı"}
               </pre>
               {rec && (
@@ -266,7 +266,7 @@ function NetworkProof() {
         <p className="mt-1 text-xs text-zinc-500">
           Uygulama kodu bile izin verilmeyen bir adrese istek atmaya çalışsa tarayıcı bunu engeller. connect-src yalnızca uygulamanın kendisini ve sizin seçtiğiniz AI sağlayıcılarını içerir.
         </p>
-        <pre className="mt-2 whitespace-pre-wrap break-all rounded-lg bg-zinc-900 p-3 font-mono text-[10.5px] text-zinc-200">{CSP.split("; ").join(";\n")}</pre>
+        <pre className="theme-invariant mt-2 whitespace-pre-wrap break-all rounded-lg bg-zinc-900 p-3 font-mono text-[10.5px] text-zinc-200">{CSP.split("; ").join(";\n")}</pre>
       </div>
     </div>
   );
