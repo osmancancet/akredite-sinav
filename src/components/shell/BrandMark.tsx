@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils";
 
-/** AkrediteSınav marka işareti: mühür içinde jeodezik kafes (kasa + akreditasyon). */
+/** Kanıthane marka işareti: mühür içinde jeodezik kafes (kasa + akreditasyon). */
 export function BrandMark({ className, inverted }: { className?: string; inverted?: boolean }) {
   // Tema değişkenleri: koyu temada işaret otomatik olarak tersine döner
   const ink = inverted ? "var(--color-zinc-50)" : "var(--color-zinc-900)";

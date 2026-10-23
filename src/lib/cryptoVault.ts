@@ -1,6 +1,6 @@
 "use client";
 
-// AkrediteSınav — Zero-Knowledge Kriptografik Kasa
+// Kanıthane — Zero-Knowledge Kriptografik Kasa
 // ----------------------------------------------------------------------------
 // * Anahtar türetme : PBKDF2 / SHA-256 / 100.000 iterasyon / 16 byte rastgele salt
 // * Şifreleme       : AES-256-GCM, her yazımda yeni 12 byte IV, koleksiyon adı AAD

@@ -1,4 +1,4 @@
-// AkrediteSınav — Çekirdek veri modeli
+// Kanıthane — Çekirdek veri modeli
 // Bu dosyadaki tüm yapılar tarayıcıda AES-256-GCM ile şifrelenerek IndexedDB'de saklanır.
 
 export type UnitType = "Meslek Yüksekokulu" | "Fakülte" | "Yüksekokul" | "Enstitü";

@@ -1,7 +1,7 @@
 {
-  "name": "AkrediteSınav",
-  "short_name": "AkrediteSınav",
-  "description": "Zero-Knowledge Akademik Sınav, Operasyon & MEDEK Akreditasyon Stüdyosu",
+  "name": "Kanıthane",
+  "short_name": "Kanıthane",
+  "description": "Akreditasyon kanıtlarınız, tek ve şifreli bir yerde — Zero-Knowledge akreditasyon kanıt stüdyosu",
   "start_url": "/app",
   "display": "standalone",
   "background_color": "#f1f5f9",

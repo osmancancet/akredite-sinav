@@ -52,7 +52,7 @@ Satın alma sonrası: Türk kayıt firmasından .com.tr, Cloudflare Registrar'da
 
 | Madde | Durum | Not |
 |---|---|---|
-| Marka tek dosyada | ✅ | `src/lib/brand.ts`; öneri Kanıthane, karar kullanıcıda (şu an AkrediteSınav) |
+| Marka tek dosyada | ✅ | `src/lib/brand.ts`; Kanıthane (kullanıcı onayladı, 23.10.2026) |
 | Gezinme | ✅ | Akreditasyon · Kanıt üreticileri · Sistem; Genel Bakış akreditasyon hazırlık panosuyla açılır |
 | Eşleşme önerileri | ✅ | 12 belge türü, dar kurallar; 32 çerçevede tüm eşleşmeler tek tek incelendi, yanlış pozitifler (kütüphane, stüdyo sergisi, program amaçları) birim testiyle engellendi |
 | Kanıt üreticileri sekmesi | ✅ | Belge bir kez üretilir, seçili kalemlere tek kopya bağlanır |

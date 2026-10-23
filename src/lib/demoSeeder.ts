@@ -1,4 +1,4 @@
-// AkrediteSınav — Akademik Demo Veri Seti
+// Kanıthane — Akademik Demo Veri Seti
 // İlk açılışta kasa bu veriyle doldurulur; tüm modüller ve çıktılar ilk saniyede test edilebilir.
 
 import { DEFAULT_AI_SETTINGS } from "./aiDefaults";

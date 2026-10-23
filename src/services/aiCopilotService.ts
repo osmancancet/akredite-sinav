@@ -1,7 +1,7 @@
 // BYOK (Kendi API Anahtarını Getir) Zero-Knowledge AI İstemcisi
 // ----------------------------------------------------------------------------
 // İstekler tarayıcıdan DOĞRUDAN sağlayıcıya gider (client-side fetch). Arada
-// AkrediteSınav sunucusu yoktur. Anahtarlar kasada AES-256-GCM ile şifreli durur.
+// Kanıthane sunucusu yoktur. Anahtarlar kasada AES-256-GCM ile şifreli durur.
 // KVKK: Öğrenci kimlik verisi hiçbir AI isteğine eklenmez; yalnızca soru metni,
 // ÖÇ metinleri ve toplu (anonim) başarı yüzdeleri gönderilir.
 // ----------------------------------------------------------------------------

@@ -1,4 +1,4 @@
-# AkrediteSınav
+# Kanıthane (eski adıyla AkrediteSınav)
 
 Zero-Knowledge (tarayıcı içi şifreli) akademik sınav, sınav operasyonu ve MEDEK/MÜDEK/YÖKAK akreditasyon stüdyosu.
 

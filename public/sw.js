@@ -1,4 +1,4 @@
-// AkrediteSınav çevrimdışı önbellek servisi (yalnızca aynı köken GET istekleri).
+// Kanıthane çevrimdışı önbellek servisi (yalnızca aynı köken GET istekleri).
 // Hiçbir kullanıcı verisi önbelleğe alınmaz; yalnızca uygulamanın statik dosyaları.
 const CACHE = "akredite-sinav-v3";
 

@@ -213,7 +213,7 @@ export function AppShell() {
           <BrandMark className="h-8 w-8" />
           <div className="min-w-0 leading-tight">
             <div className="font-display text-[17px] font-medium text-zinc-950">{BRAND.name}</div>
-            <div className="truncate text-[11px] text-zinc-500">Zero-Knowledge akademik stüdyo</div>
+            <div className="truncate text-[11px] text-zinc-500">Akreditasyon kanıt stüdyosu</div>
           </div>
           <button className="ml-auto text-zinc-500 lg:hidden" onClick={() => setMobileNav(false)} aria-label="Menüyü kapat">
             <X className="h-5 w-5" />
