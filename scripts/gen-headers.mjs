@@ -1,6 +1,8 @@
 // Cloudflare Pages için out/_headers üretir (next build sonrası çalışır).
 // CSP, uygulamadaki meta etiketiyle aynı kaynaktan (src/lib/csp-directives.json) gelir;
 // HTTP başlığı olarak ek olarak frame-ancestors 'none' uygulanır.
+// "Cache-Control: no-transform": Cloudflare'in HTML'e otomatik betik (Web Analytics vb.)
+// eklemesini engeller — uygulama hiçbir üçüncü taraf betik yüklemez.
 import fs from "node:fs";
 import path from "node:path";
 
@@ -18,6 +20,7 @@ const headers = `/*
   Cross-Origin-Opener-Policy: same-origin
   Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=()
   Strict-Transport-Security: max-age=31536000; includeSubDomains
+  Cache-Control: no-transform
 
 /_next/static/*
   Cache-Control: public, max-age=31536000, immutable
