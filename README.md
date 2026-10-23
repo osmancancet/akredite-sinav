@@ -14,6 +14,15 @@ npm start          # out/ klasörünü http://127.0.0.1:4173 adresinde servis ed
 `out/` klasörü herhangi bir statik sunucudan (veya kurum intranetinden) yayımlanabilir; sunucu tarafı kod yoktur.
 İlk açılışta kasa, demo veri setiyle (VTYS dersi, 5 ÖÇ, 6 soru, 8 derslik program, 6 gözetmen, 4 derslik, 75 öğrenci, 40 öğrencilik not simülasyonu, 2 rubrik) otomatik doldurulur.
 
+## Öne çıkan özellikler
+
+- **Genel Bakış ve kurulum sihirbazı:** dönem iş akışı ilerlemesi, yaklaşan sınavlar, akreditasyon durumu; ilk açılışta demo veya kendi kurumunuzla 2 dakikada kurulum.
+- **Soru bankası ve metinden soru aktarma:** Word'deki sınavı yapıştırın; numara, puan, şık, doğru cevap, kod bloğu ve Bloom düzeyi otomatik algılanır.
+- **Madde analizi:** güçlük (p), ayırt edicilik (D, %27), düzeltilmiş madde-toplam korelasyonu, Cronbach α, SEM ve Ebel kararları.
+- **Program çıktıları panosu:** dersler × PÇ planlanan katkı ve gerçekleşen başarı; desteklenmeyen PÇ uyarısı; öz değerlendirme eki Word raporu.
+- **Tek tık ders kanıt klasörü (ZIP):** tüm resmi belgeler klasörlenmiş, SHA-256 bütünlük özetli.
+- **Takvim (.ics), optik cevap anahtarı, öğrenci düzeyi sınav çakışması denetimi, ⌘K global arama.**
+
 ## Üniversite logoları
 
 Modül 1 → **Üniversite Seç** ile Türkiye'deki 205 yükseköğretim kurumundan biri seçildiğinde antet ve logo tüm Word/PDF çıktılarına (sınav kağıdı, cevap anahtarı, tutanaklar, PUKÖ raporu vb.) otomatik uygulanır. 197 kurumun logosu `public/logos/` altında uygulamayla birlikte gelir (256 px PNG); seçim internet gerektirmez ve logo şifreli kasaya kopyalanır. Logosu bulunmayan 8 kurum için "Logo Yükle" ile elle ekleme yapılabilir.
